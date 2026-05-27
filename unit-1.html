@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة ١ — مدخل إلى سوق العقارات الرقمي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+    --navy: #0A1628; --navy-mid: #112240; --navy-light: #1C3461;
+    --white: #F8F5EF; --gray: #A0A8B8; --accent: #2ECC9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:var(--navy); color:var(--white); }
+
+  /* NAV */
+  nav {
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,22,40,.92); backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(201,168,76,.15);
+    padding:.9rem 2rem;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  }
+  .nav-back {
+    display:flex; align-items:center; gap:.5rem;
+    color:var(--gold-light); text-decoration:none; font-size:.9rem;
+    transition:color .2s;
+  }
+  .nav-back:hover { color:var(--gold); }
+  .nav-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; }
+  .nav-progress {
+    display:flex; align-items:center; gap:.5rem;
+    font-size:.8rem; color:var(--gray);
+  }
+  .progress-bar {
+    width:100px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden;
+  }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:12.5%; }
+
+  /* HERO */
+  .unit-hero {
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%),
+                linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding:3rem 2rem 2rem;
+    text-align:center;
+  }
+  .unit-badge {
+    display:inline-flex; align-items:center; gap:.5rem;
+    background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3);
+    border-radius:50px; padding:.3rem 1rem; font-size:.78rem; color:var(--gold-light);
+    margin-bottom:1rem;
+  }
+  .unit-hero h1 {
+    font-family:'Tajawal',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900;
+    margin-bottom:.8rem;
+  }
+  .unit-hero h1 span { color:var(--gold); }
+  .unit-meta {
+    display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap;
+    margin-top:1.2rem; font-size:.85rem; color:var(--gray);
+  }
+  .unit-meta span { display:flex; align-items:center; gap:.4rem; }
+
+  /* LAYOUT */
+  .course-layout {
+    max-width:1200px; margin:0 auto; padding:2rem;
+    display:grid; grid-template-columns:1fr 320px; gap:2rem;
+  }
+  @media(max-width:900px){ .course-layout { grid-template-columns:1fr; } }
+
+  /* VIDEO */
+  .video-wrapper {
+    position:relative; padding-bottom:56.25%; height:0; overflow:hidden;
+    border-radius:14px; border:1px solid rgba(201,168,76,.2);
+    background:var(--navy-mid);
+  }
+  .video-wrapper iframe {
+    position:absolute; top:0; right:0; width:100%; height:100%; border:none; border-radius:14px;
+  }
+  .video-placeholder {
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1rem;
+    background:var(--navy-mid); border-radius:14px; cursor:pointer;
+  }
+  .play-btn {
+    width:72px; height:72px; border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.8rem; box-shadow:0 4px 20px rgba(201,168,76,.4);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .play-btn:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(201,168,76,.5); }
+  .video-placeholder p { color:var(--gray); font-size:.9rem; }
+
+  /* LESSONS SIDEBAR */
+  .lessons-sidebar { display:flex; flex-direction:column; gap:.6rem; }
+  .sidebar-title {
+    font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem;
+    color:var(--gold); margin-bottom:.4rem; padding-bottom:.6rem;
+    border-bottom:1px solid rgba(201,168,76,.15);
+  }
+  .lesson-item {
+    display:flex; align-items:center; gap:.8rem;
+    background:var(--navy-mid); border:1px solid rgba(201,168,76,.1);
+    border-radius:10px; padding:.8rem 1rem; cursor:pointer;
+    transition:border-color .2s, background .2s;
+    text-decoration:none; color:var(--white);
+  }
+  .lesson-item:hover, .lesson-item.active {
+    border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.07);
+  }
+  .lesson-item.active .lesson-num { background:var(--gold); color:var(--navy); }
+  .lesson-num {
+    width:28px; height:28px; flex-shrink:0; border-radius:50%;
+    background:rgba(201,168,76,.12); color:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.75rem; font-weight:700;
+  }
+  .lesson-info { flex:1; }
+  .lesson-info strong { display:block; font-size:.88rem; margin-bottom:.15rem; }
+  .lesson-info span { font-size:.75rem; color:var(--gray); }
+  .lesson-done { color:var(--accent); font-size:.9rem; }
+
+  /* CONTENT */
+  .content-section { margin-top:2rem; }
+  .content-card {
+    background:var(--navy-mid); border:1px solid rgba(201,168,76,.12);
+    border-radius:14px; padding:2rem; margin-bottom:1.5rem;
+  }
+  .content-card h2 {
+    font-family:'Tajawal',sans-serif; font-size:1.3rem; font-weight:800;
+    color:var(--gold); margin-bottom:1.2rem; padding-bottom:.8rem;
+    border-bottom:1px solid rgba(201,168,76,.15);
+  }
+  .content-card h3 {
+    font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700;
+    color:var(--white); margin:1.2rem 0 .6rem;
+  }
+  .content-card p { color:var(--gray); line-height:1.9; font-size:.95rem; margin-bottom:.8rem; }
+  .content-card ul { padding-right:1.2rem; }
+  .content-card ul li {
+    color:var(--gray); line-height:1.8; font-size:.95rem; margin-bottom:.4rem;
+    list-style:none; display:flex; align-items:flex-start; gap:.6rem;
+  }
+  .content-card ul li::before {
+    content:'◆'; color:var(--gold); font-size:.55rem; margin-top:.45rem; flex-shrink:0;
+  }
+
+  /* KEY POINTS */
+  .key-points {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1rem;
+  }
+  .key-point {
+    background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15);
+    border-radius:10px; padding:1rem;
+  }
+  .key-point .icon { font-size:1.5rem; margin-bottom:.5rem; }
+  .key-point h4 { font-family:'Tajawal',sans-serif; font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+  .key-point p { font-size:.82rem; color:var(--gray); line-height:1.6; }
+
+  /* QUIZ */
+  .quiz-option {
+    background:var(--navy); border:1px solid rgba(201,168,76,.15);
+    border-radius:8px; padding:.9rem 1.2rem; margin-bottom:.6rem;
+    cursor:pointer; font-size:.92rem; transition:border-color .2s, background .2s;
+    display:flex; align-items:center; gap:.8rem;
+  }
+  .quiz-option:hover { border-color:var(--gold); background:rgba(201,168,76,.07); }
+  .quiz-option.correct { border-color:var(--accent); background:rgba(46,204,154,.1); }
+  .quiz-option.wrong { border-color:#e74c3c; background:rgba(231,76,60,.1); }
+  .quiz-letter {
+    width:28px; height:28px; flex-shrink:0; border-radius:50%;
+    background:rgba(201,168,76,.12); color:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.78rem; font-weight:700;
+  }
+  .btn-check {
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800;
+    padding:.7rem 2rem; border-radius:8px; border:none; cursor:pointer;
+    font-size:.95rem; margin-top:.8rem; transition:transform .2s;
+  }
+  .btn-check:hover { transform:translateY(-2px); }
+
+  /* NEXT UNIT */
+  .next-unit {
+    background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05));
+    border:1px solid rgba(201,168,76,.3); border-radius:14px;
+    padding:1.8rem; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; flex-wrap:wrap; margin-top:1.5rem;
+  }
+  .next-unit h3 { font-family:'Tajawal',sans-serif; font-size:1.1rem; font-weight:800; }
+  .next-unit p { color:var(--gray); font-size:.88rem; margin-top:.3rem; }
+  .btn-next {
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800;
+    padding:.8rem 1.8rem; border-radius:8px; border:none; cursor:pointer;
+    font-size:.95rem; white-space:nowrap; text-decoration:none;
+    transition:transform .2s, box-shadow .2s;
+    display:inline-flex; align-items:center; gap:.5rem;
+  }
+  .btn-next:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.35); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="real-estate-course.html" class="nav-back">
+    ← العودة للدورة
+  </a>
+  <div class="nav-title">الوحدة ١ — مدخل سوق العقارات</div>
+  <div class="nav-progress">
+    <span>١/٨</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="unit-hero">
+  <div class="unit-badge">🏠 الوحدة الأولى</div>
+  <h1>مدخل إلى <span>سوق العقارات الرقمي</span></h1>
+  <div class="unit-meta">
+    <span>⏱ ٤٥ دقيقة</span>
+    <span>📹 ٥ دروس</span>
+    <span>📝 اختبار قصير</span>
+    <span>🎯 مستوى مبتدئ</span>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="course-layout">
+
+  <!-- MAIN CONTENT -->
+  <div>
+
+    <!-- VIDEO -->
+    <div class="video-wrapper">
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn">▶</div>
+        <p>الدرس الأول: ما هو التسويق العقاري الرقمي؟</p>
+        <p style="font-size:.78rem;color:rgba(160,168,184,.6)">اضغط للتشغيل</p>
+      </div>
+      <!-- بعد ما تضيف رابط يوتيوب، احذف الـ placeholder وفعّل هذا:
+      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
+      -->
+    </div>
+
+    <!-- TEXT CONTENT -->
+    <div class="content-section">
+
+      <div class="content-card">
+        <h2>📌 ما ستتعلمه في هذه الوحدة</h2>
+        <div class="key-points">
+          <div class="key-point">
+            <div class="icon">🏙️</div>
+            <h4>بنية السوق العقاري</h4>
+            <p>فهم أنواع العقارات والفاعلين الرئيسيين في السوق</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">💻</div>
+            <h4>التحول الرقمي</h4>
+            <p>كيف تغيّر السوق العقاري مع الإنترنت</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">🤝</div>
+            <h4>دور الوسيط</h4>
+            <p>مهام الوسيط العقاري الرقمي وكيف يكسب عمولته</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">📋</div>
+            <h4>أنواع العقود</h4>
+            <p>الفرق بين عقود البيع والتأجير وأحكامها</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الأول: لماذا العقارات الرقمية؟</h2>
+        <p>تحوّل سوق العقارات بشكل جذري خلال السنوات الأخيرة. في السابق كان المشتري يجول بين المكاتب العقارية ويستهلك ساعات طويلة. اليوم، أكثر من <strong style="color:var(--gold-light)">٨٠٪ من المشترين</strong> يبدأون رحلة البحث عن عقارهم عبر الإنترنت.</p>
+        <p>هذا التحول خلق فرصة ذهبية للوسيط الرقمي الذكي — الذي يفهم كيف يظهر أمام المشتري في اللحظة المناسبة وبالعرض الصحيح.</p>
+
+        <h3>أرقام السوق الخليجي</h3>
+        <ul>
+          <li>السوق العقاري السعودي تجاوز <strong style="color:var(--gold-light)">٣٠٠ مليار ريال</strong> سنوياً</li>
+          <li>أكثر من ٦٠٪ من الصفقات تبدأ من إعلان رقمي</li>
+          <li>الوسيط الرقمي يوفر ٤٠-٦٠٪ من وقت إغلاق الصفقة</li>
+          <li>متوسط عمولة البيع في السعودية: ٢-٢.٥٪ من قيمة العقار</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثاني: أنواع العقارات والفرص</h2>
+
+        <h3>١. العقارات السكنية</h3>
+        <ul>
+          <li>شقق — الأكثر تداولاً في التأجير قصير وطويل المدى</li>
+          <li>فلل — عمولات أعلى، صفقات أطول</li>
+          <li>أراضي سكنية — مناسبة للبيع، عمولات كبيرة</li>
+        </ul>
+
+        <h3>٢. العقارات التجارية</h3>
+        <ul>
+          <li>محلات ومكاتب — طلب مستمر ومتجدد</li>
+          <li>مستودعات — نمو كبير مع التجارة الإلكترونية</li>
+          <li>مجمعات تجارية — صفقات كبيرة ومربحة</li>
+        </ul>
+
+        <h3>نصيحة احترافية 💡</h3>
+        <p style="background:rgba(201,168,76,.08);border-right:3px solid var(--gold);padding:.8rem 1rem;border-radius:0 8px 8px 0;">
+          للمبتدئ — ابدأ بالشقق السكنية للإيجار. الدورة أسرع، العملاء أكثر، والخبرة تتراكم بسرعة. بعد ٦ أشهر انتقل للبيع والعقارات الأكبر.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثالث: دور الوسيط الرقمي</h2>
+        <p>الوسيط العقاري الرقمي ليس مجرد "معلّق إعلانات" — هو مستشار ومسوّق ومفاوض في آنٍ واحد.</p>
+
+        <h3>مهام الوسيط الرقمي</h3>
+        <ul>
+          <li>تصوير وتوثيق العقار بشكل احترافي</li>
+          <li>نشر الإعلانات على المنصات المناسبة</li>
+          <li>التواصل مع العملاء المحتملين وتأهيلهم</li>
+          <li>ترتيب المعاينات وإدارة التفاوض</li>
+          <li>إتمام العقود وتحصيل العمولة</li>
+        </ul>
+
+        <h3>كيف تحسب عمولتك؟</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">البيع:</strong> ٢٪ من قيمة العقار (مثال: شقة بـ ٥٠٠,٠٠٠ = عمولة ١٠,٠٠٠ ريال)</li>
+          <li><strong style="color:var(--gold-light)">التأجير السنوي:</strong> شهر إيجار كعمولة</li>
+          <li><strong style="color:var(--gold-light)">التأجير الشهري:</strong> نصف شهر إلى شهر كامل</li>
+        </ul>
+      </div>
+
+      <!-- QUIZ -->
+      <div class="content-card">
+        <h2>🧠 اختبر نفسك</h2>
+        <p style="margin-bottom:1.2rem;">ما هو متوسط نسبة عمولة البيع العقاري في السوق السعودي؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">
+          <span class="quiz-letter">أ</span> ٥٪ من قيمة العقار
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, true)">
+          <span class="quiz-letter">ب</span> ٢ - ٢.٥٪ من قيمة العقار
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">
+          <span class="quiz-letter">ج</span> ١٠٪ من قيمة العقار
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">
+          <span class="quiz-letter">د</span> ٠.٥٪ من قيمة العقار
+        </div>
+        <div id="quizFeedback" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+      </div>
+
+      <!-- NEXT UNIT -->
+      <div class="next-unit">
+        <div>
+          <h3>الوحدة التالية 🚀</h3>
+          <p>المنصات العقارية الرقمية — بيوت، عقار، أوليكس وكيف تنشر إعلاناً يتصدر النتائج</p>
+        </div>
+        <a href="unit-2.html" class="btn-next">التالي ←</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="lessons-sidebar">
+      <div class="sidebar-title">📚 دروس الوحدة</div>
+
+      <a class="lesson-item active" href="#">
+        <div class="lesson-num">١</div>
+        <div class="lesson-info">
+          <strong>لماذا العقارات الرقمية؟</strong>
+          <span>⏱ ٨ دقائق</span>
+        </div>
+        <span class="lesson-done">▶</span>
+      </a>
+
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٢</div>
+        <div class="lesson-info">
+          <strong>أنواع العقارات والفرص</strong>
+          <span>⏱ ١٠ دقائق</span>
+        </div>
+      </a>
+
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٣</div>
+        <div class="lesson-info">
+          <strong>دور الوسيط الرقمي</strong>
+          <span>⏱ ١٢ دقيقة</span>
+        </div>
+      </a>
+
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٤</div>
+        <div class="lesson-info">
+          <strong>أنواع العقود والاتفاقيات</strong>
+          <span>⏱ ٨ دقائق</span>
+        </div>
+      </a>
+
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٥</div>
+        <div class="lesson-info">
+          <strong>خطوات بدء مشوارك</strong>
+          <span>⏱ ٧ دقائق</span>
+        </div>
+      </a>
+
+      <!-- وحدات أخرى -->
+      <div class="sidebar-title" style="margin-top:1rem;">🗂 وحدات الدورة</div>
+      <a class="lesson-item active" href="unit-1.html">
+        <div class="lesson-num" style="background:var(--gold);color:var(--navy);">١</div>
+        <div class="lesson-info"><strong>مدخل سوق العقارات</strong><span>الوحدة الحالية</span></div>
+      </a>
+      <a class="lesson-item" href="unit-2.html">
+        <div class="lesson-num">٢</div>
+        <div class="lesson-info"><strong>المنصات العقارية</strong><span>⏱ ٥٠ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-3.html">
+        <div class="lesson-num">٣</div>
+        <div class="lesson-info"><strong>التصوير المرئي</strong><span>⏱ ٦٠ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-4.html">
+        <div class="lesson-num">٤</div>
+        <div class="lesson-info"><strong>كتابة الإعلانات</strong><span>⏱ ٤٥ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-5.html">
+        <div class="lesson-num">٥</div>
+        <div class="lesson-info"><strong>الإعلانات المدفوعة</strong><span>⏱ ٧٠ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-6.html">
+        <div class="lesson-num">٦</div>
+        <div class="lesson-info"><strong>إدارة العملاء</strong><span>⏱ ٥٥ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-7.html">
+        <div class="lesson-num">٧</div>
+        <div class="lesson-info"><strong>العمولات والعقود</strong><span>⏱ ٦٥ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-8.html">
+        <div class="lesson-num">٨</div>
+        <div class="lesson-info"><strong>قياس الأداء</strong><span>⏱ ٤٠ دقيقة</span></div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function loadVideo() {
+  // ضع هنا رابط يوتيوب الخاص بك
+  // مثال: https://www.youtube.com/watch?v=XXXX → استخدم XXXX
+  const videoId = 'YOUR_VIDEO_ID';
+  const placeholder = document.getElementById('videoPlaceholder');
+  const wrapper = placeholder.parentElement;
+  placeholder.style.display = 'none';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  wrapper.appendChild(iframe);
+}
+
+function checkAnswer(el, isCorrect) {
+  document.querySelectorAll('.quiz-option').forEach(o => {
+    o.classList.remove('correct','wrong');
+    o.onclick = null;
+  });
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('quizFeedback');
+  fb.style.display = 'block';
+  fb.style.color = isCorrect ? 'var(--accent)' : '#e74c3c';
+  fb.textContent = isCorrect
+    ? '✓ إجابة صحيحة! نسبة العمولة المعتادة للبيع هي ٢-٢.٥٪'
+    : '✗ ليست الإجابة الصحيحة. نسبة عمولة البيع المعتادة هي ٢-٢.٥٪';
+}
+</script>
+</body>
+</html>
