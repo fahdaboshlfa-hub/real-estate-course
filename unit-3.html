@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة ٣ — التصوير المرئي العقاري</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+    --navy: #0A1628; --navy-mid: #112240; --navy-light: #1C3461;
+    --white: #F8F5EF; --gray: #A0A8B8; --accent: #2ECC9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:var(--navy); color:var(--white); }
+
+  nav {
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,22,40,.92); backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(201,168,76,.15);
+    padding:.9rem 2rem;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  }
+  .nav-back { display:flex; align-items:center; gap:.5rem; color:var(--gold-light); text-decoration:none; font-size:.9rem; transition:color .2s; }
+  .nav-back:hover { color:var(--gold); }
+  .nav-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; }
+  .nav-progress { display:flex; align-items:center; gap:.5rem; font-size:.8rem; color:var(--gray); }
+  .progress-bar { width:100px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:37.5%; }
+
+  .unit-hero {
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%),
+                linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding:3rem 2rem 2rem; text-align:center;
+  }
+  .unit-badge {
+    display:inline-flex; align-items:center; gap:.5rem;
+    background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3);
+    border-radius:50px; padding:.3rem 1rem; font-size:.78rem; color:var(--gold-light);
+    margin-bottom:1rem;
+  }
+  .unit-hero h1 { font-family:'Tajawal',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; margin-bottom:.8rem; }
+  .unit-hero h1 span { color:var(--gold); }
+  .unit-meta { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-top:1.2rem; font-size:.85rem; color:var(--gray); }
+  .unit-meta span { display:flex; align-items:center; gap:.4rem; }
+
+  .course-layout { max-width:1200px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 320px; gap:2rem; }
+  @media(max-width:900px){ .course-layout { grid-template-columns:1fr; } }
+
+  .video-wrapper { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:14px; border:1px solid rgba(201,168,76,.2); background:var(--navy-mid); }
+  .video-wrapper iframe { position:absolute; top:0; right:0; width:100%; height:100%; border:none; border-radius:14px; }
+  .video-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; background:var(--navy-mid); border-radius:14px; cursor:pointer; }
+  .play-btn { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; box-shadow:0 4px 20px rgba(201,168,76,.4); transition:transform .2s, box-shadow .2s; }
+  .play-btn:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(201,168,76,.5); }
+  .video-placeholder p { color:var(--gray); font-size:.9rem; }
+
+  .lessons-sidebar { display:flex; flex-direction:column; gap:.6rem; }
+  .sidebar-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; color:var(--gold); margin-bottom:.4rem; padding-bottom:.6rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .lesson-item { display:flex; align-items:center; gap:.8rem; background:var(--navy-mid); border:1px solid rgba(201,168,76,.1); border-radius:10px; padding:.8rem 1rem; cursor:pointer; transition:border-color .2s, background .2s; text-decoration:none; color:var(--white); }
+  .lesson-item:hover, .lesson-item.active { border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.07); }
+  .lesson-item.active .lesson-num { background:var(--gold); color:var(--navy); }
+  .lesson-num { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; }
+  .lesson-info { flex:1; }
+  .lesson-info strong { display:block; font-size:.88rem; margin-bottom:.15rem; }
+  .lesson-info span { font-size:.75rem; color:var(--gray); }
+  .lesson-done { color:var(--accent); font-size:.9rem; }
+
+  .content-section { margin-top:2rem; }
+  .content-card { background:var(--navy-mid); border:1px solid rgba(201,168,76,.12); border-radius:14px; padding:2rem; margin-bottom:1.5rem; }
+  .content-card h2 { font-family:'Tajawal',sans-serif; font-size:1.3rem; font-weight:800; color:var(--gold); margin-bottom:1.2rem; padding-bottom:.8rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .content-card h3 { font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin:1.2rem 0 .6rem; }
+  .content-card p { color:var(--gray); line-height:1.9; font-size:.95rem; margin-bottom:.8rem; }
+  .content-card ul { padding-right:1.2rem; }
+  .content-card ul li { color:var(--gray); line-height:1.8; font-size:.95rem; margin-bottom:.4rem; list-style:none; display:flex; align-items:flex-start; gap:.6rem; }
+  .content-card ul li::before { content:'◆'; color:var(--gold); font-size:.55rem; margin-top:.45rem; flex-shrink:0; }
+  .content-card a { color:var(--gold-light); text-decoration:none; border-bottom:1px dashed rgba(201,168,76,.4); }
+  .content-card a:hover { color:var(--gold); }
+
+  .key-points { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
+  .key-point { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15); border-radius:10px; padding:1rem; }
+  .key-point .icon { font-size:1.5rem; margin-bottom:.5rem; }
+  .key-point h4 { font-family:'Tajawal',sans-serif; font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+  .key-point p { font-size:.82rem; color:var(--gray); line-height:1.6; }
+
+  .quiz-option { background:var(--navy); border:1px solid rgba(201,168,76,.15); border-radius:8px; padding:.9rem 1.2rem; margin-bottom:.6rem; cursor:pointer; font-size:.92rem; transition:border-color .2s, background .2s; display:flex; align-items:center; gap:.8rem; }
+  .quiz-option:hover { border-color:var(--gold); background:rgba(201,168,76,.07); }
+  .quiz-option.correct { border-color:var(--accent); background:rgba(46,204,154,.1); }
+  .quiz-option.wrong { border-color:#e74c3c; background:rgba(231,76,60,.1); }
+  .quiz-letter { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; }
+  .btn-check { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800; padding:.7rem 2rem; border-radius:8px; border:none; cursor:pointer; font-size:.95rem; margin-top:.8rem; transition:transform .2s; }
+  .btn-check:hover { transform:translateY(-2px); }
+
+  .next-unit { background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05)); border:1px solid rgba(201,168,76,.3); border-radius:14px; padding:1.8rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:1.5rem; }
+  .next-unit h3 { font-family:'Tajawal',sans-serif; font-size:1.1rem; font-weight:800; }
+  .next-unit p { color:var(--gray); font-size:.88rem; margin-top:.3rem; }
+  .btn-next { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800; padding:.8rem 1.8rem; border-radius:8px; border:none; cursor:pointer; font-size:.95rem; white-space:nowrap; text-decoration:none; transition:transform .2s, box-shadow .2s; display:inline-flex; align-items:center; gap:.5rem; }
+  .btn-next:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.35); }
+
+  .ref-list { list-style:none; padding:0; }
+  .ref-list li { padding:.6rem 0; border-bottom:1px solid rgba(201,168,76,.08); }
+  .ref-list li::before { content:'📎'; margin-left:.4rem; }
+  .exercise-box { background:rgba(46,204,154,.06); border-right:3px solid var(--accent); padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin-top:1rem; }
+  .exercise-box h4 { color:var(--accent); margin-bottom:.5rem; font-family:'Tajawal',sans-serif; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="real-estate-course.html" class="nav-back">← العودة للدورة</a>
+  <div class="nav-title">الوحدة ٣ — التصوير المرئي العقاري</div>
+  <div class="nav-progress">
+    <span>٣/٨</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<div class="unit-hero">
+  <div class="unit-badge">📸 الوحدة الثالثة</div>
+  <h1>التصوير المرئي <span>العقاري الاحترافي</span></h1>
+  <div class="unit-meta">
+    <span>⏱ ٦٠ دقيقة</span>
+    <span>📹 ٥ دروس</span>
+    <span>📝 اختبار + تمارين</span>
+    <span>🎯 مستوى متوسط</span>
+  </div>
+</div>
+
+<div class="course-layout">
+
+  <div>
+
+    <div class="video-wrapper">
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn">▶</div>
+        <p>الدرس الأول: أساسيات التصوير العقاري بالجوال والكاميرا</p>
+        <p style="font-size:.78rem;color:rgba(160,168,184,.6)">اضغط للتشغيل</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+
+      <div class="content-card">
+        <h2>📌 ما ستتعلمه في هذه الوحدة</h2>
+        <div class="key-points">
+          <div class="key-point">
+            <div class="icon">💡</div>
+            <h4>الإضاءة الصحيحة</h4>
+            <p>كيف تستفيد من الضوء الطبيعي والصناعي</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">📐</div>
+            <h4>الزوايا والتكوين</h4>
+            <p>قواعد تكوين الصورة العقارية الجذابة</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">🎥</div>
+            <h4>الفيديو والجولات</h4>
+            <p>تصوير فيديوهات احترافية وجولات افتراضية ٣٦٠°</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">🪄</div>
+            <h4>التحرير الذكي</h4>
+            <p>أدوات تحرير سريعة ومجانية للنتائج الاحترافية</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الأول: أساسيات التصوير العقاري</h2>
+        <p>التصوير العقاري ليس مجرد "التقاط صور" — هو فن إقناع. الصورة الواحدة قد تكون الفارق بين أن يضغط العميل على إعلانك أو يتجاوزه. الأبحاث تؤكد أن الإعلانات التي تحتوي على صور احترافية تحصل على <strong style="color:var(--gold-light)">٣٢٠٪ زيارات إضافية</strong> مقارنة بالإعلانات ذات الصور العادية.</p>
+
+        <h3>المعدات الأساسية (المبتدئ)</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">جوال حديث:</strong> iPhone 13+ أو Samsung S22+ أو أي جوال بكاميرا واسعة ١٢ ميجابكسل فأعلى</li>
+          <li><strong style="color:var(--gold-light)">حامل ثلاثي (Tripod):</strong> ضروري لتجنب الاهتزاز — يبدأ من ٥٠ ريال</li>
+          <li><strong style="color:var(--gold-light)">عدسة Wide-Angle خارجية:</strong> اختيارية، تكلفتها ١٠٠-٣٠٠ ريال</li>
+          <li><strong style="color:var(--gold-light)">إضاءة محمولة LED:</strong> للغرف الداخلية المظلمة</li>
+          <li><strong style="color:var(--gold-light)">منظف للعدسة:</strong> أي بصمة على العدسة تفسد جودة الصورة</li>
+        </ul>
+
+        <h3>المعدات المتقدمة (للمحترف)</h3>
+        <ul>
+          <li>كاميرا DSLR أو Mirrorless: Canon R50، Sony A6400 — حوالي ٣٠٠٠ ريال</li>
+          <li>عدسة عريضة ١٠-١٨ مم: لالتقاط الغرف كاملة</li>
+          <li>طائرة درون (Drone): DJI Mini 4 Pro للقطات الجوية — ٣٠٠٠ ريال</li>
+          <li>كاميرا ٣٦٠ درجة: Insta360 X3 للجولات الافتراضية — ١٥٠٠ ريال</li>
+        </ul>
+
+        <h3>التحضير قبل التصوير (Checklist)</h3>
+        <ul>
+          <li>تنظيف العقار بالكامل وإزالة الفوضى</li>
+          <li>فتح جميع الستائر للسماح بالضوء الطبيعي</li>
+          <li>تشغيل جميع الإضاءات الداخلية (حتى في النهار)</li>
+          <li>إخفاء الأسلاك المتدلية وأجهزة التحكم</li>
+          <li>ترتيب المخدات والسرائر بشكل متناسق</li>
+          <li>إخفاء الأمتعة الشخصية (شامبو، صور عائلية، ملابس)</li>
+          <li>وضع لمسات تنسيقية: زهور، نبتة، كتب على الطاولة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثاني: قواعد الإضاءة الذهبية</h2>
+        <p>الإضاءة هي العامل رقم واحد في جودة الصورة العقارية. صورة بإضاءة سيئة في عقار جميل = عقار يبدو سيئاً. صورة بإضاءة ممتازة في عقار متوسط = عقار يبدو مذهلاً.</p>
+
+        <h3>أوقات التصوير المثالية (Golden Hours)</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">للواجهات الخارجية:</strong> الساعة الذهبية — قبل الغروب بساعة وبعد الشروق بساعة</li>
+          <li><strong style="color:var(--gold-light)">للداخلية:</strong> بين الساعة ١٠ صباحاً و ٢ ظهراً (الإضاءة موزّعة)</li>
+          <li><strong style="color:var(--gold-light)">للشرفات والإطلالات:</strong> قبل الغروب مباشرة لإظهار جمال السماء</li>
+          <li><strong style="color:var(--gold-light)">تجنّب:</strong> الظهيرة (ظلال قاسية)، الليل (إلا للقطات خاصة)</li>
+        </ul>
+
+        <h3>قواعد الإضاءة الداخلية</h3>
+        <ul>
+          <li><strong>الضوء الطبيعي أولاً:</strong> افتح كل النوافذ والستائر — الكاميرا تحب الضوء الطبيعي</li>
+          <li><strong>وحّد درجة حرارة الإضاءة:</strong> لا تخلط بين مصابيح صفراء وبيضاء في نفس الغرفة</li>
+          <li><strong>تجنّب الفلاش المباشر:</strong> يخلق ظلال قاسية ولمعان مزعج على الأسطح</li>
+          <li><strong>استخدم HDR:</strong> فعّل خاصية HDR في الجوال لموازنة المناطق المضيئة والمظلمة</li>
+          <li><strong>تجنّب التصوير ضد الضوء:</strong> لا تقف بين العقار والنافذة — اجعل النافذة في الخلفية الجانبية</li>
+        </ul>
+
+        <h3>إعدادات الكاميرا الموصى بها</h3>
+        <ul>
+          <li>ISO منخفض: ١٠٠-٤٠٠ في النهار، ٨٠٠ في المساء</li>
+          <li>فتحة العدسة: f/8 إلى f/11 لعمق ميدان واسع</li>
+          <li>سرعة الغالق: ١/٦٠ أو أبطأ مع الحامل الثلاثي</li>
+          <li>التركيز اليدوي: على نقطة بين الأمام والخلف لوضوح الصورة كاملة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثالث: الزوايا والتكوين الاحترافي</h2>
+        <p>كل غرفة لها زاوية ذهبية واحدة تجعلها تبدو أكبر وأجمل. مهمتك أن تجدها.</p>
+
+        <h3>قاعدة الزاوية ٣/٤</h3>
+        <p>عند تصوير غرفة، قف في زاوية الغرفة (وليس في الوسط) ووجّه الكاميرا قطرياً عبر الغرفة. هذه الزاوية تُظهر <strong style="color:var(--gold-light)">ثلاثة جدران</strong> وتجعل الغرفة تبدو أوسع.</p>
+
+        <h3>ارتفاع الكاميرا المثالي</h3>
+        <ul>
+          <li><strong>غرف المعيشة وغرف النوم:</strong> ارتفاع ١٢٠-١٤٠ سم (مستوى الصدر)</li>
+          <li><strong>المطابخ:</strong> ارتفاع ١٥٠-١٦٠ سم (لإظهار الأسطح)</li>
+          <li><strong>الحمامات:</strong> ١٤٠ سم (لإظهار البلاط)</li>
+          <li><strong>الواجهات:</strong> من ارتفاع منخفض (٥٠-٨٠ سم) لإظهار العظمة</li>
+        </ul>
+
+        <h3>قاعدة الأثلاث (Rule of Thirds)</h3>
+        <p>قسّم الإطار ذهنياً إلى ٩ مربعات (٣×٣). ضع العناصر المهمة (الباب، النافذة، الأثاث الرئيسي) على نقاط التقاطع، وليس في المنتصف. سيمنح صورتك توازناً بصرياً.</p>
+
+        <h3>الخطوط المستقيمة قاعدة مقدسة</h3>
+        <ul>
+          <li>الجدران يجب أن تكون عمودية تماماً — ليست مائلة</li>
+          <li>الأرضية والسقف يجب أن يبدوا أفقيين</li>
+          <li>استخدم خاصية "الشبكة" (Grid) في الكاميرا للمساعدة</li>
+          <li>تجنّب التصوير من أسفل لأعلى (يجعل الغرفة تبدو ضيقة)</li>
+        </ul>
+
+        <h3>اللقطات الإلزامية لكل عقار</h3>
+        <ul>
+          <li>الواجهة الخارجية (٢ زاوية مختلفة)</li>
+          <li>المدخل والصالة الرئيسية</li>
+          <li>كل غرفة معيشة (زاويتان لكل غرفة)</li>
+          <li>المطبخ (عام + لقطة قريبة للأسطح)</li>
+          <li>كل غرفة نوم</li>
+          <li>كل حمام</li>
+          <li>الشرفة/الحديقة/الإطلالة</li>
+          <li>الموقف وأي ميزات إضافية (مسبح، حديقة سطح...)</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الرابع: تصوير الفيديو والجولات الافتراضية</h2>
+        <p>الفيديو يضاعف فرصة بيع العقار. حسب إحصائيات Zillow و Bayut، الإعلانات التي تحتوي فيديو تحصل على <strong style="color:var(--gold-light)">٤٠٣٪ استفسارات أكثر</strong>.</p>
+
+        <h3>أنواع الفيديو العقاري</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">جولة كاملة (Walk-through):</strong> ١-٣ دقائق، تمشي بالكاميرا عبر العقار</li>
+          <li><strong style="color:var(--gold-light)">فيديو قصير (Reel/TikTok):</strong> ١٥-٣٠ ثانية، أبرز نقاط العقار</li>
+          <li><strong style="color:var(--gold-light)">جولة جوية بالدرون:</strong> للفلل والأراضي — ٣٠-٦٠ ثانية</li>
+          <li><strong style="color:var(--gold-light)">جولة افتراضية ٣٦٠°:</strong> تفاعلية، يتحكم بها المشاهد</li>
+          <li><strong style="color:var(--gold-light)">فيديو الوسيط (Agent Speak):</strong> أنت تتحدث وتعرّف بالعقار</li>
+        </ul>
+
+        <h3>قواعد فيديو Walk-through الناجح</h3>
+        <ul>
+          <li>ابدأ بالواجهة الخارجية ثم ادخل تدريجياً</li>
+          <li>اتبع تسلسلاً منطقياً: مدخل → صالة → مطبخ → غرف نوم → حمامات → شرفة</li>
+          <li>حركة الكاميرا بطيئة وثابتة (استخدم Gimbal أو Stabilizer)</li>
+          <li>كل غرفة: ٤-٧ ثوانٍ كحد أقصى</li>
+          <li>أضف موسيقى هادئة بدون كلمات (Royalty-free)</li>
+          <li>اكتب نصاً مكتوباً على الفيديو لكل غرفة (المساحة، الميزات)</li>
+        </ul>
+
+        <h3>الجولة الافتراضية ٣٦٠°</h3>
+        <p>هذه التقنية ثورية في السوق العقاري — تتيح للعميل "زيارة" العقار من جواله. أصبحت ضرورية للعقارات الفاخرة وللعملاء من خارج المدينة.</p>
+        <ul>
+          <li><strong>كاميرا ٣٦٠:</strong> Insta360 X3، Ricoh Theta Z1، GoPro Max</li>
+          <li><strong>تطبيقات نشر الجولات:</strong> Matterport، Kuula، 3DVista</li>
+          <li><strong>التكلفة:</strong> الكاميرا حوالي ١٥٠٠-٣٠٠٠ ريال، الاشتراك في Matterport ٧٥ دولار/شهر</li>
+          <li><strong>وقت التصوير:</strong> ٣٠-٤٥ دقيقة لشقة، ساعة لفيلا</li>
+        </ul>
+
+        <h3>صوت الفيديو</h3>
+        <ul>
+          <li>سجّل في وقت هادئ (تجنّب الصباح المبكر مع ضجيج الشارع)</li>
+          <li>أوقف المكيف وأجهزة الضجيج أثناء التصوير</li>
+          <li>استخدم ميكروفون خارجي (Lavalier) إذا كنت تتحدث</li>
+          <li>إذا لم يكن لديك ميكروفون جيد، استخدم موسيقى وأخفِ الصوت الأصلي</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الخامس: التحرير والمعالجة</h2>
+        <p>التحرير الجيد لا يعني "فبركة" العقار — يعني إبراز جماله الحقيقي وتصحيح ما أفسدته الكاميرا.</p>
+
+        <h3>أدوات التحرير المجانية والمدفوعة</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">Snapseed (مجاني — جوال):</strong> الأفضل للمبتدئين — تحرير سريع للصور</li>
+          <li><strong style="color:var(--gold-light)">Lightroom Mobile (مجاني/مدفوع):</strong> احترافي، فلاتر جاهزة عقارية</li>
+          <li><strong style="color:var(--gold-light)">Photoshop Express (مجاني):</strong> لإزالة العناصر المزعجة</li>
+          <li><strong style="color:var(--gold-light)">VSCO (مجاني/مدفوع):</strong> فلاتر جميلة للعقار الفاخر</li>
+          <li><strong style="color:var(--gold-light)">CapCut (مجاني):</strong> للفيديوهات القصيرة والريلز</li>
+          <li><strong style="color:var(--gold-light)">DaVinci Resolve (مجاني):</strong> تحرير فيديو احترافي للحاسوب</li>
+        </ul>
+
+        <h3>التعديلات الأساسية لكل صورة عقارية</h3>
+        <ul>
+          <li><strong>السطوع (Brightness):</strong> +١٠ إلى +٣٠ — معظم الصور تكون أغمق مما يجب</li>
+          <li><strong>التباين (Contrast):</strong> +٥ إلى +١٥ — يبرز التفاصيل</li>
+          <li><strong>الظلال (Shadows):</strong> +٢٠ إلى +٤٠ — يكشف ما في المناطق المظلمة</li>
+          <li><strong>الإبرازات (Highlights):</strong> -١٠ إلى -٢٥ — يحمي الأبواب والنوافذ من الانفجار البصري</li>
+          <li><strong>درجة الحرارة (Temperature):</strong> اضبط ليصبح اللون متوازناً (لا أصفر ولا أزرق)</li>
+          <li><strong>الحدّة (Sharpness):</strong> +١٥ إلى +٢٥ — يبرز التفاصيل المعمارية</li>
+          <li><strong>تصحيح المنظور:</strong> اضبط الجدران لتصبح عمودية ١٠٠٪</li>
+        </ul>
+
+        <h3>تحذيرات أخلاقية ⚠️</h3>
+        <ul>
+          <li>لا تستخدم AI لإضافة عناصر غير موجودة (أشجار وهمية، أثاث غير قائم)</li>
+          <li>لا تغيّر لون الجدران أو الأرضيات (مخالف لقوانين بيوت وعقار)</li>
+          <li>لا تحذف عيوباً ظاهرة (شقوق، رطوبة) — هذا يعتبر تضليلاً</li>
+          <li>يُسمح فقط بـ: تحسين الإضاءة، تصحيح المنظور، إزالة عناصر مؤقتة (سيارة في الشارع)</li>
+        </ul>
+
+        <h3>نصيحة احترافية 💡</h3>
+        <p style="background:rgba(201,168,76,.08);border-right:3px solid var(--gold);padding:.8rem 1rem;border-radius:0 8px 8px 0;">
+          أنشئ "Preset" واحد في Lightroom يطبّق نفس التعديلات على جميع صورك. هذا يوفر لك ٨٠٪ من الوقت ويحافظ على هوية بصرية موحّدة لجميع إعلاناتك.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h2>🎯 تمارين عملية</h2>
+        <div class="exercise-box">
+          <h4>التمرين الأول: التصوير الأساسي</h4>
+          <p>صوّر شقة كاملة (يمكن أن تكون شقتك أو شقة قريب). التزم بالقواعد التالية:</p>
+          <ul>
+            <li>التزم بقاعدة الزاوية ٣/٤ في كل غرفة</li>
+            <li>التزم بارتفاع الكاميرا الموصى به</li>
+            <li>صوّر بين الساعة ١٠ صباحاً و ٢ ظهراً</li>
+            <li>التقط ١٥ صورة على الأقل بالترتيب الصحيح</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثاني: التحرير</h4>
+          <p>حمّل تطبيق Snapseed أو Lightroom Mobile. عدّل ٥ صور من تمرينك الأول:</p>
+          <ul>
+            <li>اضبط السطوع والتباين والظلال</li>
+            <li>صحّح المنظور (الجدران عمودية)</li>
+            <li>اضبط درجة الحرارة (لا أصفر ولا أزرق)</li>
+            <li>قارن قبل وبعد — احتفظ بالنسختين</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثالث: فيديو قصير</h4>
+          <p>باستخدام تطبيق CapCut، اصنع فيديو ٣٠ ثانية للعقار:</p>
+          <ul>
+            <li>ابدأ بالواجهة الخارجية</li>
+            <li>اعرض ٥-٧ لقطات للداخل (٣-٥ ثوانٍ لكل لقطة)</li>
+            <li>أضف موسيقى Royalty-free من مكتبة CapCut</li>
+            <li>أضف نصوصاً تشير إلى المساحة والميزات</li>
+            <li>أنهِ بمعلومات التواصل</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📚 مصادر ومراجع موثوقة</h2>
+        <h3>أدوات التصوير والتحرير الرسمية</h3>
+        <ul class="ref-list">
+          <li><a href="https://snapseed.online" target="_blank">تطبيق Snapseed من Google</a></li>
+          <li><a href="https://www.adobe.com/products/photoshop-lightroom.html" target="_blank">Adobe Lightroom الرسمي</a></li>
+          <li><a href="https://www.capcut.com" target="_blank">CapCut لتحرير الفيديو</a></li>
+          <li><a href="https://www.matterport.com" target="_blank">Matterport للجولات الافتراضية</a></li>
+          <li><a href="https://www.kuula.co" target="_blank">Kuula منصة الجولات ٣٦٠°</a></li>
+        </ul>
+        <h3>مكتبات موسيقى مجانية للفيديو</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.youtube.com/audiolibrary" target="_blank">مكتبة الصوتيات من يوتيوب</a></li>
+          <li><a href="https://pixabay.com/music/" target="_blank">Pixabay Music — موسيقى مجانية</a></li>
+          <li><a href="https://www.epidemicsound.com" target="_blank">Epidemic Sound (مدفوع)</a></li>
+        </ul>
+        <h3>قنوات يوتيوب موصى بها</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.youtube.com/results?search_query=التصوير+العقاري+بالجوال" target="_blank">التصوير العقاري بالجوال — نتائج البحث</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=real+estate+photography+tutorial+arabic" target="_blank">دروس التصوير العقاري بالعربية</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=Lightroom+Mobile+شرح+بالعربي" target="_blank">شرح Lightroom Mobile بالعربية</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=virtual+tour+real+estate+matterport" target="_blank">الجولات الافتراضية في العقار</a></li>
+        </ul>
+        <h3>مراجع أكاديمية</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.nar.realtor" target="_blank">National Association of Realtors — أبحاث التصوير العقاري</a></li>
+          <li><a href="https://helpx.adobe.com/lightroom-cc/tutorials.html" target="_blank">دروس Adobe الرسمية للتحرير</a></li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🧠 اختبار الوحدة الثالثة</h2>
+        <p style="margin-bottom:1.2rem;">السؤال الأول: ما هو الوقت المثالي لتصوير الواجهات الخارجية؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)">
+          <span class="quiz-letter">أ</span> الظهيرة (١٢ ظهراً)
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 1)">
+          <span class="quiz-letter">ب</span> الساعة الذهبية قبل الغروب
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)">
+          <span class="quiz-letter">ج</span> منتصف الليل بالفلاش
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)">
+          <span class="quiz-letter">د</span> أي وقت لا يفرق
+        </div>
+        <div id="quizFeedback1" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثاني: ما هي قاعدة الزاوية المثالية لتصوير غرفة؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)">
+          <span class="quiz-letter">أ</span> الوقوف في المنتصف وتصوير الجدران
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 2)">
+          <span class="quiz-letter">ب</span> الوقوف في الزاوية وتصوير قطرياً (٣/٤)
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)">
+          <span class="quiz-letter">ج</span> التصوير من السقف
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)">
+          <span class="quiz-letter">د</span> تصوير الباب فقط
+        </div>
+        <div id="quizFeedback2" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثالث: ما الزيادة المتوقعة في الاستفسارات عند إضافة فيديو للإعلان؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)">
+          <span class="quiz-letter">أ</span> ١٠٪ تقريباً
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)">
+          <span class="quiz-letter">ب</span> ٥٠٪ تقريباً
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 3)">
+          <span class="quiz-letter">ج</span> ٤٠٣٪ تقريباً
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)">
+          <span class="quiz-letter">د</span> لا فرق
+        </div>
+        <div id="quizFeedback3" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الرابع: أي من هذه التعديلات يعتبر مخالفاً ومضللاً؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)">
+          <span class="quiz-letter">أ</span> رفع السطوع وتصحيح المنظور
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)">
+          <span class="quiz-letter">ب</span> إزالة سيارة في الشارع الخارجي
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 4)">
+          <span class="quiz-letter">ج</span> إخفاء شقوق وآثار رطوبة في الجدار
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)">
+          <span class="quiz-letter">د</span> ضبط درجة حرارة اللون
+        </div>
+        <div id="quizFeedback4" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+      </div>
+
+      <div class="next-unit">
+        <div>
+          <h3>الوحدة التالية 🚀</h3>
+          <p>كتابة الإعلانات العقارية — العناوين الجاذبة، أوصاف SEO، وعبارات تحوّل القارئ إلى عميل</p>
+        </div>
+        <a href="unit-4.html" class="btn-next">التالي ←</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <div class="lessons-sidebar">
+      <div class="sidebar-title">📚 دروس الوحدة</div>
+      <a class="lesson-item active" href="#">
+        <div class="lesson-num">١</div>
+        <div class="lesson-info"><strong>أساسيات التصوير</strong><span>⏱ ١٠ دقائق</span></div>
+        <span class="lesson-done">▶</span>
+      </a>
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٢</div>
+        <div class="lesson-info"><strong>الإضاءة الذهبية</strong><span>⏱ ١٢ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٣</div>
+        <div class="lesson-info"><strong>الزوايا والتكوين</strong><span>⏱ ١٥ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٤</div>
+        <div class="lesson-info"><strong>الفيديو والجولات</strong><span>⏱ ١٣ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٥</div>
+        <div class="lesson-info"><strong>التحرير والمعالجة</strong><span>⏱ ١٠ دقائق</span></div>
+      </a>
+
+      <div class="sidebar-title" style="margin-top:1rem;">🗂 وحدات الدورة</div>
+      <a class="lesson-item" href="unit-1.html"><div class="lesson-num">١</div><div class="lesson-info"><strong>مدخل سوق العقارات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-2.html"><div class="lesson-num">٢</div><div class="lesson-info"><strong>المنصات العقارية</strong><span>⏱ ٥٠ دقيقة</span></div></a>
+      <a class="lesson-item active" href="unit-3.html"><div class="lesson-num" style="background:var(--gold);color:var(--navy);">٣</div><div class="lesson-info"><strong>التصوير المرئي</strong><span>الوحدة الحالية</span></div></a>
+      <a class="lesson-item" href="unit-4.html"><div class="lesson-num">٤</div><div class="lesson-info"><strong>كتابة الإعلانات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-5.html"><div class="lesson-num">٥</div><div class="lesson-info"><strong>الإعلانات المدفوعة</strong><span>⏱ ٧٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-6.html"><div class="lesson-num">٦</div><div class="lesson-info"><strong>إدارة العملاء</strong><span>⏱ ٥٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-7.html"><div class="lesson-num">٧</div><div class="lesson-info"><strong>العمولات والعقود</strong><span>⏱ ٦٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-8.html"><div class="lesson-num">٨</div><div class="lesson-info"><strong>قياس الأداء</strong><span>⏱ ٤٠ دقيقة</span></div></a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function loadVideo() {
+  const videoId = 'YOUR_VIDEO_ID';
+  const placeholder = document.getElementById('videoPlaceholder');
+  const wrapper = placeholder.parentElement;
+  placeholder.style.display = 'none';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  wrapper.appendChild(iframe);
+}
+
+function checkAnswer(el, isCorrect, qNum) {
+  let siblings = [];
+  let node = el;
+  while (node.previousElementSibling && node.previousElementSibling.classList.contains('quiz-option')) {
+    node = node.previousElementSibling;
+  }
+  while (node && node.classList && node.classList.contains('quiz-option')) {
+    siblings.push(node);
+    node = node.nextElementSibling;
+  }
+  siblings.forEach(o => { o.classList.remove('correct','wrong'); o.onclick = null; });
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('quizFeedback' + qNum);
+  fb.style.display = 'block';
+  fb.style.color = isCorrect ? 'var(--accent)' : '#e74c3c';
+  fb.textContent = isCorrect ? '✓ إجابة صحيحة!' : '✗ الإجابة غير صحيحة، راجع الدرس مرة أخرى.';
+}
+</script>
+</body>
+</html>
