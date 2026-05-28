@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة ٨ — قياس الأداء والتحسين المستمر</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+    --navy: #0A1628; --navy-mid: #112240; --navy-light: #1C3461;
+    --white: #F8F5EF; --gray: #A0A8B8; --accent: #2ECC9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:var(--navy); color:var(--white); }
+  nav { position:sticky; top:0; z-index:100; background:rgba(10,22,40,.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(201,168,76,.15); padding:.9rem 2rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .nav-back { display:flex; align-items:center; gap:.5rem; color:var(--gold-light); text-decoration:none; font-size:.9rem; transition:color .2s; }
+  .nav-back:hover { color:var(--gold); }
+  .nav-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; }
+  .nav-progress { display:flex; align-items:center; gap:.5rem; font-size:.8rem; color:var(--gray); }
+  .progress-bar { width:100px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:100%; }
+  .unit-hero { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%), linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); padding:3rem 2rem 2rem; text-align:center; }
+  .unit-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); border-radius:50px; padding:.3rem 1rem; font-size:.78rem; color:var(--gold-light); margin-bottom:1rem; }
+  .unit-hero h1 { font-family:'Tajawal',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; margin-bottom:.8rem; }
+  .unit-hero h1 span { color:var(--gold); }
+  .unit-meta { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-top:1.2rem; font-size:.85rem; color:var(--gray); }
+  .unit-meta span { display:flex; align-items:center; gap:.4rem; }
+  .course-layout { max-width:1200px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 320px; gap:2rem; }
+  @media(max-width:900px){ .course-layout { grid-template-columns:1fr; } }
+  .video-wrapper { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:14px; border:1px solid rgba(201,168,76,.2); background:var(--navy-mid); }
+  .video-wrapper iframe { position:absolute; top:0; right:0; width:100%; height:100%; border:none; border-radius:14px; }
+  .video-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; background:var(--navy-mid); border-radius:14px; cursor:pointer; }
+  .play-btn { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; box-shadow:0 4px 20px rgba(201,168,76,.4); transition:transform .2s, box-shadow .2s; }
+  .play-btn:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(201,168,76,.5); }
+  .video-placeholder p { color:var(--gray); font-size:.9rem; }
+  .lessons-sidebar { display:flex; flex-direction:column; gap:.6rem; }
+  .sidebar-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; color:var(--gold); margin-bottom:.4rem; padding-bottom:.6rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .lesson-item { display:flex; align-items:center; gap:.8rem; background:var(--navy-mid); border:1px solid rgba(201,168,76,.1); border-radius:10px; padding:.8rem 1rem; cursor:pointer; transition:border-color .2s, background .2s; text-decoration:none; color:var(--white); }
+  .lesson-item:hover, .lesson-item.active { border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.07); }
+  .lesson-item.active .lesson-num { background:var(--gold); color:var(--navy); }
+  .lesson-num { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; }
+  .lesson-info { flex:1; }
+  .lesson-info strong { display:block; font-size:.88rem; margin-bottom:.15rem; }
+  .lesson-info span { font-size:.75rem; color:var(--gray); }
+  .lesson-done { color:var(--accent); font-size:.9rem; }
+  .content-section { margin-top:2rem; }
+  .content-card { background:var(--navy-mid); border:1px solid rgba(201,168,76,.12); border-radius:14px; padding:2rem; margin-bottom:1.5rem; }
+  .content-card h2 { font-family:'Tajawal',sans-serif; font-size:1.3rem; font-weight:800; color:var(--gold); margin-bottom:1.2rem; padding-bottom:.8rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .content-card h3 { font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin:1.2rem 0 .6rem; }
+  .content-card p { color:var(--gray); line-height:1.9; font-size:.95rem; margin-bottom:.8rem; }
+  .content-card ul { padding-right:1.2rem; }
+  .content-card ul li { color:var(--gray); line-height:1.8; font-size:.95rem; margin-bottom:.4rem; list-style:none; display:flex; align-items:flex-start; gap:.6rem; }
+  .content-card ul li::before { content:'◆'; color:var(--gold); font-size:.55rem; margin-top:.45rem; flex-shrink:0; }
+  .content-card a { color:var(--gold-light); text-decoration:none; border-bottom:1px dashed rgba(201,168,76,.4); }
+  .content-card a:hover { color:var(--gold); }
+  .key-points { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
+  .key-point { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15); border-radius:10px; padding:1rem; }
+  .key-point .icon { font-size:1.5rem; margin-bottom:.5rem; }
+  .key-point h4 { font-family:'Tajawal',sans-serif; font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+  .key-point p { font-size:.82rem; color:var(--gray); line-height:1.6; }
+  .quiz-option { background:var(--navy); border:1px solid rgba(201,168,76,.15); border-radius:8px; padding:.9rem 1.2rem; margin-bottom:.6rem; cursor:pointer; font-size:.92rem; transition:border-color .2s, background .2s; display:flex; align-items:center; gap:.8rem; }
+  .quiz-option:hover { border-color:var(--gold); background:rgba(201,168,76,.07); }
+  .quiz-option.correct { border-color:var(--accent); background:rgba(46,204,154,.1); }
+  .quiz-option.wrong { border-color:#e74c3c; background:rgba(231,76,60,.1); }
+  .quiz-letter { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; }
+  .next-unit { background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05)); border:1px solid rgba(201,168,76,.3); border-radius:14px; padding:1.8rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:1.5rem; }
+  .next-unit h3 { font-family:'Tajawal',sans-serif; font-size:1.1rem; font-weight:800; }
+  .next-unit p { color:var(--gray); font-size:.88rem; margin-top:.3rem; }
+  .btn-next { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800; padding:.8rem 1.8rem; border-radius:8px; border:none; cursor:pointer; font-size:.95rem; white-space:nowrap; text-decoration:none; transition:transform .2s, box-shadow .2s; display:inline-flex; align-items:center; gap:.5rem; }
+  .btn-next:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.35); }
+  .ref-list { list-style:none; padding:0; }
+  .ref-list li { padding:.6rem 0; border-bottom:1px solid rgba(201,168,76,.08); }
+  .ref-list li::before { content:'📎'; margin-left:.4rem; }
+  .exercise-box { background:rgba(46,204,154,.06); border-right:3px solid var(--accent); padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin-top:1rem; }
+  .exercise-box h4 { color:var(--accent); margin-bottom:.5rem; font-family:'Tajawal',sans-serif; }
+  .data-table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.88rem; }
+  .data-table th, .data-table td { padding:.7rem; border:1px solid rgba(201,168,76,.15); text-align:right; }
+  .data-table th { background:rgba(201,168,76,.1); color:var(--gold-light); font-family:'Tajawal',sans-serif; }
+  .data-table td { color:var(--gray); }
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem; margin:1rem 0; }
+  .kpi-card { background:linear-gradient(135deg, rgba(201,168,76,.08), rgba(201,168,76,.02)); border:1px solid rgba(201,168,76,.2); border-radius:10px; padding:1rem; text-align:center; }
+  .kpi-card .value { font-size:1.5rem; font-weight:800; color:var(--gold); font-family:'Tajawal',sans-serif; }
+  .kpi-card .label { font-size:.78rem; color:var(--gray); margin-top:.3rem; }
+  .completion-banner { background:linear-gradient(135deg, rgba(46,204,154,.15), rgba(46,204,154,.05)); border:2px solid rgba(46,204,154,.4); border-radius:14px; padding:2rem; text-align:center; margin-top:2rem; }
+  .completion-banner h2 { color:var(--accent); font-family:'Tajawal',sans-serif; font-size:1.6rem; margin-bottom:.5rem; }
+  .completion-banner p { color:var(--gray); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="real-estate-course.html" class="nav-back">← العودة للدورة</a>
+  <div class="nav-title">الوحدة ٨ — قياس الأداء</div>
+  <div class="nav-progress">
+    <span>٨/٨</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<div class="unit-hero">
+  <div class="unit-badge">📊 الوحدة الثامنة (الأخيرة)</div>
+  <h1>قياس الأداء <span>والتحسين المستمر</span></h1>
+  <div class="unit-meta">
+    <span>⏱ ٤٠ دقيقة</span>
+    <span>📹 ٥ دروس</span>
+    <span>📝 اختبار ختامي شامل</span>
+    <span>🎯 مستوى متقدم</span>
+  </div>
+</div>
+
+<div class="course-layout">
+  <div>
+
+    <div class="video-wrapper">
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn">▶</div>
+        <p>الدرس الأول: مؤشرات الأداء الرئيسية KPIs للوسيط العقاري</p>
+        <p style="font-size:.78rem;color:rgba(160,168,184,.6)">اضغط للتشغيل</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+
+      <div class="content-card">
+        <h2>📌 ما ستتعلمه في هذه الوحدة</h2>
+        <div class="key-points">
+          <div class="key-point"><div class="icon">📈</div><h4>KPIs الأساسية</h4><p>المؤشرات التي يجب أن تتبعها يومياً</p></div>
+          <div class="key-point"><div class="icon">🔍</div><h4>تحليلات المنصات</h4><p>قراءة بيانات بيوت، عقار، Meta و Google</p></div>
+          <div class="key-point"><div class="icon">💎</div><h4>حساب ROI لكل قناة</h4><p>اكتشاف قنواتك الرابحة والخاسرة</p></div>
+          <div class="key-point"><div class="icon">🚀</div><h4>التحسين المستمر</h4><p>كيف تتطور من شهر لآخر بمنهجية</p></div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الأول: مؤشرات الأداء الرئيسية (KPIs)</h2>
+        <p>قال بيتر دراكر: <strong style="color:var(--gold-light)">"ما لا يُقاس لا يُدار"</strong>. الوسيط الذي لا يقيس أرقامه يعمل بالحظ — والحظ لا يصنع نجاحاً مستداماً.</p>
+
+        <h3>المؤشرات النموذجية لوسيط محترف شهرياً</h3>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="value">٥٠+</div><div class="label">إعلان نشط</div></div>
+          <div class="kpi-card"><div class="value">٥٠٠٠+</div><div class="label">مشاهدة شهرية</div></div>
+          <div class="kpi-card"><div class="value">١٠٠+</div><div class="label">عميل محتمل</div></div>
+          <div class="kpi-card"><div class="value">٢٥+</div><div class="label">معاينة</div></div>
+          <div class="kpi-card"><div class="value">٥-٨</div><div class="label">صفقة مغلقة</div></div>
+          <div class="kpi-card"><div class="value">٢٠٪+</div><div class="label">معدل التحويل</div></div>
+        </div>
+
+        <h3>تصنيف KPIs حسب المرحلة</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">مؤشرات التسويق (Top-of-Funnel):</strong>
+            <ul style="margin-top:.4rem;">
+              <li>عدد الإعلانات النشطة</li>
+              <li>مشاهدات الإعلانات</li>
+              <li>معدل النقر CTR</li>
+              <li>تكلفة الألف ظهور CPM</li>
+              <li>تكلفة النقرة CPC</li>
+              <li>عدد المتابعين على السوشيال</li>
+            </ul>
+          </li>
+          <li><strong style="color:var(--gold-light)">مؤشرات التواصل (Middle-of-Funnel):</strong>
+            <ul style="margin-top:.4rem;">
+              <li>عدد العملاء المحتملين (Leads)</li>
+              <li>تكلفة العميل المحتمل CPL</li>
+              <li>عدد المكالمات المستقبلة</li>
+              <li>عدد رسائل الواتساب</li>
+              <li>زمن الرد المتوسط</li>
+            </ul>
+          </li>
+          <li><strong style="color:var(--gold-light)">مؤشرات المبيعات (Bottom-of-Funnel):</strong>
+            <ul style="margin-top:.4rem;">
+              <li>عدد المعاينات</li>
+              <li>معدل التحويل من Lead إلى معاينة</li>
+              <li>معدل التحويل من معاينة إلى صفقة</li>
+              <li>متوسط قيمة الصفقة</li>
+              <li>إجمالي العمولات</li>
+              <li>دورة المبيعات (Sales Cycle) بالأيام</li>
+            </ul>
+          </li>
+          <li><strong style="color:var(--gold-light)">مؤشرات العملاء (Retention):</strong>
+            <ul style="margin-top:.4rem;">
+              <li>معدل التوصيات (Referrals)</li>
+              <li>درجة رضى العميل (NPS)</li>
+              <li>التقييمات على Google والمنصات</li>
+              <li>تكرار العملاء (Returning Customers)</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h3>قاعدة الأرقام الذهبية</h3>
+        <ul>
+          <li>كل صفقة بيع ناجحة تحتاج ٢٠-٣٠ Lead في المتوسط</li>
+          <li>كل صفقة تأجير ناجحة تحتاج ٧-١٢ Lead</li>
+          <li>دورة بيع شقة: ٤٥-٩٠ يوماً من Lead إلى توقيع</li>
+          <li>دورة تأجير: ٧-٢١ يوماً</li>
+          <li>إذا كانت أرقامك خارج هذه المعدلات، راجع جودة الـ Lead أو مهارات الإغلاق</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثاني: تحليلات المنصات العقارية</h2>
+        <p>كل منصة عقارية تقدم لوحة تحكم بياناتها. تعلّم قراءتها = تعلّم لغة السوق.</p>
+
+        <h3>تحليلات Bayut Insights</h3>
+        <ul>
+          <li><strong>Listing Views:</strong> عدد المشاهدات لكل إعلان</li>
+          <li><strong>Inquiries:</strong> عدد الاستفسارات (مكالمات + رسائل)</li>
+          <li><strong>Conversion Rate:</strong> نسبة الاستفسارات للمشاهدات</li>
+          <li><strong>Time on Listing:</strong> متوسط الوقت الذي يقضيه الزائر على إعلانك</li>
+          <li><strong>Search Position:</strong> ترتيب ظهور إعلانك في نتائج البحث</li>
+          <li><strong>Demographic Insights:</strong> عمر، جنس، وموقع الزوار</li>
+        </ul>
+
+        <h3>تحليلات Aqar</h3>
+        <ul>
+          <li>المشاهدات اليومية والأسبوعية</li>
+          <li>عدد المكالمات (إذا فعّلت ميزة الاتصال المباشر)</li>
+          <li>معدل التفاعل</li>
+          <li>المقارنة مع متوسط نفس النوع في الحي</li>
+          <li>مدة بقاء الإعلان نشطاً</li>
+        </ul>
+
+        <h3>تحليلات Meta Ads Manager</h3>
+        <ul>
+          <li><strong>Reach:</strong> عدد الأشخاص الفريدين الذين رأوا إعلانك</li>
+          <li><strong>Impressions:</strong> إجمالي مرات الظهور</li>
+          <li><strong>Frequency:</strong> متوسط مرات ظهور الإعلان لنفس الشخص</li>
+          <li><strong>Link Clicks:</strong> الضغطات على رابط الإعلان</li>
+          <li><strong>CTR:</strong> النقرات ÷ الظهورات × ١٠٠</li>
+          <li><strong>Cost per Result:</strong> التكلفة لكل هدف (Lead، Message، Click)</li>
+          <li><strong>Ad Relevance Score:</strong> ١-١٠ — كلما زاد، انخفض السعر</li>
+        </ul>
+
+        <h3>تحليلات Google Ads</h3>
+        <ul>
+          <li><strong>Search Terms:</strong> الكلمات الفعلية التي بحث بها الناس ووصلوا لإعلانك</li>
+          <li><strong>Quality Score:</strong> ١-١٠ — جودة إعلانك مقارنة بالمنافسين</li>
+          <li><strong>Position:</strong> ترتيب ظهور إعلانك في صفحة Google</li>
+          <li><strong>Conversion Rate:</strong> نسبة من نقر ثم تحوّل لـ Lead</li>
+          <li><strong>Cost per Conversion:</strong> التكلفة لكل عميل محتمل</li>
+        </ul>
+
+        <h3>Google Analytics للوسطاء</h3>
+        <p>إذا كان لديك موقع، فإن Google Analytics ضروري. أهم التقارير:</p>
+        <ul>
+          <li><strong>Acquisition (المصدر):</strong> من أين يأتي زوارك؟ Search، Social، Direct، Referral</li>
+          <li><strong>Behavior (السلوك):</strong> ما الصفحات الأكثر مشاهدة؟ ما مدة الجلسة؟</li>
+          <li><strong>Conversions (التحويلات):</strong> كم زائر تحوّل لـ Lead؟ ما القناة الأفضل؟</li>
+          <li><strong>Real-Time (الوقت الحالي):</strong> من على موقعك الآن وماذا يفعل</li>
+        </ul>
+
+        <h3>اللوحة الموحدة (Dashboard)</h3>
+        <p>أنشئ لوحة موحدة في Google Sheets أو Looker Studio تجمع كل أرقامك:</p>
+        <table class="data-table">
+          <tr><th>القناة</th><th>الإنفاق</th><th>Leads</th><th>CPL</th><th>صفقات</th><th>عمولات</th><th>ROAS</th></tr>
+          <tr><td>Bayut</td><td>٥٠٠</td><td>٢٠</td><td>٢٥</td><td>٢</td><td>١٢٠٠٠</td><td>٢٤٠٠٪</td></tr>
+          <tr><td>Aqar</td><td>٣٠٠</td><td>١٥</td><td>٢٠</td><td>١</td><td>٥٠٠٠</td><td>١٦٦٦٪</td></tr>
+          <tr><td>Meta Ads</td><td>١٥٠٠</td><td>٤٥</td><td>٣٣</td><td>٢</td><td>١٠٠٠٠</td><td>٦٦٦٪</td></tr>
+          <tr><td>Google Ads</td><td>٩٠٠</td><td>١٢</td><td>٧٥</td><td>١</td><td>٨٠٠٠</td><td>٨٨٨٪</td></tr>
+        </table>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثالث: حساب ROI لكل قناة</h2>
+        <p>ROI (Return On Investment - العائد على الاستثمار) هو السؤال الأهم: <strong style="color:var(--gold-light)">"هل ما أنفقه يجلب لي أكثر مما يكلفني؟"</strong></p>
+
+        <h3>معادلة ROI الأساسية</h3>
+        <p style="background:rgba(201,168,76,.08);border-right:3px solid var(--gold);padding:.8rem 1rem;border-radius:0 8px 8px 0;font-weight:700;color:var(--white);">
+          ROI = (الإيرادات - التكاليف) ÷ التكاليف × ١٠٠٪
+        </p>
+
+        <h3>مثال تفصيلي</h3>
+        <p>أنفقت ٣,٠٠٠ ريال على Meta Ads هذا الشهر:</p>
+        <ul>
+          <li>الإنفاق: ٣,٠٠٠ ريال</li>
+          <li>أغلقت صفقتين بإجمالي عمولات ١٢,٠٠٠ ريال</li>
+          <li>ROI = (١٢,٠٠٠ - ٣,٠٠٠) ÷ ٣,٠٠٠ × ١٠٠٪ = <strong style="color:var(--accent);">٣٠٠٪</strong></li>
+        </ul>
+
+        <h3>تخصيص التكاليف بشكل دقيق</h3>
+        <p>التكلفة الحقيقية ليست فقط الإعلان. احسبها كاملةً:</p>
+        <ul>
+          <li>تكلفة الإعلانات المدفوعة (Meta، Google)</li>
+          <li>اشتراكات المنصات (بيوت، عقار)</li>
+          <li>برامج CRM واشتراكات الأدوات</li>
+          <li>تكلفة التصوير (إذا استأجرت مصور)</li>
+          <li>الوقود وتكاليف التنقل للمعاينات</li>
+          <li>رسوم الفال والتراخيص (مقسومة على الأشهر)</li>
+          <li>VAT المدفوعة (إذا كنت مسجلاً)</li>
+          <li>تكلفة الوقت (احسب وقتك بسعر ساعي)</li>
+        </ul>
+
+        <h3>مقارنة ROI بين القنوات</h3>
+        <p>القناة الأعلى ROI ليست بالضرورة الأفضل دائماً. لاحظ:</p>
+        <ul>
+          <li><strong>القناة بـ ROI عالٍ لكن حجم محدود:</strong> ضعها أولوية لكن لا تعتمد عليها فقط</li>
+          <li><strong>القناة بـ ROI متوسط وحجم كبير:</strong> هذه هي الرئيسية</li>
+          <li><strong>القناة بـ ROI منخفض:</strong> أوقفها أو حسّنها — لا تستمر بالخسارة</li>
+          <li><strong>القنوات الجديدة:</strong> أعطها ٣٠-٤٥ يوماً قبل الحكم</li>
+        </ul>
+
+        <h3>Lifetime Value (LTV) — قيمة العميل مدى الحياة</h3>
+        <p>عميل واحد لا يساوي صفقة واحدة. الوسيط الذكي يبني علاقات طويلة المدى.</p>
+        <ul>
+          <li>متوسط قيمة الصفقة × عدد الصفقات المتوقعة طوال حياة العميل</li>
+          <li>+ متوسط عدد التوصيات × قيمة كل توصية</li>
+          <li>مثال: عميل اشترى شقة بـ ٥٠٠ ألف (عمولة ١٠ آلاف) ثم أحال ٣ أصدقاء — LTV = ١٠ + (٣ × ١٠) = ٤٠ ألف ريال</li>
+        </ul>
+
+        <h3>قاعدة CAC : LTV</h3>
+        <p>تكلفة الاستحواذ (CAC) يجب أن تكون أقل بكثير من قيمة العميل (LTV):</p>
+        <ul>
+          <li>LTV/CAC = ١:١ → خسارة (الإيراد = المصروف)</li>
+          <li>LTV/CAC = ٣:١ → جيد</li>
+          <li>LTV/CAC = ٥:١ → ممتاز</li>
+          <li>LTV/CAC = ١٠:١+ → نموذج عمل ممتاز جداً</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الرابع: A/B Testing والتجارب المنهجية</h2>
+        <p>التحسين بدون تجربة منظّمة هو تخمين. اختبار A/B (المقارنة بين خيارين) هو الطريقة العلمية لاكتشاف ما يعمل.</p>
+
+        <h3>عناصر اختبار A/B الناجح</h3>
+        <ul>
+          <li><strong>غيّر متغيّراً واحداً فقط:</strong> العنوان أو الصورة أو CTA — وليس كل شيء</li>
+          <li><strong>اعرض كل نسخة لجمهور متشابه:</strong> نفس الميزانية، نفس الاستهداف، نفس الوقت</li>
+          <li><strong>أعطِ كل نسخة وقتاً كافياً:</strong> ٣-٧ أيام كحد أدنى</li>
+          <li><strong>اجمع عينة كافية:</strong> على الأقل ١٠٠٠ ظهور لكل نسخة</li>
+          <li><strong>قيس النتيجة الحقيقية:</strong> Leads وليس Likes</li>
+        </ul>
+
+        <h3>ما يمكن اختباره</h3>
+        <ul>
+          <li>عناوين الإعلانات (طول، صيغة، محفّز)</li>
+          <li>الصور (داخلي vs خارجي، صورة شخصية vs مجرّدة)</li>
+          <li>عبارات CTA (احجز vs اتصل vs استفسر)</li>
+          <li>السعر المعروض (بسعر مفصّل vs "اتصل للسعر")</li>
+          <li>أوقات النشر (صباح vs مساء)</li>
+          <li>طول الوصف (قصير vs طويل)</li>
+          <li>عدد الصور (٥ vs ١٥)</li>
+          <li>وجود فيديو من عدمه</li>
+        </ul>
+
+        <h3>سجلّ التجارب</h3>
+        <p>احتفظ بسجل في Excel لكل تجربة:</p>
+        <table class="data-table">
+          <tr><th>التاريخ</th><th>العنصر المختبر</th><th>النسخة A</th><th>النسخة B</th><th>الفائز</th><th>الفرق</th></tr>
+          <tr><td>٢٠٢٦/٠٢/٠١</td><td>العنوان</td><td>شقة فاخرة في الياسمين</td><td>شقة ٤ غرف بإطلالة — جاهزة للسكن</td><td>B</td><td>+٥٤٪ CTR</td></tr>
+          <tr><td>٢٠٢٦/٠٢/١٠</td><td>الصورة الرئيسية</td><td>صالة المعيشة</td><td>الواجهة الخارجية</td><td>A</td><td>+٢٢٪ نقرات</td></tr>
+          <tr><td>٢٠٢٦/٠٢/٢٠</td><td>CTA</td><td>اتصل الآن</td><td>احجز معاينتك</td><td>B</td><td>+٣١٪ Leads</td></tr>
+        </table>
+
+        <h3>دورة Plan-Do-Check-Act (PDCA)</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">Plan (خطط):</strong> ما الفرضية؟ ما الذي تتوقع أن يحسّن؟</li>
+          <li><strong style="color:var(--gold-light)">Do (نفّذ):</strong> اختبر النسختين</li>
+          <li><strong style="color:var(--gold-light)">Check (افحص):</strong> حلّل النتائج بأرقام</li>
+          <li><strong style="color:var(--gold-light)">Act (طبّق):</strong> اعتمد الفائز كخط أساس جديد، ثم اختبر متغيراً آخر</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الخامس: التحسين المستمر والنمو طويل المدى</h2>
+        <p>الوسيط الذي يبقى في مستوى أداء واحد يتراجع — لأن السوق يتطور وغيره يتقدم. التحسين المستمر هو مفتاح النمو.</p>
+
+        <h3>المراجعة الأسبوعية (Weekly Review)</h3>
+        <p>كل يوم جمعة، خصص ٣٠ دقيقة لمراجعة:</p>
+        <ul>
+          <li>كم Lead حصلت هذا الأسبوع؟</li>
+          <li>كم معاينة قمت بها؟</li>
+          <li>كم صفقة في الأنبوب (Pipeline)؟</li>
+          <li>أي قناة جاءت بأكبر عدد من Leads؟</li>
+          <li>أي عقار حصل على أكثر اهتمام؟ لماذا؟</li>
+          <li>أي صفقة ضاعت؟ لماذا؟ ماذا تعلّمت؟</li>
+        </ul>
+
+        <h3>المراجعة الشهرية (Monthly Review)</h3>
+        <p>في نهاية كل شهر:</p>
+        <ul>
+          <li>قارن KPIs بالشهر السابق وبهدفك الشهري</li>
+          <li>احسب ROI لكل قناة</li>
+          <li>راجع رضى العملاء (اتصل بـ ٥-١٠ عملاء)</li>
+          <li>حدّد ٣ تحسينات للشهر القادم</li>
+          <li>عدّل توزيع الميزانية</li>
+          <li>حدّث محتوى السوشيال ميديا والمنشورات</li>
+        </ul>
+
+        <h3>المراجعة الفصلية والسنوية</h3>
+        <ul>
+          <li>الفصلية (٣ أشهر): راجع الاستراتيجية الكبرى — هل قنواتك صحيحة؟ هل سوقك المستهدف صحيح؟</li>
+          <li>السنوية: ضع أهداف جديدة، طوّر مهاراتك، استثمر في معدات وأدوات</li>
+        </ul>
+
+        <h3>التطوير المهني المستمر (CPD)</h3>
+        <ul>
+          <li>اقرأ كتاباً عقارياً كل شهر</li>
+          <li>تابع ٣-٥ يوتيوبرز عقاريين متميزين</li>
+          <li>احضر مؤتمراً عقارياً سنوياً (Cityscape Riyadh، Cityscape Dubai)</li>
+          <li>تدرّب على مهارات جديدة (التصوير، المونتاج، الإعلانات الرقمية)</li>
+          <li>انضم لمجموعة وسطاء على واتساب لتبادل الخبرات</li>
+          <li>احصل على شهادات احترافية (Meta، Google، NAR)</li>
+        </ul>
+
+        <h3>بناء العلامة الشخصية (Personal Brand)</h3>
+        <ul>
+          <li>أنشئ محتوى تعليمياً (فيديوهات قصيرة، مقالات، إنفوغرافيك)</li>
+          <li>كن مرجعاً في حي/منطقة محددة (Niche Down)</li>
+          <li>طوّر هويتك البصرية (لون، شعار، خطوط)</li>
+          <li>اجمع شهادات العملاء (Testimonials)</li>
+          <li>انشر تقارير سوق محلية شهرية</li>
+          <li>كن نشيطاً في مجتمعك (مساجد، مدارس، أندية)</li>
+        </ul>
+
+        <h3>نصيحة ختامية 💎</h3>
+        <p style="background:rgba(201,168,76,.08);border-right:3px solid var(--gold);padding:1rem 1.2rem;border-radius:0 8px 8px 0;">
+          النجاح في الوساطة العقارية ليس سباقاً ١٠٠ متر — هو ماراثون. أفضل الوسطاء بنوا أعمالهم في ٥-١٠ سنوات من التحسين المستمر والعلاقات الموثوقة. لا تنخدع بقصص "كيف ربحت مليوناً في شهر" — ابنِ نظاماً قابلاً للتكرار، وكن صبوراً وذكياً في القياس والتحسين.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h2>🎯 تمارين عملية ختامية</h2>
+        <div class="exercise-box">
+          <h4>التمرين الأول: لوحة KPIs الشخصية</h4>
+          <p>أنشئ Google Sheet أو Excel فيه:</p>
+          <ul>
+            <li>أعمدة لكل قناة (Bayut، Aqar، Meta، Google، WhatsApp، إحالات)</li>
+            <li>صفوف لكل أسبوع من السنة</li>
+            <li>خانات: المشاهدات، Leads، معاينات، صفقات، إنفاق، عمولات، ROI</li>
+            <li>صيغة معدل التحويل وحساب ROI تلقائياً</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثاني: حساب ROI الفعلي</h4>
+          <p>إذا كنت قد قمت بحملات في الوحدات السابقة، احسب الآن:</p>
+          <ul>
+            <li>إجمالي إنفاقك الشهر الماضي</li>
+            <li>إجمالي عمولاتك (المتوقعة أو الفعلية)</li>
+            <li>ROI لكل قناة على حدة</li>
+            <li>أي قناة سترفع ميزانيتها؟ أيها ستخفّض؟</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثالث: تجربة A/B</h4>
+          <p>خطّط تجربة A/B واحدة بسيطة هذا الأسبوع:</p>
+          <ul>
+            <li>اختر متغيراً واحداً (عنوان، صورة، CTA)</li>
+            <li>أنشئ نسختين بنفس الميزانية والاستهداف</li>
+            <li>اتركهما يعملان ٧ أيام</li>
+            <li>قارن النتائج وسجّلها</li>
+            <li>طبّق الفائز كخط أساس</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الرابع: خطة ٩٠ يوماً</h4>
+          <p>اكتب خطة عمل لـ ٩٠ يوماً قادمة تتضمن:</p>
+          <ul>
+            <li>أهداف بأرقام: كم صفقة؟ كم Lead؟ كم عمولة؟</li>
+            <li>توزيع ميزانية شهرياً</li>
+            <li>قنواتك الرئيسية والثانوية</li>
+            <li>٥ تحسينات ستجربها</li>
+            <li>٣ مهارات ستطورها</li>
+            <li>كيف ستقيس النجاح</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الخامس (المشروع الختامي)</h4>
+          <p>طبّق كل ما تعلمته في الدورة على عقار حقيقي واحد، من الصفر إلى الإغلاق:</p>
+          <ul>
+            <li>وقّع اتفاقية تسويق مع المالك</li>
+            <li>صوّر العقار باحترافية</li>
+            <li>اكتب إعلاناً متكاملاً بأربع صيغ</li>
+            <li>انشره على ٤ قنوات على الأقل</li>
+            <li>أطلق حملة Meta أو Google</li>
+            <li>أدر العملاء وفقاً لنظام BANT</li>
+            <li>اقم معاينات وفاوض</li>
+            <li>أغلق الصفقة ووثّقها في إيجار أو كتابة العدل</li>
+            <li>اجمع تقييم العميل واطلب توصيات</li>
+            <li>حلّل النتائج وسجّل الدروس المستفادة</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📚 مصادر ومراجع نهائية</h2>
+        <h3>أدوات التحليل الموصى بها</h3>
+        <ul class="ref-list">
+          <li><a href="https://analytics.google.com" target="_blank">Google Analytics</a></li>
+          <li><a href="https://lookerstudio.google.com" target="_blank">Looker Studio — لوحات تحكم مجانية</a></li>
+          <li><a href="https://www.google.com/sheets/about/" target="_blank">Google Sheets</a></li>
+          <li><a href="https://airtable.com" target="_blank">Airtable — بدائل قاعدة بيانات مرنة</a></li>
+          <li><a href="https://www.notion.so" target="_blank">Notion — لإدارة المعرفة والمشاريع</a></li>
+        </ul>
+        <h3>تقارير عقارية موصى بها</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.bayut.com/mybayut/market-report/" target="_blank">تقارير سوق Bayut الفصلية</a></li>
+          <li><a href="https://www.knightfrank.com.sa/research" target="_blank">Knight Frank — أبحاث السوق العقاري</a></li>
+          <li><a href="https://www.jll-mena.com/en/trends-and-insights" target="_blank">JLL MENA — تحليلات السوق</a></li>
+          <li><a href="https://www.colliers.com/en-sa/research" target="_blank">Colliers Saudi — أبحاث عقارية</a></li>
+          <li><a href="https://rega.gov.sa" target="_blank">تقارير الهيئة العامة للعقار</a></li>
+        </ul>
+        <h3>كتب ختامية موصى بها</h3>
+        <ul class="ref-list">
+          <li>"Measure What Matters" — John Doerr (نظام OKRs)</li>
+          <li>"The Lean Startup" — Eric Ries (Build-Measure-Learn)</li>
+          <li>"Atomic Habits" — James Clear (التحسين ١٪ يومياً)</li>
+          <li>"The 4-Hour Workweek" — Tim Ferriss (إدارة الوقت)</li>
+        </ul>
+        <h3>قنوات يوتيوب موصى بها</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.youtube.com/results?search_query=Google+Analytics+شرح+بالعربي" target="_blank">Google Analytics شرح بالعربي</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=KPIs+للوسيط+العقاري" target="_blank">KPIs للوسيط العقاري</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=ROI+marketing+arabic" target="_blank">حساب ROI في التسويق</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=real+estate+business+growth" target="_blank">تطوير الأعمال العقارية</a></li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🧠 الاختبار الختامي للوحدة</h2>
+        <p style="margin-bottom:1.2rem;">السؤال الأول: ما المقولة الشهيرة لـ بيتر دراكر عن القياس؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">أ</span> "العميل دائماً على حق"</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 1)"><span class="quiz-letter">ب</span> "ما لا يُقاس لا يُدار"</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">ج</span> "الوقت هو المال"</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">د</span> "البيع هو فن"</div>
+        <div id="quizFeedback1" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثاني: كم Lead تحتاج عادةً لإغلاق صفقة بيع واحدة؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">أ</span> ١-٢ Lead</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">ب</span> ٥-٧ Leads</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 2)"><span class="quiz-letter">ج</span> ٢٠-٣٠ Lead</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">د</span> ١٠٠+ Lead</div>
+        <div id="quizFeedback2" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثالث: ما المعادلة الصحيحة لـ ROI؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">أ</span> الإيرادات ÷ الزبائن</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 3)"><span class="quiz-letter">ب</span> (الإيرادات - التكاليف) ÷ التكاليف × ١٠٠٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">ج</span> التكاليف ÷ Leads</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">د</span> العمولة × ٢</div>
+        <div id="quizFeedback3" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الرابع: ما النسبة الصحية لـ LTV : CAC؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">أ</span> ١:١</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">ب</span> ٢:١</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 4)"><span class="quiz-letter">ج</span> ٣:١ أو أعلى</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">د</span> ١:٥</div>
+        <div id="quizFeedback4" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الخامس: في اختبار A/B، ما القاعدة الأساسية؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">أ</span> اختبر كل شيء دفعة واحدة</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 5)"><span class="quiz-letter">ب</span> غيّر متغيّراً واحداً فقط في كل اختبار</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">ج</span> اعرض النسخ لجماهير مختلفة تماماً</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">د</span> أنهِ الاختبار خلال يوم واحد</div>
+        <div id="quizFeedback5" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال السادس: ماذا تعني PDCA؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 6)"><span class="quiz-letter">أ</span> Plan, Do, Check, Act</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 6)"><span class="quiz-letter">ب</span> Profit, Demand, Cost, Action</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 6)"><span class="quiz-letter">ج</span> اسم منصة عقارية</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 6)"><span class="quiz-letter">د</span> نظام محاسبي</div>
+        <div id="quizFeedback6" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال السابع: ما الأفضل للمراجعة الأسبوعية؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 7)"><span class="quiz-letter">أ</span> راجع كل ٣ أشهر فقط</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 7)"><span class="quiz-letter">ب</span> ٣٠ دقيقة كل يوم جمعة لتحليل الأداء</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 7)"><span class="quiz-letter">ج</span> لا داعي للمراجعة إذا كانت العمولات تأتي</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 7)"><span class="quiz-letter">د</span> راجع يومياً كل ٣ ساعات</div>
+        <div id="quizFeedback7" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثامن: ما الهدف الحقيقي من قياس KPIs؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 8)"><span class="quiz-letter">أ</span> فقط لإظهار أرقام جميلة</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 8)"><span class="quiz-letter">ب</span> لتعقيد العمل</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 8)"><span class="quiz-letter">ج</span> اتخاذ قرارات مبنية على بيانات وتحسين الأداء</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 8)"><span class="quiz-letter">د</span> مقارنة نفسك بالمنافسين فقط</div>
+        <div id="quizFeedback8" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+      </div>
+
+      <div class="completion-banner">
+        <h2>🎉 مبروك! لقد أكملت الدورة كاملةً</h2>
+        <p>أكملت ٨ وحدات من "أساسيات التسويق العقاري الرقمي وعمولات التأجير والبيع الإلكتروني"</p>
+        <p style="margin-top:.8rem;">الآن لديك الأساسيات لتبدأ رحلتك كوسيط عقاري رقمي محترف. التطبيق العملي هو ما يصنع الفارق — ابدأ بصفقتك الأولى هذا الأسبوع.</p>
+        <p style="margin-top:1rem;color:var(--gold);font-weight:700;">"النجاح في العقار = معرفة × تطبيق × صبر × تحسين مستمر"</p>
+      </div>
+
+      <div class="next-unit">
+        <div>
+          <h3>المشروع التطبيقي 🎯</h3>
+          <p>طبّق التمرين الختامي على عقار حقيقي وأرسل لنا قصة نجاحك — نشرنا أفضل الحالات في المجتمع</p>
+        </div>
+        <a href="real-estate-course.html" class="btn-next">العودة للدورة ←</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <div class="lessons-sidebar">
+      <div class="sidebar-title">📚 دروس الوحدة</div>
+      <a class="lesson-item active" href="#"><div class="lesson-num">١</div><div class="lesson-info"><strong>مؤشرات KPI الأساسية</strong><span>⏱ ٨ دقائق</span></div><span class="lesson-done">▶</span></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٢</div><div class="lesson-info"><strong>تحليلات المنصات</strong><span>⏱ ١٠ دقائق</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٣</div><div class="lesson-info"><strong>حساب ROI</strong><span>⏱ ٨ دقائق</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٤</div><div class="lesson-info"><strong>A/B Testing</strong><span>⏱ ٧ دقائق</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٥</div><div class="lesson-info"><strong>التحسين المستمر</strong><span>⏱ ٧ دقائق</span></div></a>
+
+      <div class="sidebar-title" style="margin-top:1rem;">🗂 وحدات الدورة</div>
+      <a class="lesson-item" href="unit-1.html"><div class="lesson-num">١</div><div class="lesson-info"><strong>مدخل سوق العقارات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-2.html"><div class="lesson-num">٢</div><div class="lesson-info"><strong>المنصات العقارية</strong><span>⏱ ٥٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-3.html"><div class="lesson-num">٣</div><div class="lesson-info"><strong>التصوير المرئي</strong><span>⏱ ٦٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-4.html"><div class="lesson-num">٤</div><div class="lesson-info"><strong>كتابة الإعلانات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-5.html"><div class="lesson-num">٥</div><div class="lesson-info"><strong>الإعلانات المدفوعة</strong><span>⏱ ٧٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-6.html"><div class="lesson-num">٦</div><div class="lesson-info"><strong>إدارة العملاء</strong><span>⏱ ٥٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-7.html"><div class="lesson-num">٧</div><div class="lesson-info"><strong>العمولات والعقود</strong><span>⏱ ٦٥ دقيقة</span></div></a>
+      <a class="lesson-item active" href="unit-8.html"><div class="lesson-num" style="background:var(--gold);color:var(--navy);">٨</div><div class="lesson-info"><strong>قياس الأداء</strong><span>الوحدة الحالية</span></div></a>
+    </div>
+  </div>
+</div>
+
+<script>
+function loadVideo() {
+  const videoId = 'YOUR_VIDEO_ID';
+  const placeholder = document.getElementById('videoPlaceholder');
+  const wrapper = placeholder.parentElement;
+  placeholder.style.display = 'none';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  wrapper.appendChild(iframe);
+}
+function checkAnswer(el, isCorrect, qNum) {
+  let siblings = [];
+  let node = el;
+  while (node.previousElementSibling && node.previousElementSibling.classList.contains('quiz-option')) { node = node.previousElementSibling; }
+  while (node && node.classList && node.classList.contains('quiz-option')) { siblings.push(node); node = node.nextElementSibling; }
+  siblings.forEach(o => { o.classList.remove('correct','wrong'); o.onclick = null; });
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('quizFeedback' + qNum);
+  fb.style.display = 'block';
+  fb.style.color = isCorrect ? 'var(--accent)' : '#e74c3c';
+  fb.textContent = isCorrect ? '✓ إجابة صحيحة!' : '✗ الإجابة غير صحيحة، راجع الدرس مرة أخرى.';
+}
+</script>
+</body>
+</html>
