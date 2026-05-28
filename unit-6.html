@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة ٦ — إدارة العملاء وإتمام الصفقة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+    --navy: #0A1628; --navy-mid: #112240; --navy-light: #1C3461;
+    --white: #F8F5EF; --gray: #A0A8B8; --accent: #2ECC9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:var(--navy); color:var(--white); }
+  nav { position:sticky; top:0; z-index:100; background:rgba(10,22,40,.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(201,168,76,.15); padding:.9rem 2rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .nav-back { display:flex; align-items:center; gap:.5rem; color:var(--gold-light); text-decoration:none; font-size:.9rem; transition:color .2s; }
+  .nav-back:hover { color:var(--gold); }
+  .nav-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; }
+  .nav-progress { display:flex; align-items:center; gap:.5rem; font-size:.8rem; color:var(--gray); }
+  .progress-bar { width:100px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:75%; }
+  .unit-hero { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%), linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); padding:3rem 2rem 2rem; text-align:center; }
+  .unit-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); border-radius:50px; padding:.3rem 1rem; font-size:.78rem; color:var(--gold-light); margin-bottom:1rem; }
+  .unit-hero h1 { font-family:'Tajawal',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; margin-bottom:.8rem; }
+  .unit-hero h1 span { color:var(--gold); }
+  .unit-meta { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-top:1.2rem; font-size:.85rem; color:var(--gray); }
+  .unit-meta span { display:flex; align-items:center; gap:.4rem; }
+  .course-layout { max-width:1200px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 320px; gap:2rem; }
+  @media(max-width:900px){ .course-layout { grid-template-columns:1fr; } }
+  .video-wrapper { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:14px; border:1px solid rgba(201,168,76,.2); background:var(--navy-mid); }
+  .video-wrapper iframe { position:absolute; top:0; right:0; width:100%; height:100%; border:none; border-radius:14px; }
+  .video-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; background:var(--navy-mid); border-radius:14px; cursor:pointer; }
+  .play-btn { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; box-shadow:0 4px 20px rgba(201,168,76,.4); transition:transform .2s, box-shadow .2s; }
+  .play-btn:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(201,168,76,.5); }
+  .video-placeholder p { color:var(--gray); font-size:.9rem; }
+  .lessons-sidebar { display:flex; flex-direction:column; gap:.6rem; }
+  .sidebar-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; color:var(--gold); margin-bottom:.4rem; padding-bottom:.6rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .lesson-item { display:flex; align-items:center; gap:.8rem; background:var(--navy-mid); border:1px solid rgba(201,168,76,.1); border-radius:10px; padding:.8rem 1rem; cursor:pointer; transition:border-color .2s, background .2s; text-decoration:none; color:var(--white); }
+  .lesson-item:hover, .lesson-item.active { border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.07); }
+  .lesson-item.active .lesson-num { background:var(--gold); color:var(--navy); }
+  .lesson-num { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; }
+  .lesson-info { flex:1; }
+  .lesson-info strong { display:block; font-size:.88rem; margin-bottom:.15rem; }
+  .lesson-info span { font-size:.75rem; color:var(--gray); }
+  .lesson-done { color:var(--accent); font-size:.9rem; }
+  .content-section { margin-top:2rem; }
+  .content-card { background:var(--navy-mid); border:1px solid rgba(201,168,76,.12); border-radius:14px; padding:2rem; margin-bottom:1.5rem; }
+  .content-card h2 { font-family:'Tajawal',sans-serif; font-size:1.3rem; font-weight:800; color:var(--gold); margin-bottom:1.2rem; padding-bottom:.8rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .content-card h3 { font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin:1.2rem 0 .6rem; }
+  .content-card p { color:var(--gray); line-height:1.9; font-size:.95rem; margin-bottom:.8rem; }
+  .content-card ul { padding-right:1.2rem; }
+  .content-card ul li { color:var(--gray); line-height:1.8; font-size:.95rem; margin-bottom:.4rem; list-style:none; display:flex; align-items:flex-start; gap:.6rem; }
+  .content-card ul li::before { content:'◆'; color:var(--gold); font-size:.55rem; margin-top:.45rem; flex-shrink:0; }
+  .content-card a { color:var(--gold-light); text-decoration:none; border-bottom:1px dashed rgba(201,168,76,.4); }
+  .content-card a:hover { color:var(--gold); }
+  .key-points { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
+  .key-point { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15); border-radius:10px; padding:1rem; }
+  .key-point .icon { font-size:1.5rem; margin-bottom:.5rem; }
+  .key-point h4 { font-family:'Tajawal',sans-serif; font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+  .key-point p { font-size:.82rem; color:var(--gray); line-height:1.6; }
+  .quiz-option { background:var(--navy); border:1px solid rgba(201,168,76,.15); border-radius:8px; padding:.9rem 1.2rem; margin-bottom:.6rem; cursor:pointer; font-size:.92rem; transition:border-color .2s, background .2s; display:flex; align-items:center; gap:.8rem; }
+  .quiz-option:hover { border-color:var(--gold); background:rgba(201,168,76,.07); }
+  .quiz-option.correct { border-color:var(--accent); background:rgba(46,204,154,.1); }
+  .quiz-option.wrong { border-color:#e74c3c; background:rgba(231,76,60,.1); }
+  .quiz-letter { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; }
+  .next-unit { background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05)); border:1px solid rgba(201,168,76,.3); border-radius:14px; padding:1.8rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:1.5rem; }
+  .next-unit h3 { font-family:'Tajawal',sans-serif; font-size:1.1rem; font-weight:800; }
+  .next-unit p { color:var(--gray); font-size:.88rem; margin-top:.3rem; }
+  .btn-next { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800; padding:.8rem 1.8rem; border-radius:8px; border:none; cursor:pointer; font-size:.95rem; white-space:nowrap; text-decoration:none; transition:transform .2s, box-shadow .2s; display:inline-flex; align-items:center; gap:.5rem; }
+  .btn-next:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.35); }
+  .ref-list { list-style:none; padding:0; }
+  .ref-list li { padding:.6rem 0; border-bottom:1px solid rgba(201,168,76,.08); }
+  .ref-list li::before { content:'📎'; margin-left:.4rem; }
+  .exercise-box { background:rgba(46,204,154,.06); border-right:3px solid var(--accent); padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin-top:1rem; }
+  .exercise-box h4 { color:var(--accent); margin-bottom:.5rem; font-family:'Tajawal',sans-serif; }
+  .dialog-box { background:rgba(201,168,76,.05); border:1px solid rgba(201,168,76,.2); border-radius:8px; padding:1rem; margin:.5rem 0; }
+  .dialog-customer { color:var(--gold-light); }
+  .dialog-agent { color:var(--accent); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="real-estate-course.html" class="nav-back">← العودة للدورة</a>
+  <div class="nav-title">الوحدة ٦ — إدارة العملاء</div>
+  <div class="nav-progress">
+    <span>٦/٨</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<div class="unit-hero">
+  <div class="unit-badge">🤝 الوحدة السادسة</div>
+  <h1>إدارة العملاء <span>وإتمام الصفقة</span></h1>
+  <div class="unit-meta">
+    <span>⏱ ٥٥ دقيقة</span>
+    <span>📹 ٥ دروس</span>
+    <span>📝 سيناريوهات تفاوض</span>
+    <span>🎯 مستوى متوسط</span>
+  </div>
+</div>
+
+<div class="course-layout">
+  <div>
+
+    <div class="video-wrapper">
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn">▶</div>
+        <p>الدرس الأول: تأهيل العميل المحتمل وتصنيفه</p>
+        <p style="font-size:.78rem;color:rgba(160,168,184,.6)">اضغط للتشغيل</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+
+      <div class="content-card">
+        <h2>📌 ما ستتعلمه في هذه الوحدة</h2>
+        <div class="key-points">
+          <div class="key-point"><div class="icon">🎯</div><h4>تأهيل العميل</h4><p>التمييز بين العميل الجاد والمتفرّج</p></div>
+          <div class="key-point"><div class="icon">🏠</div><h4>إدارة المعاينة</h4><p>كيف تجعل المعاينة تجربة مقنعة</p></div>
+          <div class="key-point"><div class="icon">💬</div><h4>التفاوض الذكي</h4><p>تقنيات الوصول لاتفاق يرضي الطرفين</p></div>
+          <div class="key-point"><div class="icon">🛡</div><h4>إغلاق الصفقة</h4><p>الانتقال من "أفكر" إلى "أوافق"</p></div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الأول: تأهيل العميل المحتمل (Lead Qualification)</h2>
+        <p>أكبر هدر للوقت في العقار هو متابعة عملاء غير جادين. الإحصائيات تقول إن <strong style="color:var(--gold-light)">٧٠٪ من الـ Leads ليسوا مستعدين للشراء فوراً</strong> — ١٠٪ فقط في مرحلة قرار، و٢٠٪ في مرحلة تفكير، و٧٠٪ مجرد فضوليين.</p>
+
+        <h3>صيغة BANT للتأهيل</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">B — Budget (الميزانية):</strong> هل لدى العميل القدرة المالية؟</li>
+          <li><strong style="color:var(--gold-light)">A — Authority (الصلاحية):</strong> هل هو من يقرر؟ (أم زوجته؟ أبوه؟)</li>
+          <li><strong style="color:var(--gold-light)">N — Need (الحاجة):</strong> ما درجة احتياجه الفعلي؟</li>
+          <li><strong style="color:var(--gold-light)">T — Timing (التوقيت):</strong> متى يخطط للانتقال أو الشراء؟</li>
+        </ul>
+
+        <h3>أسئلة التأهيل الذكية</h3>
+        <p>اطرح هذه الأسئلة في أول مكالمة بترتيب متدرج:</p>
+        <ul>
+          <li>"للسكن أم للاستثمار؟" (يكشف النية)</li>
+          <li>"عندك ميزانية محددة؟ أم ما زلت تبحث؟" (يكشف الجدية)</li>
+          <li>"تدفع كاش أم بتمويل بنكي؟" (يكشف الميزانية الفعلية)</li>
+          <li>"متى تخطط للانتقال/الشراء؟" (يكشف التوقيت)</li>
+          <li>"شاهدت عقارات أخرى؟ ما أعجبك وما لم يعجبك فيها؟" (يكشف المرحلة)</li>
+          <li>"هل القرار شخصي أم نحتاج زوجتك/والدك يشاهد؟" (يكشف الصلاحية)</li>
+        </ul>
+
+        <h3>تصنيف العملاء (نظام ABC)</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">A — ساخن (Hot):</strong> ميزانية + توقيت ٣٠ يوم + قرار شخصي = اتصل خلال ٢٤ ساعة وحدد معاينة فوراً</li>
+          <li><strong style="color:var(--gold-light)">B — دافئ (Warm):</strong> ميزانية + توقيت ٣ أشهر = متابعة أسبوعية، أرسل خيارات جديدة</li>
+          <li><strong style="color:var(--gold-light)">C — بارد (Cold):</strong> توقيت ٦+ شهور = أضفه لقائمة بريدية، متابعة شهرية</li>
+          <li><strong style="color:var(--gold-light)">D — استبعاد:</strong> غير جاد، يبحث للترفيه، رفض إعطاء معلومات</li>
+        </ul>
+
+        <h3>أدوات إدارة العملاء (CRM)</h3>
+        <ul>
+          <li><strong>Excel/Google Sheets:</strong> للمبتدئ — بسيط ومجاني</li>
+          <li><strong>HubSpot CRM:</strong> مجاني، احترافي، يتكامل مع الإيميل والواتساب</li>
+          <li><strong>Zoho CRM:</strong> مجاني حتى ٣ مستخدمين</li>
+          <li><strong>Bitrix24:</strong> ميزات تواصل ممتازة</li>
+          <li><strong>Pipedrive:</strong> مدفوع، الأفضل لتتبع الصفقات</li>
+          <li><strong>تطبيقات عقارية عربية:</strong> "موندو" — مخصصة للسوق العقاري الخليجي</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثاني: ترتيب وإدارة المعاينة</h2>
+        <p>المعاينة هي اللحظة الذهبية. ٧٠٪ من قرارات شراء العقار تُحسم خلال أول ٩٠ ثانية من دخول المشتري.</p>
+
+        <h3>قبل المعاينة (Pre-visit)</h3>
+        <ul>
+          <li>أكّد الموعد بـ ٢٤ ساعة مسبقاً عبر الواتساب</li>
+          <li>أرسل خريطة الموقع + رقم الاتصال + هوية بنفسك</li>
+          <li>زر العقار قبل العميل بـ ٣٠ دقيقة:
+            <ul style="margin-top:.4rem;">
+              <li>افتح الستائر</li>
+              <li>شغّل الإضاءة في كل الغرف</li>
+              <li>اضبط المكيف على درجة مريحة</li>
+              <li>أطفئ روائح كريهة (ضع معطر خفيف)</li>
+              <li>تأكد من النظافة</li>
+            </ul>
+          </li>
+          <li>حضّر ملف للعميل: مواصفات، صور، خريطة، أسعار مشابهة</li>
+        </ul>
+
+        <h3>أثناء المعاينة (During)</h3>
+        <ul>
+          <li><strong>التحية الذكية:</strong> ابتسامة + سلام + اسأل "كيف كانت الطريق؟"</li>
+          <li><strong>اتبع مسار العميل، لا تسبقه:</strong> دع العميل يقود وأنت تفسّر</li>
+          <li><strong>اشرح حسب نوع العميل:</strong>
+            <ul style="margin-top:.4rem;">
+              <li>للعائلة: ركّز على المساحات، الأمان، المدارس القريبة</li>
+              <li>للاستثمار: ركّز على العائد، الحي الصاعد، المرافق</li>
+              <li>للعزّاب: ركّز على الموقع، الخصوصية، التشطيب</li>
+            </ul>
+          </li>
+          <li><strong>لا تتكلم كثيراً:</strong> دع العقار يبيع نفسه — اصمت أحياناً</li>
+          <li><strong>لاحظ لغة الجسد:</strong>
+            <ul style="margin-top:.4rem;">
+              <li>التقاط صور = اهتمام عالٍ</li>
+              <li>قياس الغرف يدوياً = اهتمام جاد</li>
+              <li>أسئلة عن الفواتير والصيانة = نية شراء قوية</li>
+              <li>نظرات للساعة = ضجر، اختصر</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h3>بعد المعاينة (Post-visit)</h3>
+        <ul>
+          <li>خلال ٣٠ دقيقة: أرسل واتساب "شكراً على وقتك — هذه ملخص المواصفات والسعر"</li>
+          <li>خلال ٢٤ ساعة: اتصل لتعرف الانطباع</li>
+          <li>خلال ٣ أيام: إذا لم يرد، أرسل خياراً ثانياً مشابهاً</li>
+          <li>خلال أسبوع: تواصل بـ "هل ما زلت تفكر؟ هل لديك ملاحظات؟"</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثالث: مهارات التفاوض العقاري</h2>
+        <p>التفاوض ليس مواجهة — هو محادثة منظّمة للوصول لاتفاق يربح فيه الطرفان. الوسيط المحترف هو الذي يصنع "صفقة" حيث يشعر البائع والمشتري كلاهما بأنه ربح.</p>
+
+        <h3>مبادئ التفاوض الذهبية</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">اجمع المعلومات أولاً:</strong> اعرف الحد الأدنى للبائع، السقف للمشتري</li>
+          <li><strong style="color:var(--gold-light)">لا تكشف ورقتك مبكراً:</strong> "سأناقش هذا مع المالك" تعطيك مساحة</li>
+          <li><strong style="color:var(--gold-light)">اربط السعر بالقيمة:</strong> "العقار يساوي ٥٠٠ ألف لأن... [الأسباب]"</li>
+          <li><strong style="color:var(--gold-light)">استخدم الصمت:</strong> بعد عرض السعر، اصمت ٧-١٠ ثوانٍ</li>
+          <li><strong style="color:var(--gold-light)">قدّم بدائل:</strong> "إذا لم نتفق على السعر، نقدر نتفق على شروط الدفع"</li>
+        </ul>
+
+        <h3>تكتيكات تفاوضية فعّالة</h3>
+        <ul>
+          <li><strong>تكتيك "السلطة الأعلى":</strong> "السعر يحدده المالك ولا أملك صلاحية أقل من X"</li>
+          <li><strong>تكتيك "الحوافز غير السعرية":</strong> "إذا أضفت الأثاث، أقدر أوافق على ٤٩٠ ألف"</li>
+          <li><strong>تكتيك "الأرضية الموثقة":</strong> اعرض إعلانات منافسة لإثبات السعر العادل</li>
+          <li><strong>تكتيك "الإطار الزمني":</strong> "العرض ساري ٤٨ ساعة فقط"</li>
+          <li><strong>تكتيك "الفائدة المتبادلة":</strong> "إذا قبلت السعر، أوصلك بمحامي يخصم ٥٠٪ على العقد"</li>
+        </ul>
+
+        <h3>مثال على حوار تفاوضي ناجح</h3>
+        <div class="dialog-box">
+          <p class="dialog-customer"><strong>العميل:</strong> "السعر ٤٥٠ ألف؟ كثير، عارض عليّ بـ ٤٠٠"</p>
+          <p class="dialog-agent"><strong>الوسيط:</strong> "أفهم رغبتك — ٤٠٠ مبلغ جيد، لكن دعني أوضح لماذا يستحق ٤٥٠..."<br>
+          [يذكر ٣ نقاط: الموقع، التشطيب، السوق المشابه]<br>
+          "ما رأيك أكلّم المالك على ٤٣٠ ألف، مع شرط دفعة مقدمة ١٠٪؟ سيكون عرضاً قوياً صعب رفضه."</p>
+          <p class="dialog-customer"><strong>العميل:</strong> "حسناً، حاول معه على ٤٢٠"</p>
+          <p class="dialog-agent"><strong>الوسيط:</strong> "إذا قبل المالك بـ ٤٣٥، تتفق معي اليوم؟ فقط لأعرف أين نقف."</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الرابع: التعامل مع الاعتراضات</h2>
+        <p>الاعتراض ليس "لا" — هو "اشرح لي أكثر". العميل الذي يعترض هو في الواقع مهتم.</p>
+
+        <h3>أكثر ٥ اعتراضات شائعة وكيف تردّ</h3>
+
+        <h3>الاعتراض ١: "السعر غالي"</h3>
+        <p><strong style="color:var(--gold-light)">الرد الذكي:</strong> "أفهمك تماماً. دعني أسأل — مقارنة بماذا تجد السعر غالٍ؟" ثم استمع. غالباً السبب الحقيقي ليس السعر، بل قيمة العقار غير واضحة. أعد توضيح القيمة.</p>
+
+        <h3>الاعتراض ٢: "أحتاج أفكر"</h3>
+        <p><strong style="color:var(--gold-light)">الرد الذكي:</strong> "بالتأكيد، قرار مهم. ما النقطة المحددة التي تريد التفكير فيها؟ هل هو السعر؟ التوقيت؟ شيء آخر؟" — الهدف اكتشاف الاعتراض الحقيقي المختبئ.</p>
+
+        <h3>الاعتراض ٣: "أريد مشاورة زوجتي/والدي"</h3>
+        <p><strong style="color:var(--gold-light)">الرد الذكي:</strong> "ممتاز، قرار يخص العائلة. ما رأيك نحدد معاينة عائلية لاحقاً هذا الأسبوع؟ كثيراً ما يكون الانطباع المباشر أهم من الوصف." — لا تترك القرار للأطراف الغائبة.</p>
+
+        <h3>الاعتراض ٤: "وجدت أرخص"</h3>
+        <p><strong style="color:var(--gold-light)">الرد الذكي:</strong> "هذا ممكن، السوق فيه خيارات. هل أقدر أشاهد العقار الآخر معك أو على الورق؟ غالباً يكون فرق السعر له سبب — التشطيب، الموقع، التوصيلات. مقارنة دقيقة تحميك من غلطة كبيرة."</p>
+
+        <h3>الاعتراض ٥: "ما أنا متأكد"</h3>
+        <p><strong style="color:var(--gold-light)">الرد الذكي:</strong> "أفهم. أن تكون متأكداً ١٠٠٪ صعب في أي قرار كبير. ما النسبة المئوية لتأكدك الآن؟ ٧٠٪؟ ٨٠٪؟ ما الذي يمنعك من الوصول لـ ١٠٠٪؟" — تحويل المشاعر إلى أرقام يساعد في النقاش.</p>
+
+        <h3>قاعدة "اعزل، أكّد، أعد"</h3>
+        <ul>
+          <li><strong>اعزل:</strong> "هل هذا هو السبب الوحيد المانع؟"</li>
+          <li><strong>أكّد:</strong> "إذا حللت لك هذه النقطة، تكمل الصفقة؟"</li>
+          <li><strong>أعد:</strong> اعرض حلاً محدداً</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الخامس: إغلاق الصفقة (Closing)</h2>
+        <p>الإغلاق ليس "خداعاً للعميل" — هو مساعدة في اتخاذ قرار. أكبر سبب لخسارة الصفقات هو <strong style="color:var(--gold-light)">عدم سؤال الوسيط مباشرة</strong>.</p>
+
+        <h3>إشارات استعداد العميل للإغلاق</h3>
+        <ul>
+          <li>يسأل عن طريقة الدفع وتفاصيلها</li>
+          <li>يسأل عن مواعيد التسليم</li>
+          <li>يسأل عن نوع العقد ومتطلباته</li>
+          <li>يبدأ في "تخيّل" نفسه ساكناً ("هذه الغرفة لابني")</li>
+          <li>يقاس مساحات الأثاث</li>
+          <li>يلتقط صوراً للأرقام والمواصفات</li>
+        </ul>
+
+        <h3>تقنيات الإغلاق الأكثر فعالية</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">الإغلاق الافتراضي:</strong> "ما رأيك نوقّع العقد الخميس أم الجمعة؟" — تعطي خيارين دون "هل تريد؟"</li>
+          <li><strong style="color:var(--gold-light)">الإغلاق التلخيصي:</strong> "إذن العقار يلبي احتياجك في الموقع والمساحة والسعر — هل نمضي؟"</li>
+          <li><strong style="color:var(--gold-light)">إغلاق "ماذا بعد":</strong> "هل لديك أسئلة قبل أن ننتقل لخطوة التوقيع؟"</li>
+          <li><strong style="color:var(--gold-light)">الإغلاق بالندرة:</strong> "العقار شاهده ٣ آخرون، أحدهم سيقدم عرضاً غداً. هل تريد تأمينه اليوم؟"</li>
+          <li><strong style="color:var(--gold-light)">الإغلاق العاطفي:</strong> "أراك متحمساً لهذا العقار — لماذا تؤجل سعادتك؟"</li>
+        </ul>
+
+        <h3>دفعة الجدية (Earnest Money)</h3>
+        <ul>
+          <li>اطلب دفعة جدية ١-٥٪ من قيمة العقار لتأمين الصفقة</li>
+          <li>للإيجار: شيك أو تحويل بقيمة شهر إيجار</li>
+          <li>اكتب إيصالاً مفصّلاً يوضح: المبلغ، التاريخ، شروط الاسترداد</li>
+          <li>قدّم الإيصال مع بصمة ختم رسمي إن أمكن</li>
+        </ul>
+
+        <h3>بعد التوقيع — لا ينتهي عملك</h3>
+        <ul>
+          <li>اتبع التسليم: تأكد من تسلّم العميل المفاتيح بحالة جيدة</li>
+          <li>اربط بخدمات: شركة نقل، صيانة، توصيل خدمات (كهرباء، إنترنت)</li>
+          <li>اتصل بعد ٣٠ يوماً: "كيف الحال؟ هل كل شيء على ما يرام؟"</li>
+          <li>اطلب توصية: اعتمد على تقييم العميل الراضي لجلب ٣-٥ عملاء جدد</li>
+          <li>أرسل هدية رمزية في عيد ميلاده/عيد الفطر — تبني علاقة طويلة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🎯 تمارين عملية</h2>
+        <div class="exercise-box">
+          <h4>التمرين الأول: سكريبت التأهيل</h4>
+          <p>اكتب سيناريو محادثة مكوّن من ٧-٨ أسئلة تأهيلية تطرحها على كل عميل جديد. جرّبه على ٥ عملاء فعليين في الأسبوع القادم وعدّله حسب التجربة.</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثاني: تصنيف ABC</h4>
+          <p>افتح Excel، أنشئ جدولاً بأعمدة: الاسم، الرقم، الميزانية، التوقيت، الصلاحية، التصنيف، الخطوة التالية. صنّف ١٠ من عملائك الحاليين أو السابقين باستخدام نظام ABC.</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثالث: محاكاة المعاينة</h4>
+          <p>اطلب من صديق أن يلعب دور العميل. أعدّ معاينة كاملة لعقار حقيقي. سجّل المحادثة (بإذنه) وأعد سماعها — لاحظ: هل تكلمت كثيراً؟ هل سألت أسئلة مفتوحة؟ هل قرأت لغة الجسد؟</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الرابع: التعامل مع ٥ اعتراضات</h4>
+          <p>اكتب رد مختصر (٣٠-٥٠ كلمة) لكل واحد من الاعتراضات الخمسة المذكورة. تدرّب على قولها بصوت عالٍ أمام المرآة حتى تصبح طبيعية.</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الخامس: إعداد إيصال دفعة الجدية</h4>
+          <p>صمّم نموذجاً (PDF) لإيصال دفعة جدية يحتوي: شعار مكتبك، اسم العميل، مبلغ، تاريخ، وصف العقار، شروط الاسترداد، التوقيعات. استخدمه في صفقاتك القادمة.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📚 مصادر ومراجع موثوقة</h2>
+        <h3>أدوات CRM موصى بها</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.hubspot.com/products/crm" target="_blank">HubSpot CRM مجاني</a></li>
+          <li><a href="https://www.zoho.com/crm/" target="_blank">Zoho CRM</a></li>
+          <li><a href="https://www.bitrix24.com" target="_blank">Bitrix24</a></li>
+          <li><a href="https://www.pipedrive.com" target="_blank">Pipedrive</a></li>
+        </ul>
+        <h3>كتب موصى بها (للوسيط العقاري)</h3>
+        <ul class="ref-list">
+          <li>"Never Split the Difference" — Chris Voss (مفاوضات FBI)</li>
+          <li>"The Millionaire Real Estate Agent" — Gary Keller</li>
+          <li>"SPIN Selling" — Neil Rackham</li>
+          <li>"How to Win Friends and Influence People" — Dale Carnegie</li>
+        </ul>
+        <h3>قنوات يوتيوب موصى بها</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.youtube.com/results?search_query=تفاوض+عقاري+بالعربية" target="_blank">التفاوض العقاري بالعربية</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=closing+real+estate+arabic" target="_blank">إغلاق الصفقات العقارية</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=Tom+Ferry+real+estate" target="_blank">Tom Ferry — التدريب العقاري</a></li>
+          <li><a href="https://www.youtube.com/@KevinWardNOW" target="_blank">Kevin Ward — تدريب الوسطاء</a></li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🧠 اختبار الوحدة السادسة</h2>
+        <p style="margin-bottom:1.2rem;">السؤال الأول: ماذا يعني BANT في تأهيل العميل؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 1)"><span class="quiz-letter">أ</span> Budget, Authority, Need, Timing</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">ب</span> Buy, Apply, Negotiate, Trade</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">ج</span> Bank, Agent, Notary, Tax</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">د</span> اسم نظام بنكي</div>
+        <div id="quizFeedback1" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثاني: ما النسبة الصحيحة لقرار شراء العقار خلال أول ٩٠ ثانية؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">أ</span> ٢٠٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">ب</span> ٤٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 2)"><span class="quiz-letter">ج</span> ٧٠٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">د</span> ٩٥٪</div>
+        <div id="quizFeedback2" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثالث: عندما يقول العميل "أحتاج أفكر" ما الأسلوب الأنسب؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">أ</span> اقبل وقل "حسناً اتصل بي لاحقاً"</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 3)"><span class="quiz-letter">ب</span> اسأل عن النقطة المحددة التي يفكر فيها</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">ج</span> اضغط: "قرر الآن أو سأعرضه على غيرك"</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">د</span> أنهِ المكالمة</div>
+        <div id="quizFeedback3" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الرابع: ما تكنيك "الإغلاق الافتراضي"؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">أ</span> فرض السعر</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 4)"><span class="quiz-letter">ب</span> تقديم خيارين للقرار وليس سؤال "هل توافق"</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">ج</span> إنهاء الصفقة بدون توقيع</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">د</span> رفع السعر فجأة</div>
+        <div id="quizFeedback4" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الخامس: متى ينتهي عمل الوسيط مع العميل؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">أ</span> فور توقيع العقد</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">ب</span> بعد ٧ أيام</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 5)"><span class="quiz-letter">ج</span> لا ينتهي — العلاقة طويلة لجلب توصيات</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">د</span> بعد دفع العمولة</div>
+        <div id="quizFeedback5" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+      </div>
+
+      <div class="next-unit">
+        <div>
+          <h3>الوحدة التالية 🚀</h3>
+          <p>العمولات والعقود الرقمية — حساب العمولة، العقود الإلكترونية، إيجار والاعتمادات الرسمية</p>
+        </div>
+        <a href="unit-7.html" class="btn-next">التالي ←</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <div class="lessons-sidebar">
+      <div class="sidebar-title">📚 دروس الوحدة</div>
+      <a class="lesson-item active" href="#"><div class="lesson-num">١</div><div class="lesson-info"><strong>تأهيل العميل</strong><span>⏱ ١٢ دقيقة</span></div><span class="lesson-done">▶</span></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٢</div><div class="lesson-info"><strong>إدارة المعاينة</strong><span>⏱ ١٢ دقيقة</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٣</div><div class="lesson-info"><strong>مهارات التفاوض</strong><span>⏱ ١٢ دقيقة</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٤</div><div class="lesson-info"><strong>التعامل مع الاعتراضات</strong><span>⏱ ١٠ دقائق</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٥</div><div class="lesson-info"><strong>إغلاق الصفقة</strong><span>⏱ ٩ دقائق</span></div></a>
+
+      <div class="sidebar-title" style="margin-top:1rem;">🗂 وحدات الدورة</div>
+      <a class="lesson-item" href="unit-1.html"><div class="lesson-num">١</div><div class="lesson-info"><strong>مدخل سوق العقارات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-2.html"><div class="lesson-num">٢</div><div class="lesson-info"><strong>المنصات العقارية</strong><span>⏱ ٥٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-3.html"><div class="lesson-num">٣</div><div class="lesson-info"><strong>التصوير المرئي</strong><span>⏱ ٦٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-4.html"><div class="lesson-num">٤</div><div class="lesson-info"><strong>كتابة الإعلانات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-5.html"><div class="lesson-num">٥</div><div class="lesson-info"><strong>الإعلانات المدفوعة</strong><span>⏱ ٧٠ دقيقة</span></div></a>
+      <a class="lesson-item active" href="unit-6.html"><div class="lesson-num" style="background:var(--gold);color:var(--navy);">٦</div><div class="lesson-info"><strong>إدارة العملاء</strong><span>الوحدة الحالية</span></div></a>
+      <a class="lesson-item" href="unit-7.html"><div class="lesson-num">٧</div><div class="lesson-info"><strong>العمولات والعقود</strong><span>⏱ ٦٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-8.html"><div class="lesson-num">٨</div><div class="lesson-info"><strong>قياس الأداء</strong><span>⏱ ٤٠ دقيقة</span></div></a>
+    </div>
+  </div>
+</div>
+
+<script>
+function loadVideo() {
+  const videoId = 'YOUR_VIDEO_ID';
+  const placeholder = document.getElementById('videoPlaceholder');
+  const wrapper = placeholder.parentElement;
+  placeholder.style.display = 'none';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  wrapper.appendChild(iframe);
+}
+function checkAnswer(el, isCorrect, qNum) {
+  let siblings = [];
+  let node = el;
+  while (node.previousElementSibling && node.previousElementSibling.classList.contains('quiz-option')) { node = node.previousElementSibling; }
+  while (node && node.classList && node.classList.contains('quiz-option')) { siblings.push(node); node = node.nextElementSibling; }
+  siblings.forEach(o => { o.classList.remove('correct','wrong'); o.onclick = null; });
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('quizFeedback' + qNum);
+  fb.style.display = 'block';
+  fb.style.color = isCorrect ? 'var(--accent)' : '#e74c3c';
+  fb.textContent = isCorrect ? '✓ إجابة صحيحة!' : '✗ الإجابة غير صحيحة، راجع الدرس مرة أخرى.';
+}
+</script>
+</body>
+</html>
