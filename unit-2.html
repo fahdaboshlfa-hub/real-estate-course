@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة ٢ — المنصات العقارية الرقمية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+    --navy: #0A1628; --navy-mid: #112240; --navy-light: #1C3461;
+    --white: #F8F5EF; --gray: #A0A8B8; --accent: #2ECC9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:var(--navy); color:var(--white); }
+
+  nav {
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,22,40,.92); backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(201,168,76,.15);
+    padding:.9rem 2rem;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  }
+  .nav-back {
+    display:flex; align-items:center; gap:.5rem;
+    color:var(--gold-light); text-decoration:none; font-size:.9rem;
+    transition:color .2s;
+  }
+  .nav-back:hover { color:var(--gold); }
+  .nav-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; }
+  .nav-progress {
+    display:flex; align-items:center; gap:.5rem;
+    font-size:.8rem; color:var(--gray);
+  }
+  .progress-bar {
+    width:100px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden;
+  }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:25%; }
+
+  .unit-hero {
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%),
+                linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding:3rem 2rem 2rem;
+    text-align:center;
+  }
+  .unit-badge {
+    display:inline-flex; align-items:center; gap:.5rem;
+    background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3);
+    border-radius:50px; padding:.3rem 1rem; font-size:.78rem; color:var(--gold-light);
+    margin-bottom:1rem;
+  }
+  .unit-hero h1 {
+    font-family:'Tajawal',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900;
+    margin-bottom:.8rem;
+  }
+  .unit-hero h1 span { color:var(--gold); }
+  .unit-meta {
+    display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap;
+    margin-top:1.2rem; font-size:.85rem; color:var(--gray);
+  }
+  .unit-meta span { display:flex; align-items:center; gap:.4rem; }
+
+  .course-layout {
+    max-width:1200px; margin:0 auto; padding:2rem;
+    display:grid; grid-template-columns:1fr 320px; gap:2rem;
+  }
+  @media(max-width:900px){ .course-layout { grid-template-columns:1fr; } }
+
+  .video-wrapper {
+    position:relative; padding-bottom:56.25%; height:0; overflow:hidden;
+    border-radius:14px; border:1px solid rgba(201,168,76,.2);
+    background:var(--navy-mid);
+  }
+  .video-wrapper iframe {
+    position:absolute; top:0; right:0; width:100%; height:100%; border:none; border-radius:14px;
+  }
+  .video-placeholder {
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1rem;
+    background:var(--navy-mid); border-radius:14px; cursor:pointer;
+  }
+  .play-btn {
+    width:72px; height:72px; border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.8rem; box-shadow:0 4px 20px rgba(201,168,76,.4);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .play-btn:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(201,168,76,.5); }
+  .video-placeholder p { color:var(--gray); font-size:.9rem; }
+
+  .lessons-sidebar { display:flex; flex-direction:column; gap:.6rem; }
+  .sidebar-title {
+    font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem;
+    color:var(--gold); margin-bottom:.4rem; padding-bottom:.6rem;
+    border-bottom:1px solid rgba(201,168,76,.15);
+  }
+  .lesson-item {
+    display:flex; align-items:center; gap:.8rem;
+    background:var(--navy-mid); border:1px solid rgba(201,168,76,.1);
+    border-radius:10px; padding:.8rem 1rem; cursor:pointer;
+    transition:border-color .2s, background .2s;
+    text-decoration:none; color:var(--white);
+  }
+  .lesson-item:hover, .lesson-item.active {
+    border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.07);
+  }
+  .lesson-item.active .lesson-num { background:var(--gold); color:var(--navy); }
+  .lesson-num {
+    width:28px; height:28px; flex-shrink:0; border-radius:50%;
+    background:rgba(201,168,76,.12); color:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.75rem; font-weight:700;
+  }
+  .lesson-info { flex:1; }
+  .lesson-info strong { display:block; font-size:.88rem; margin-bottom:.15rem; }
+  .lesson-info span { font-size:.75rem; color:var(--gray); }
+  .lesson-done { color:var(--accent); font-size:.9rem; }
+
+  .content-section { margin-top:2rem; }
+  .content-card {
+    background:var(--navy-mid); border:1px solid rgba(201,168,76,.12);
+    border-radius:14px; padding:2rem; margin-bottom:1.5rem;
+  }
+  .content-card h2 {
+    font-family:'Tajawal',sans-serif; font-size:1.3rem; font-weight:800;
+    color:var(--gold); margin-bottom:1.2rem; padding-bottom:.8rem;
+    border-bottom:1px solid rgba(201,168,76,.15);
+  }
+  .content-card h3 {
+    font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700;
+    color:var(--white); margin:1.2rem 0 .6rem;
+  }
+  .content-card p { color:var(--gray); line-height:1.9; font-size:.95rem; margin-bottom:.8rem; }
+  .content-card ul { padding-right:1.2rem; }
+  .content-card ul li {
+    color:var(--gray); line-height:1.8; font-size:.95rem; margin-bottom:.4rem;
+    list-style:none; display:flex; align-items:flex-start; gap:.6rem;
+  }
+  .content-card ul li::before {
+    content:'◆'; color:var(--gold); font-size:.55rem; margin-top:.45rem; flex-shrink:0;
+  }
+  .content-card a { color:var(--gold-light); text-decoration:none; border-bottom:1px dashed rgba(201,168,76,.4); }
+  .content-card a:hover { color:var(--gold); }
+
+  .key-points {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1rem;
+  }
+  .key-point {
+    background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15);
+    border-radius:10px; padding:1rem;
+  }
+  .key-point .icon { font-size:1.5rem; margin-bottom:.5rem; }
+  .key-point h4 { font-family:'Tajawal',sans-serif; font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+  .key-point p { font-size:.82rem; color:var(--gray); line-height:1.6; }
+
+  .quiz-option {
+    background:var(--navy); border:1px solid rgba(201,168,76,.15);
+    border-radius:8px; padding:.9rem 1.2rem; margin-bottom:.6rem;
+    cursor:pointer; font-size:.92rem; transition:border-color .2s, background .2s;
+    display:flex; align-items:center; gap:.8rem;
+  }
+  .quiz-option:hover { border-color:var(--gold); background:rgba(201,168,76,.07); }
+  .quiz-option.correct { border-color:var(--accent); background:rgba(46,204,154,.1); }
+  .quiz-option.wrong { border-color:#e74c3c; background:rgba(231,76,60,.1); }
+  .quiz-letter {
+    width:28px; height:28px; flex-shrink:0; border-radius:50%;
+    background:rgba(201,168,76,.12); color:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.78rem; font-weight:700;
+  }
+  .btn-check {
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800;
+    padding:.7rem 2rem; border-radius:8px; border:none; cursor:pointer;
+    font-size:.95rem; margin-top:.8rem; transition:transform .2s;
+  }
+  .btn-check:hover { transform:translateY(-2px); }
+
+  .next-unit {
+    background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05));
+    border:1px solid rgba(201,168,76,.3); border-radius:14px;
+    padding:1.8rem; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; flex-wrap:wrap; margin-top:1.5rem;
+  }
+  .next-unit h3 { font-family:'Tajawal',sans-serif; font-size:1.1rem; font-weight:800; }
+  .next-unit p { color:var(--gray); font-size:.88rem; margin-top:.3rem; }
+  .btn-next {
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800;
+    padding:.8rem 1.8rem; border-radius:8px; border:none; cursor:pointer;
+    font-size:.95rem; white-space:nowrap; text-decoration:none;
+    transition:transform .2s, box-shadow .2s;
+    display:inline-flex; align-items:center; gap:.5rem;
+  }
+  .btn-next:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.35); }
+
+  .ref-list { list-style:none; padding:0; }
+  .ref-list li { padding:.6rem 0; border-bottom:1px solid rgba(201,168,76,.08); }
+  .ref-list li::before { content:'📎'; margin-left:.4rem; }
+  .exercise-box {
+    background:rgba(46,204,154,.06); border-right:3px solid var(--accent);
+    padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin-top:1rem;
+  }
+  .exercise-box h4 { color:var(--accent); margin-bottom:.5rem; font-family:'Tajawal',sans-serif; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="real-estate-course.html" class="nav-back">← العودة للدورة</a>
+  <div class="nav-title">الوحدة ٢ — المنصات العقارية</div>
+  <div class="nav-progress">
+    <span>٢/٨</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<div class="unit-hero">
+  <div class="unit-badge">🌐 الوحدة الثانية</div>
+  <h1>المنصات <span>العقارية الرقمية</span></h1>
+  <div class="unit-meta">
+    <span>⏱ ٥٠ دقيقة</span>
+    <span>📹 ٥ دروس</span>
+    <span>📝 اختبار شامل</span>
+    <span>🎯 مستوى مبتدئ-متوسط</span>
+  </div>
+</div>
+
+<div class="course-layout">
+
+  <div>
+
+    <div class="video-wrapper">
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn">▶</div>
+        <p>الدرس الأول: نظرة شاملة على المنصات العقارية الكبرى</p>
+        <p style="font-size:.78rem;color:rgba(160,168,184,.6)">اضغط للتشغيل</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+
+      <div class="content-card">
+        <h2>📌 ما ستتعلمه في هذه الوحدة</h2>
+        <div class="key-points">
+          <div class="key-point">
+            <div class="icon">🏛</div>
+            <h4>منصة بيوت Bayut</h4>
+            <p>أكبر منصة عقارية في الخليج العربي والإمارات</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">🇸🇦</div>
+            <h4>منصة عقار Aqar</h4>
+            <p>المنصة الأولى للعقار في المملكة العربية السعودية</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">🌍</div>
+            <h4>OLX و Dubizzle</h4>
+            <p>المنصات الإقليمية متعددة الأقسام للإعلانات</p>
+          </div>
+          <div class="key-point">
+            <div class="icon">⚖️</div>
+            <h4>الاختيار الذكي</h4>
+            <p>كيف توزّع إعلاناتك بين المنصات لزيادة الوصول</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الأول: نظرة شاملة على المنصات العقارية</h2>
+        <p>قبل أن نغوص في تفاصيل كل منصة، يجب أن تفهم منطق السوق الرقمي العقاري. المنصة العقارية ليست مجرد "موقع لنشر الإعلانات" — هي <strong style="color:var(--gold-light)">نظام بيئي كامل</strong> يضم: محرك بحث، قاعدة بيانات للعقارات، نظام تواصل مع العملاء، وأدوات تحليل أداء.</p>
+
+        <p>يعتمد نجاحك كوسيط رقمي على فهمك العميق لخوارزميات هذه المنصات، وكيف تظهر الإعلانات في النتائج، ولماذا يُنقر على إعلان دون الآخر.</p>
+
+        <h3>تصنيف المنصات العقارية</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">المنصات المتخصصة:</strong> بيوت، عقار، Property Finder — تركّز على العقارات فقط</li>
+          <li><strong style="color:var(--gold-light)">المنصات العامة:</strong> OLX، Dubizzle، حراج — تشمل العقار ضمن أقسام متعددة</li>
+          <li><strong style="color:var(--gold-light)">المنصات الحكومية:</strong> إيجار (السعودية)، عقاري (الإمارات) — للتوثيق الرسمي</li>
+          <li><strong style="color:var(--gold-light)">المنصات الاجتماعية:</strong> إنستغرام، فيسبوك، تيك توك — للتسويق غير المباشر</li>
+        </ul>
+
+        <h3>إحصائيات السوق الرقمي العقاري ٢٠٢٥</h3>
+        <ul>
+          <li>بيوت تستقبل أكثر من <strong style="color:var(--gold-light)">٤٠ مليون زيارة شهرياً</strong> في الخليج</li>
+          <li>منصة عقار تتصدر بحث "عقارات للبيع في السعودية" بنسبة ٧٠٪</li>
+          <li>OLX تخدم أكثر من ١٥٠ مليون مستخدم في الشرق الأوسط وأفريقيا</li>
+          <li>متوسط مدة بقاء المستخدم على المنصة العقارية: ٧-١٢ دقيقة لكل جلسة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثاني: منصة بيوت Bayut — التفاصيل الكاملة</h2>
+        <p>تأسست منصة بيوت عام ٢٠٠٨ في الإمارات وتطورت لتصبح أكبر منصة عقارية في الخليج. تخدم الإمارات، السعودية، عُمان، والأردن. تتميز بواجهة احترافية، وأدوات تحليل قوية للوسيط.</p>
+
+        <h3>أنواع الحسابات في بيوت</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">الحساب المجاني (Basic):</strong> ٣-٥ إعلانات شهرياً مع ميزات محدودة</li>
+          <li><strong style="color:var(--gold-light)">حساب السمسار (Agent):</strong> اشتراك شهري يبدأ من ٤٩٩ درهم/ريال، حتى ٥٠ إعلان</li>
+          <li><strong style="color:var(--gold-light)">حساب الوكالة (Agency):</strong> غير محدود، تحليلات متقدمة، علامة موثّقة ✓</li>
+          <li><strong style="color:var(--gold-light)">باقة Premium / Featured:</strong> إعلانات مميّزة تتصدر النتائج</li>
+        </ul>
+
+        <h3>عوامل ترتيب إعلانك في بيوت (Bayut Ranking)</h3>
+        <p>خوارزمية بيوت تعتمد على عدة عوامل بترتيب الأهمية:</p>
+        <ul>
+          <li><strong>اكتمال الإعلان (Completeness Score):</strong> صور كافية ≥ ٨، وصف ≥ ٢٠٠ كلمة، جميع الحقول مملوءة</li>
+          <li><strong>جودة الصور:</strong> دقة عالية ≥ ١٢٠٠×٨٠٠ بكسل، إضاءة جيدة، عدم وجود علامات مائية مزعجة</li>
+          <li><strong>التحديث الدوري:</strong> الإعلانات المحدّثة كل ٧ أيام ترتفع في الترتيب</li>
+          <li><strong>سعر السوق:</strong> إعلانات ضمن السعر المتوقع تظهر أولاً (Trucheck Price)</li>
+          <li><strong>تقييم الوسيط:</strong> عدد النجوم والمراجعات الإيجابية</li>
+          <li><strong>سرعة الرد:</strong> الوسيط الذي يرد خلال دقائق يحصل على دفعة إضافية</li>
+        </ul>
+
+        <h3>ميزة Trucheck ✓</h3>
+        <p>بيوت لديها نظام تحقق فريد يُسمى Trucheck — يزور فريق المنصة العقار شخصياً ويوثّق الصور والمواصفات. الإعلانات الموثقة بـ Trucheck تحصل على <strong style="color:var(--gold-light)">٣ أضعاف الزيارات</strong> مقارنة بغير الموثقة.</p>
+
+        <h3>نصيحة احترافية 💡</h3>
+        <p style="background:rgba(201,168,76,.08);border-right:3px solid var(--gold);padding:.8rem 1rem;border-radius:0 8px 8px 0;">
+          في بيوت، الإعلان الذي يُحدّث يوم الخميس مساءً يحصل على أعلى وصول، لأن معظم الباحثين يتصفحون عطلة نهاية الأسبوع. خصص يوم الخميس لتحديث جميع إعلاناتك.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثالث: منصة عقار Aqar — مفتاح السوق السعودي</h2>
+        <p>منصة "عقار" (Aqar.fm سابقاً، الآن aqar.com.sa) هي المنصة العقارية الأولى في المملكة العربية السعودية. تأسست عام ٢٠٠٧ وتخدم ملايين المستخدمين شهرياً. تتميز بتركيزها الكامل على السوق السعودي وفهمها العميق لتفاصيله.</p>
+
+        <h3>لماذا عقار مهمة للوسيط السعودي؟</h3>
+        <ul>
+          <li>أكثر من ٧٠٪ من باحثي العقار في السعودية يبدأون من عقار</li>
+          <li>تكامل مع <strong style="color:var(--gold-light)">منصة إيجار</strong> الحكومية للتأجير</li>
+          <li>دعم للعقود السعودية والصيغ الرسمية</li>
+          <li>تكامل مع نظام "وافي" للبيع على الخارطة</li>
+          <li>إعلانات بالريال السعودي بدون تحويل عملة</li>
+        </ul>
+
+        <h3>أقسام عقار الرئيسية</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">للبيع:</strong> شقق، فلل، أراضي، عمائر، استراحات</li>
+          <li><strong style="color:var(--gold-light)">للإيجار:</strong> سكني، تجاري، مفروش، يومي</li>
+          <li><strong style="color:var(--gold-light)">مشاريع:</strong> المخططات والمشاريع تحت الإنشاء</li>
+          <li><strong style="color:var(--gold-light)">الاستثمار:</strong> صناديق ريت، الفرص الاستثمارية</li>
+        </ul>
+
+        <h3>خصائص الإعلان الناجح في عقار</h3>
+        <ul>
+          <li>العنوان بصيغة: [نوع العقار] + [الموقع] + [الميزة الأبرز]<br>مثال: "شقة ٤ غرف بحي الياسمين — تشطيب لوكس"</li>
+          <li>تحديد الحي بدقة (ليس فقط المدينة)</li>
+          <li>ذكر مساحة الأرض ومساحة البناء بشكل منفصل</li>
+          <li>تحديد عدد الغرف والصالات والحمامات</li>
+          <li>ذكر سنة البناء (مهم جداً للسوق السعودي)</li>
+          <li>إضافة موقع GPS دقيق</li>
+        </ul>
+
+        <h3>الباقات والاشتراكات في عقار</h3>
+        <ul>
+          <li><strong>الباقة الفضية:</strong> ١٠٠ ريال شهرياً — حتى ١٠ إعلانات</li>
+          <li><strong>الباقة الذهبية:</strong> ٣٠٠ ريال شهرياً — حتى ٣٠ إعلان + إعلانات مميزة</li>
+          <li><strong>الباقة البلاتينية:</strong> ٨٠٠ ريال شهرياً — غير محدود + تحليلات</li>
+          <li><strong>إعلان مميز فردي:</strong> ٢٠-٥٠ ريال للإعلان الواحد لمدة ٧ أيام</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الرابع: OLX و Dubizzle — منصات الإعلانات العامة</h2>
+        <p>على الرغم من أن OLX و Dubizzle ليستا متخصصتين في العقار، إلا أنهما تستحوذان على شريحة كبيرة من المستخدمين الباحثين عن إيجارات شهرية أو شقق اقتصادية. الوسيط الذكي لا يتجاهل هذه القنوات.</p>
+
+        <h3>متى تستخدم OLX/Dubizzle؟</h3>
+        <ul>
+          <li>للإيجارات الشهرية والمفروشة</li>
+          <li>للعقارات بأسعار اقتصادية ومتوسطة</li>
+          <li>للوصول إلى شرائح غير مسجلة في المنصات العقارية المتخصصة</li>
+          <li>لتجربة عناوين وصور قبل ترويجها في القنوات المدفوعة</li>
+        </ul>
+
+        <h3>الفرق بين OLX و Dubizzle</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">OLX:</strong> منتشرة في مصر، السعودية، الأردن، باكستان. واجهة بسيطة، جمهور واسع</li>
+          <li><strong style="color:var(--gold-light)">Dubizzle:</strong> الأقوى في الإمارات، تحت مظلة Bayut، جمهور أكثر تحضراً</li>
+        </ul>
+
+        <h3>نصائح للنشر في المنصات العامة</h3>
+        <ul>
+          <li>استخدم صوراً أقل عدداً لكن أعلى جودة (٤-٦ صور تكفي)</li>
+          <li>اكتب وصفاً قصيراً ومباشراً (المستخدم هنا أقل صبراً)</li>
+          <li>اذكر السعر بوضوح في العنوان</li>
+          <li>أضف رقم الواتساب مباشرة (المستخدم يفضل الواتساب على الاتصال)</li>
+          <li>كرر الإعلان كل ٣ أيام (إعادة النشر تعطي ظهوراً جديداً)</li>
+        </ul>
+
+        <h3>تحذير مهم ⚠️</h3>
+        <p style="background:rgba(231,76,60,.08);border-right:3px solid #e74c3c;padding:.8rem 1rem;border-radius:0 8px 8px 0;">
+          المنصات العامة تستقطب نسبة أعلى من العملاء غير الجادين والوسطاء الآخرين الفضوليين. خصص رقم واتساب منفصل لها لتفصل بين العملاء الجادين وغيرهم.
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الخامس: استراتيجية التوزيع الذكي</h2>
+        <p>السؤال الأهم: هل أنشر نفس العقار على جميع المنصات؟ الإجابة الذكية: <strong style="color:var(--gold-light)">نعم، لكن ليس بنفس الطريقة</strong>.</p>
+
+        <h3>مصفوفة التوزيع المثالية</h3>
+        <ul>
+          <li><strong>عقار فاخر (فلل، شقق راقية):</strong> بيوت Premium + عقار البلاتينية + إنستغرام</li>
+          <li><strong>عقار متوسط (شقق سكنية):</strong> عقار الذهبية + بيوت Basic + OLX</li>
+          <li><strong>إيجار شهري/يومي:</strong> Dubizzle + OLX + Booking + Airbnb</li>
+          <li><strong>عقار تجاري:</strong> بيوت Commercial + LinkedIn + شبكة العلاقات الشخصية</li>
+        </ul>
+
+        <h3>قاعدة الـ ٧ صور</h3>
+        <p>لكل منصة طبيعتها في عدد الصور المثالي:</p>
+        <ul>
+          <li>بيوت: ١٢-٢٠ صورة عالية الجودة</li>
+          <li>عقار: ١٠-١٥ صورة + فيديو ٣٠ ثانية</li>
+          <li>OLX/Dubizzle: ٤-٦ صور (الأهم فقط)</li>
+          <li>إنستغرام: ٥-١٠ صور كـ Carousel</li>
+        </ul>
+
+        <h3>تكلفة الباقات الشهرية المقترحة (لوسيط مبتدئ)</h3>
+        <ul>
+          <li>عقار الذهبية: ٣٠٠ ريال</li>
+          <li>بيوت Agent: ٤٩٩ درهم (≈ ٥٠٠ ريال)</li>
+          <li>OLX إعلانات مميزة: ١٠٠ ريال</li>
+          <li><strong style="color:var(--gold-light)">الإجمالي:</strong> حوالي ٩٠٠ ريال شهرياً — ترجع عند أول صفقة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🎯 تمرين عملي</h2>
+        <div class="exercise-box">
+          <h4>المهمة:</h4>
+          <p>اختر عقاراً واحداً من منطقتك (يمكن أن يكون شقة فارغة لجار أو قريب). قم بالخطوات التالية خلال هذا الأسبوع:</p>
+          <ul>
+            <li>أنشئ حساباً مجانياً على منصة عقار (aqar.com.sa)</li>
+            <li>أنشئ حساباً مجانياً على بيوت (bayut.sa)</li>
+            <li>التقط ١٠ صور احترافية للعقار</li>
+            <li>اكتب عنوانين مختلفين للإعلان نفسه</li>
+            <li>انشر الإعلان على المنصتين ولاحظ الفرق في عدد المشاهدات خلال ٧٢ ساعة</li>
+            <li>سجّل في جدول Excel: عدد المشاهدات، عدد الرسائل، عدد المكالمات لكل منصة</li>
+          </ul>
+          <p><strong>الهدف:</strong> فهم سلوك كل منصة عملياً قبل الاستثمار المالي فيها.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📚 مصادر ومراجع موثوقة</h2>
+        <h3>المواقع الرسمية للمنصات</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.bayut.sa" target="_blank">منصة بيوت السعودية — bayut.sa</a></li>
+          <li><a href="https://www.bayut.com" target="_blank">منصة بيوت الإمارات — bayut.com</a></li>
+          <li><a href="https://sa.aqar.fm" target="_blank">منصة عقار السعودية — aqar.fm</a></li>
+          <li><a href="https://www.dubizzle.com" target="_blank">منصة دوبيزل — dubizzle.com</a></li>
+          <li><a href="https://www.olx.com.sa" target="_blank">OLX السعودية — olx.com.sa</a></li>
+          <li><a href="https://www.propertyfinder.sa" target="_blank">Property Finder السعودية</a></li>
+        </ul>
+        <h3>الجهات التنظيمية والمراجع</h3>
+        <ul class="ref-list">
+          <li><a href="https://rega.gov.sa" target="_blank">الهيئة العامة للعقار السعودية — rega.gov.sa</a></li>
+          <li><a href="https://www.ejar.sa" target="_blank">منصة إيجار الحكومية — ejar.sa</a></li>
+          <li><a href="https://www.dld.gov.ae" target="_blank">دائرة الأراضي والأملاك في دبي — dld.gov.ae</a></li>
+        </ul>
+        <h3>قنوات يوتيوب موصى بها (ابحث عبر يوتيوب)</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.youtube.com/results?search_query=شرح+منصة+بيوت+للوسيط+العقاري" target="_blank">شرح منصة بيوت للوسيط العقاري — يوتيوب</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=طريقة+النشر+في+منصة+عقار" target="_blank">طريقة النشر في منصة عقار — يوتيوب</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=أفضل+منصات+التسويق+العقاري+السعودية" target="_blank">أفضل منصات التسويق العقاري — يوتيوب</a></li>
+          <li><a href="https://www.youtube.com/@bayutdotcom" target="_blank">قناة Bayut الرسمية على يوتيوب</a></li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🧠 اختبار الوحدة الثانية</h2>
+        <p style="margin-bottom:1.2rem;">السؤال الأول: ما هي ميزة Trucheck في منصة بيوت؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)">
+          <span class="quiz-letter">أ</span> خصم على رسوم الاشتراك
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 1)">
+          <span class="quiz-letter">ب</span> توثيق العقار ميدانياً من فريق بيوت
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)">
+          <span class="quiz-letter">ج</span> تأمين على العقار
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)">
+          <span class="quiz-letter">د</span> ترجمة الإعلان للإنجليزية
+        </div>
+        <div id="quizFeedback1" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثاني: ما هي نسبة المستخدمين السعوديين الذين يبدأون البحث من منصة عقار تقريباً؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)">
+          <span class="quiz-letter">أ</span> ٣٠٪
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)">
+          <span class="quiz-letter">ب</span> ٥٠٪
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 2)">
+          <span class="quiz-letter">ج</span> ٧٠٪
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)">
+          <span class="quiz-letter">د</span> ٩٠٪
+        </div>
+        <div id="quizFeedback2" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثالث: متى يُفضّل استخدام OLX/Dubizzle بدلاً من المنصات المتخصصة؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)">
+          <span class="quiz-letter">أ</span> لبيع الفلل الفاخرة
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 3)">
+          <span class="quiz-letter">ب</span> للإيجارات الشهرية والاقتصادية
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)">
+          <span class="quiz-letter">ج</span> للعقارات التجارية الكبيرة
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)">
+          <span class="quiz-letter">د</span> لا تُستخدم أبداً
+        </div>
+        <div id="quizFeedback3" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+      </div>
+
+      <div class="next-unit">
+        <div>
+          <h3>الوحدة التالية 🚀</h3>
+          <p>التصوير المرئي العقاري — الإضاءة، الزوايا، الجولات الافتراضية، وكيف تجعل عقارك يبيع نفسه بالصورة</p>
+        </div>
+        <a href="unit-3.html" class="btn-next">التالي ←</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <div class="lessons-sidebar">
+      <div class="sidebar-title">📚 دروس الوحدة</div>
+
+      <a class="lesson-item active" href="#">
+        <div class="lesson-num">١</div>
+        <div class="lesson-info">
+          <strong>نظرة على المنصات العقارية</strong>
+          <span>⏱ ٨ دقائق</span>
+        </div>
+        <span class="lesson-done">▶</span>
+      </a>
+
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٢</div>
+        <div class="lesson-info">
+          <strong>منصة بيوت Bayut</strong>
+          <span>⏱ ١٢ دقيقة</span>
+        </div>
+      </a>
+
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٣</div>
+        <div class="lesson-info">
+          <strong>منصة عقار Aqar</strong>
+          <span>⏱ ١٢ دقيقة</span>
+        </div>
+      </a>
+
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٤</div>
+        <div class="lesson-info">
+          <strong>OLX و Dubizzle</strong>
+          <span>⏱ ١٠ دقائق</span>
+        </div>
+      </a>
+
+      <a class="lesson-item" href="#">
+        <div class="lesson-num">٥</div>
+        <div class="lesson-info">
+          <strong>استراتيجية التوزيع</strong>
+          <span>⏱ ٨ دقائق</span>
+        </div>
+      </a>
+
+      <div class="sidebar-title" style="margin-top:1rem;">🗂 وحدات الدورة</div>
+      <a class="lesson-item" href="unit-1.html">
+        <div class="lesson-num">١</div>
+        <div class="lesson-info"><strong>مدخل سوق العقارات</strong><span>⏱ ٤٥ دقيقة</span></div>
+      </a>
+      <a class="lesson-item active" href="unit-2.html">
+        <div class="lesson-num" style="background:var(--gold);color:var(--navy);">٢</div>
+        <div class="lesson-info"><strong>المنصات العقارية</strong><span>الوحدة الحالية</span></div>
+      </a>
+      <a class="lesson-item" href="unit-3.html">
+        <div class="lesson-num">٣</div>
+        <div class="lesson-info"><strong>التصوير المرئي</strong><span>⏱ ٦٠ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-4.html">
+        <div class="lesson-num">٤</div>
+        <div class="lesson-info"><strong>كتابة الإعلانات</strong><span>⏱ ٤٥ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-5.html">
+        <div class="lesson-num">٥</div>
+        <div class="lesson-info"><strong>الإعلانات المدفوعة</strong><span>⏱ ٧٠ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-6.html">
+        <div class="lesson-num">٦</div>
+        <div class="lesson-info"><strong>إدارة العملاء</strong><span>⏱ ٥٥ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-7.html">
+        <div class="lesson-num">٧</div>
+        <div class="lesson-info"><strong>العمولات والعقود</strong><span>⏱ ٦٥ دقيقة</span></div>
+      </a>
+      <a class="lesson-item" href="unit-8.html">
+        <div class="lesson-num">٨</div>
+        <div class="lesson-info"><strong>قياس الأداء</strong><span>⏱ ٤٠ دقيقة</span></div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function loadVideo() {
+  const videoId = 'YOUR_VIDEO_ID';
+  const placeholder = document.getElementById('videoPlaceholder');
+  const wrapper = placeholder.parentElement;
+  placeholder.style.display = 'none';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  wrapper.appendChild(iframe);
+}
+
+function checkAnswer(el, isCorrect, qNum) {
+  const group = el.parentElement.querySelectorAll('.quiz-option');
+  const allOptions = Array.from(el.parentElement.children).filter(c => c.classList.contains('quiz-option'));
+  // limit to same question group (siblings between feedback divs)
+  let siblings = [];
+  let node = el;
+  while (node.previousElementSibling && node.previousElementSibling.classList.contains('quiz-option')) {
+    node = node.previousElementSibling;
+  }
+  while (node && node.classList && node.classList.contains('quiz-option')) {
+    siblings.push(node);
+    node = node.nextElementSibling;
+  }
+  siblings.forEach(o => { o.classList.remove('correct','wrong'); o.onclick = null; });
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('quizFeedback' + qNum);
+  fb.style.display = 'block';
+  fb.style.color = isCorrect ? 'var(--accent)' : '#e74c3c';
+  fb.textContent = isCorrect ? '✓ إجابة صحيحة!' : '✗ الإجابة غير صحيحة، راجع الدرس مرة أخرى.';
+}
+</script>
+</body>
+</html>
