@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة ٧ — العمولات والعقود الرقمية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+    --navy: #0A1628; --navy-mid: #112240; --navy-light: #1C3461;
+    --white: #F8F5EF; --gray: #A0A8B8; --accent: #2ECC9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:var(--navy); color:var(--white); }
+  nav { position:sticky; top:0; z-index:100; background:rgba(10,22,40,.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(201,168,76,.15); padding:.9rem 2rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .nav-back { display:flex; align-items:center; gap:.5rem; color:var(--gold-light); text-decoration:none; font-size:.9rem; transition:color .2s; }
+  .nav-back:hover { color:var(--gold); }
+  .nav-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; }
+  .nav-progress { display:flex; align-items:center; gap:.5rem; font-size:.8rem; color:var(--gray); }
+  .progress-bar { width:100px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:87.5%; }
+  .unit-hero { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%), linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); padding:3rem 2rem 2rem; text-align:center; }
+  .unit-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); border-radius:50px; padding:.3rem 1rem; font-size:.78rem; color:var(--gold-light); margin-bottom:1rem; }
+  .unit-hero h1 { font-family:'Tajawal',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; margin-bottom:.8rem; }
+  .unit-hero h1 span { color:var(--gold); }
+  .unit-meta { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-top:1.2rem; font-size:.85rem; color:var(--gray); }
+  .unit-meta span { display:flex; align-items:center; gap:.4rem; }
+  .course-layout { max-width:1200px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 320px; gap:2rem; }
+  @media(max-width:900px){ .course-layout { grid-template-columns:1fr; } }
+  .video-wrapper { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:14px; border:1px solid rgba(201,168,76,.2); background:var(--navy-mid); }
+  .video-wrapper iframe { position:absolute; top:0; right:0; width:100%; height:100%; border:none; border-radius:14px; }
+  .video-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; background:var(--navy-mid); border-radius:14px; cursor:pointer; }
+  .play-btn { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; box-shadow:0 4px 20px rgba(201,168,76,.4); transition:transform .2s, box-shadow .2s; }
+  .play-btn:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(201,168,76,.5); }
+  .video-placeholder p { color:var(--gray); font-size:.9rem; }
+  .lessons-sidebar { display:flex; flex-direction:column; gap:.6rem; }
+  .sidebar-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; color:var(--gold); margin-bottom:.4rem; padding-bottom:.6rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .lesson-item { display:flex; align-items:center; gap:.8rem; background:var(--navy-mid); border:1px solid rgba(201,168,76,.1); border-radius:10px; padding:.8rem 1rem; cursor:pointer; transition:border-color .2s, background .2s; text-decoration:none; color:var(--white); }
+  .lesson-item:hover, .lesson-item.active { border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.07); }
+  .lesson-item.active .lesson-num { background:var(--gold); color:var(--navy); }
+  .lesson-num { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; }
+  .lesson-info { flex:1; }
+  .lesson-info strong { display:block; font-size:.88rem; margin-bottom:.15rem; }
+  .lesson-info span { font-size:.75rem; color:var(--gray); }
+  .lesson-done { color:var(--accent); font-size:.9rem; }
+  .content-section { margin-top:2rem; }
+  .content-card { background:var(--navy-mid); border:1px solid rgba(201,168,76,.12); border-radius:14px; padding:2rem; margin-bottom:1.5rem; }
+  .content-card h2 { font-family:'Tajawal',sans-serif; font-size:1.3rem; font-weight:800; color:var(--gold); margin-bottom:1.2rem; padding-bottom:.8rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .content-card h3 { font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin:1.2rem 0 .6rem; }
+  .content-card p { color:var(--gray); line-height:1.9; font-size:.95rem; margin-bottom:.8rem; }
+  .content-card ul { padding-right:1.2rem; }
+  .content-card ul li { color:var(--gray); line-height:1.8; font-size:.95rem; margin-bottom:.4rem; list-style:none; display:flex; align-items:flex-start; gap:.6rem; }
+  .content-card ul li::before { content:'◆'; color:var(--gold); font-size:.55rem; margin-top:.45rem; flex-shrink:0; }
+  .content-card a { color:var(--gold-light); text-decoration:none; border-bottom:1px dashed rgba(201,168,76,.4); }
+  .content-card a:hover { color:var(--gold); }
+  .key-points { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
+  .key-point { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15); border-radius:10px; padding:1rem; }
+  .key-point .icon { font-size:1.5rem; margin-bottom:.5rem; }
+  .key-point h4 { font-family:'Tajawal',sans-serif; font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+  .key-point p { font-size:.82rem; color:var(--gray); line-height:1.6; }
+  .quiz-option { background:var(--navy); border:1px solid rgba(201,168,76,.15); border-radius:8px; padding:.9rem 1.2rem; margin-bottom:.6rem; cursor:pointer; font-size:.92rem; transition:border-color .2s, background .2s; display:flex; align-items:center; gap:.8rem; }
+  .quiz-option:hover { border-color:var(--gold); background:rgba(201,168,76,.07); }
+  .quiz-option.correct { border-color:var(--accent); background:rgba(46,204,154,.1); }
+  .quiz-option.wrong { border-color:#e74c3c; background:rgba(231,76,60,.1); }
+  .quiz-letter { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; }
+  .next-unit { background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05)); border:1px solid rgba(201,168,76,.3); border-radius:14px; padding:1.8rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:1.5rem; }
+  .next-unit h3 { font-family:'Tajawal',sans-serif; font-size:1.1rem; font-weight:800; }
+  .next-unit p { color:var(--gray); font-size:.88rem; margin-top:.3rem; }
+  .btn-next { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800; padding:.8rem 1.8rem; border-radius:8px; border:none; cursor:pointer; font-size:.95rem; white-space:nowrap; text-decoration:none; transition:transform .2s, box-shadow .2s; display:inline-flex; align-items:center; gap:.5rem; }
+  .btn-next:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.35); }
+  .ref-list { list-style:none; padding:0; }
+  .ref-list li { padding:.6rem 0; border-bottom:1px solid rgba(201,168,76,.08); }
+  .ref-list li::before { content:'📎'; margin-left:.4rem; }
+  .exercise-box { background:rgba(46,204,154,.06); border-right:3px solid var(--accent); padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin-top:1rem; }
+  .exercise-box h4 { color:var(--accent); margin-bottom:.5rem; font-family:'Tajawal',sans-serif; }
+  .data-table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.88rem; }
+  .data-table th, .data-table td { padding:.7rem; border:1px solid rgba(201,168,76,.15); text-align:right; }
+  .data-table th { background:rgba(201,168,76,.1); color:var(--gold-light); font-family:'Tajawal',sans-serif; }
+  .data-table td { color:var(--gray); }
+  .warning-box { background:rgba(231,76,60,.06); border-right:3px solid #e74c3c; padding:.8rem 1rem; border-radius:0 8px 8px 0; margin-top:1rem; }
+  .warning-box h4 { color:#e74c3c; margin-bottom:.4rem; font-family:'Tajawal',sans-serif; }
+  .calc-box { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.2); border-radius:10px; padding:1.2rem; margin:1rem 0; }
+  .calc-box .result { color:var(--accent); font-weight:800; font-size:1.1rem; margin-top:.5rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="real-estate-course.html" class="nav-back">← العودة للدورة</a>
+  <div class="nav-title">الوحدة ٧ — العمولات والعقود</div>
+  <div class="nav-progress">
+    <span>٧/٨</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<div class="unit-hero">
+  <div class="unit-badge">💼 الوحدة السابعة</div>
+  <h1>العمولات <span>والعقود الرقمية</span></h1>
+  <div class="unit-meta">
+    <span>⏱ ٦٥ دقيقة</span>
+    <span>📹 ٥ دروس</span>
+    <span>📝 سيناريوهات مالية وقانونية</span>
+    <span>🎯 مستوى متقدم</span>
+  </div>
+</div>
+
+<div class="course-layout">
+  <div>
+
+    <div class="video-wrapper">
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn">▶</div>
+        <p>الدرس الأول: نظام العمولات وحسابها بالتفصيل</p>
+        <p style="font-size:.78rem;color:rgba(160,168,184,.6)">اضغط للتشغيل</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+
+      <div class="content-card">
+        <h2>📌 ما ستتعلمه في هذه الوحدة</h2>
+        <div class="key-points">
+          <div class="key-point"><div class="icon">💰</div><h4>حساب العمولات</h4><p>نسب البيع والتأجير وتقسيم العمولة</p></div>
+          <div class="key-point"><div class="icon">📜</div><h4>العقود الإلكترونية</h4><p>التوقيع الرقمي وقوته القانونية</p></div>
+          <div class="key-point"><div class="icon">🏛</div><h4>منصة إيجار</h4><p>التوثيق الرسمي للعقود في السعودية</p></div>
+          <div class="key-point"><div class="icon">🎓</div><h4>الاعتمادات</h4><p>الفال والترخيص من هيئة العقار</p></div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الأول: نظام العمولات وحسابها</h2>
+        <p>العمولة هي مقابل الخدمة التي يقدمها الوسيط العقاري. لكن "نسبة عمولة موحّدة" غير موجودة — هي تتفاوت بحسب نوع الصفقة، المنطقة الجغرافية، والاتفاق بين الأطراف. فهم تفاصيل العمولة هو ما يميّز الوسيط المحترف عن الهاوي.</p>
+
+        <h3>عمولة البيع — التفاصيل الكاملة</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">المعدل السعودي:</strong> ٢ - ٢.٥٪ من قيمة العقار</li>
+          <li><strong style="color:var(--gold-light)">المعدل الإماراتي:</strong> ٢٪ من قيمة العقار</li>
+          <li><strong style="color:var(--gold-light)">المعدل المصري:</strong> ١ - ٢٪</li>
+          <li><strong style="color:var(--gold-light)">المعدل الأمريكي:</strong> ٥ - ٦٪ (مقسومة بين البائع والمشتري)</li>
+          <li><strong>من يدفع؟</strong> في السعودية والخليج عادةً <strong>البائع</strong>، لكن قد تنقسم العمولة بين البائع والمشتري بنسبة (١٪+١٪)</li>
+        </ul>
+
+        <h3>مثال تطبيقي ١: عمولة بيع شقة</h3>
+        <div class="calc-box">
+          <p style="color:var(--white);"><strong>قيمة العقار:</strong> ٧٥٠,٠٠٠ ريال</p>
+          <p style="color:var(--white);"><strong>نسبة العمولة المتفق عليها:</strong> ٢.٥٪</p>
+          <p style="color:var(--white);"><strong>المعادلة:</strong> ٧٥٠,٠٠٠ × ٢.٥٪ = ٧٥٠,٠٠٠ × ٠.٠٢٥</p>
+          <p class="result">العمولة الإجمالية = ١٨,٧٥٠ ريال</p>
+        </div>
+
+        <h3>عمولة التأجير</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">التأجير السنوي:</strong> ٥٪ من القيمة السنوية، أو شهر إيجار كامل</li>
+          <li><strong style="color:var(--gold-light)">التأجير قصير المدى (٦ شهور):</strong> ٢.٥-٥٪ أو نصف شهر</li>
+          <li><strong style="color:var(--gold-light)">التأجير الشهري المفروش:</strong> ٥٠-١٠٠٪ من إيجار أول شهر</li>
+          <li><strong style="color:var(--gold-light)">التأجير اليومي/الموسمي:</strong> ١٠-٢٠٪ من قيمة العقد</li>
+          <li><strong>من يدفع؟</strong> غالباً المستأجر، أحياناً تنقسم</li>
+        </ul>
+
+        <h3>مثال تطبيقي ٢: عمولة تأجير سنوي</h3>
+        <div class="calc-box">
+          <p style="color:var(--white);"><strong>قيمة الإيجار السنوي:</strong> ٦٠,٠٠٠ ريال (٥,٠٠٠ شهرياً)</p>
+          <p style="color:var(--white);"><strong>النسبة:</strong> ٥٪</p>
+          <p style="color:var(--white);"><strong>المعادلة:</strong> ٦٠,٠٠٠ × ٥٪ = ٣,٠٠٠ ريال</p>
+          <p style="color:var(--white);"><strong>أو:</strong> شهر إيجار = ٥,٠٠٠ ريال (الأعلى)</p>
+          <p class="result">العمولة المتفق عليها = ٣,٠٠٠ ريال (أو ٥,٠٠٠ حسب الاتفاق)</p>
+        </div>
+
+        <h3>تقسيم العمولة (بين وسيطين أو أكثر)</h3>
+        <ul>
+          <li><strong>وسيط البائع ووسيط المشتري:</strong> ٥٠/٥٠ هو الشائع</li>
+          <li><strong>وسيط رئيسي + مساعد:</strong> ٧٠/٣٠ أو ٦٠/٤٠</li>
+          <li><strong>الوسيط مع المكتب:</strong> ٥٠/٥٠ أو ٦٠/٤٠ حسب العقد</li>
+          <li><strong>الإحالة (Referral):</strong> ٢٠-٢٥٪ لمن أحال العميل</li>
+        </ul>
+
+        <h3>مثال تطبيقي ٣: عمولة مقسومة</h3>
+        <div class="calc-box">
+          <p style="color:var(--white);"><strong>قيمة العقار:</strong> ١,٠٠٠,٠٠٠ ريال</p>
+          <p style="color:var(--white);"><strong>إجمالي العمولة (٢.٥٪):</strong> ٢٥,٠٠٠ ريال</p>
+          <p style="color:var(--white);"><strong>وسيط البائع:</strong> ٥٠٪ × ٢٥,٠٠٠ = ١٢,٥٠٠ ريال</p>
+          <p style="color:var(--white);"><strong>وسيط المشتري:</strong> ٥٠٪ × ٢٥,٠٠٠ = ١٢,٥٠٠ ريال</p>
+          <p style="color:var(--white);"><strong>المكتب يأخذ ٤٠٪ من كل وسيط:</strong></p>
+          <p class="result">صافي عمولة الوسيط = ١٢,٥٠٠ × ٦٠٪ = ٧,٥٠٠ ريال</p>
+        </div>
+
+        <div class="warning-box">
+          <h4>⚠️ تحذير قانوني</h4>
+          <p>في السعودية، اتفاقية العمولة يجب أن تكون <strong>مكتوبة وموقعة</strong> قبل البدء بالخدمة (اتفاقية تسويق عقاري). العمولة الشفهية لا تُلزم قانوناً وفقاً لنظام الوساطة العقارية.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثاني: العقود الإلكترونية والتوقيع الرقمي</h2>
+        <p>الانتقال إلى العقود الرقمية ليس مجرد "موضة" — هو إلزام قانوني وعملي. في السعودية، نظام التعاملات الإلكترونية يعطي التوقيع الرقمي <strong style="color:var(--gold-light)">نفس قوة التوقيع التقليدي</strong> منذ ٢٠٠٧.</p>
+
+        <h3>أنواع التوقيع الرقمي</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">التوقيع البسيط (Simple e-signature):</strong> صورة لتوقيعك، أو ضغطة "أوافق" — قوة قانونية محدودة</li>
+          <li><strong style="color:var(--gold-light)">التوقيع المتقدم (Advanced):</strong> مرتبط بالهوية، عبر OTP أو رموز تحقق — أقوى</li>
+          <li><strong style="color:var(--gold-light)">التوقيع المعتمد (Qualified):</strong> صادر عن مزود معتمد رسمياً — قوة قانونية كاملة كالتوقيع التقليدي</li>
+        </ul>
+
+        <h3>منصات التوقيع الإلكتروني المعتمدة</h3>
+        <ul>
+          <li><strong>توثيق (Tawtheeq):</strong> منصة سعودية معتمدة من وزارة العدل — <a href="https://tawtheeq.sa" target="_blank">tawtheeq.sa</a></li>
+          <li><strong>صَكُّ (Sakk):</strong> منصة سعودية رسمية لتوثيق العقارات والصكوك</li>
+          <li><strong>DocuSign:</strong> الأكثر شيوعاً عالمياً — يعمل في السعودية</li>
+          <li><strong>Adobe Sign:</strong> متكامل مع Adobe، مقبول قانونياً</li>
+          <li><strong>HelloSign (Dropbox Sign):</strong> سهل وبأسعار معقولة</li>
+        </ul>
+
+        <h3>أنواع العقود في الوساطة العقارية</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">عقد التسويق العقاري:</strong> بين الوسيط والمالك — يحدد العمولة ومدة التسويق</li>
+          <li><strong style="color:var(--gold-light)">اتفاقية الحصرية (Exclusive):</strong> الوسيط الوحيد المخوّل ببيع/تأجير العقار</li>
+          <li><strong style="color:var(--gold-light)">اتفاقية المعاينة:</strong> بين الوسيط والعميل لتجنّب القفز على الوسيط</li>
+          <li><strong style="color:var(--gold-light)">عقد البيع:</strong> بين البائع والمشتري — يحدد السعر والتسليم والشروط</li>
+          <li><strong style="color:var(--gold-light)">عقد الإيجار:</strong> بين المؤجر والمستأجر — يحدد المدة، الإيجار، الالتزامات</li>
+          <li><strong style="color:var(--gold-light)">إيصال دفعة الجدية:</strong> يثبت دفع مقدم لتأكيد النية</li>
+        </ul>
+
+        <h3>عناصر العقد العقاري الإلزامية</h3>
+        <ul>
+          <li>أطراف العقد كاملةً (الاسم، الهوية، العنوان)</li>
+          <li>وصف العقار التفصيلي (الموقع، المساحة، رقم الصك)</li>
+          <li>قيمة الصفقة وطريقة الدفع</li>
+          <li>المدة والمواعيد المهمة (التسليم، استحقاق الدفعات)</li>
+          <li>الالتزامات على كل طرف</li>
+          <li>شروط الإلغاء والغرامات</li>
+          <li>تسوية النزاعات والجهة القضائية</li>
+          <li>التوقيعات وتواريخها</li>
+          <li>الشهود (إن لزم)</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثالث: منصة إيجار السعودية</h2>
+        <p>منصة "إيجار" هي المنصة الحكومية الرسمية لتوثيق عقود الإيجار في المملكة العربية السعودية. منذ ٢٠١٨ أصبح <strong style="color:var(--gold-light)">توثيق العقد في إيجار إلزامياً</strong> لكل عقد إيجار. أي عقد غير موثّق لا يحق لصاحبه اللجوء للقضاء.</p>
+
+        <h3>لماذا إيجار مهمة للوسيط؟</h3>
+        <ul>
+          <li>إلزامية لكل عقد إيجار (سكني، تجاري، صناعي)</li>
+          <li>تحمي المؤجر والمستأجر قانونياً</li>
+          <li>تُسهّل تحصيل الإيجار عبر منصة سداد</li>
+          <li>تسمح بإصدار تأشيرة الإقامة للمستأجرين</li>
+          <li>تربط الوسيط بمكافآت رسمية موثقة</li>
+        </ul>
+
+        <h3>الاشتراك في إيجار كوسيط</h3>
+        <ul>
+          <li>اذهب إلى <a href="https://www.ejar.sa" target="_blank">ejar.sa</a></li>
+          <li>سجّل دخول عبر <strong>النفاذ الوطني الموحد</strong> (Absher / IAM)</li>
+          <li>اختر "تسجيل كوسيط عقاري"</li>
+          <li>أدخل رقم الفال (ترخيص العقار)</li>
+          <li>أكمل بيانات المكتب أو نشاطك الفردي</li>
+          <li>وقّع الاتفاقية الإلكترونياً</li>
+        </ul>
+
+        <h3>خطوات توثيق عقد إيجار</h3>
+        <ul>
+          <li><strong>الخطوة ١:</strong> أدخل بيانات المؤجر (الاسم، الهوية، رقم الجوال)</li>
+          <li><strong>الخطوة ٢:</strong> أدخل بيانات المستأجر (الاسم، الهوية، رقم الجوال)</li>
+          <li><strong>الخطوة ٣:</strong> أدخل بيانات العقار (الصك، الحي، رقم القطعة)</li>
+          <li><strong>الخطوة ٤:</strong> اضبط بنود العقد (المدة، الإيجار، الدفعات)</li>
+          <li><strong>الخطوة ٥:</strong> اضف الخدمات الإضافية (إن وجدت)</li>
+          <li><strong>الخطوة ٦:</strong> اطلب موافقة المستأجر عبر OTP</li>
+          <li><strong>الخطوة ٧:</strong> اطلب موافقة المؤجر</li>
+          <li><strong>الخطوة ٨:</strong> اطبع العقد أو احفظه إلكترونياً</li>
+        </ul>
+
+        <h3>رسوم إيجار</h3>
+        <ul>
+          <li>عقد إيجار سكني: ٢٥ ريال للسنة</li>
+          <li>عقد إيجار تجاري: حسب القيمة (٠.٥٪ من إجمالي العقد)</li>
+          <li>تجديد عقد سكني: ١٥ ريال</li>
+          <li>إلغاء عقد: مجاناً</li>
+          <li>سدّ النزاعات: مجاناً عبر "قاضي إيجار"</li>
+        </ul>
+
+        <h3>منصة قاضي إيجار</h3>
+        <p>إذا حدث نزاع بين المؤجر والمستأجر، يمكن رفعه إلكترونياً عبر منصة "قاضي إيجار" التابعة للمحاكم. النظر في القضية أسرع بكثير من المحاكم التقليدية (متوسط ٣٠ يوماً).</p>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الرابع: الاعتمادات والترخيص (الفال)</h2>
+        <p>منذ ٢٠٢٢، أصدرت الهيئة العامة للعقار (REGA) قانون يلزم كل ممارس للوساطة العقارية بالحصول على ترخيص رسمي يسمى <strong style="color:var(--gold-light)">"الفال"</strong>. الممارسة بدون فال تعرّض لغرامات تصل إلى ١٠٠,٠٠٠ ريال.</p>
+
+        <h3>ما هو الفال؟</h3>
+        <p>الفال هو رخصة رسمية تمنحها الهيئة العامة للعقار لمزاولة نشاط الوساطة العقارية (التسويق، البيع، التأجير، الإدارة). يحدد نطاق عملك ومناطقك الجغرافية وعلامتك التجارية.</p>
+
+        <h3>شروط الحصول على الفال</h3>
+        <ul>
+          <li>سعودي الجنسية (للأفراد) — أو شركة مرخصة للأجانب</li>
+          <li>عمر لا يقل عن ٢٢ سنة</li>
+          <li>حاصل على شهادة ثانوية على الأقل</li>
+          <li>اجتياز دورة تدريبية معتمدة من الهيئة (٤٠ ساعة)</li>
+          <li>اجتياز اختبار الكفاءة المهنية</li>
+          <li>لا توجد سوابق جنائية مخلّة بالشرف والأمانة</li>
+          <li>سداد رسوم الترخيص</li>
+        </ul>
+
+        <h3>أنواع تراخيص الفال</h3>
+        <ul>
+          <li><strong>وسيط فرد:</strong> لشخص واحد — رسوم ٤٠٠ ريال سنوياً</li>
+          <li><strong>مكتب عقاري:</strong> لشركة فردية — رسوم ١,٠٠٠ ريال</li>
+          <li><strong>شركة عقارية:</strong> لشركة متعددة الوسطاء — رسوم ٢,٠٠٠ ريال</li>
+          <li><strong>مدير الأملاك:</strong> لإدارة العقارات نيابة عن مالكها</li>
+          <li><strong>المسوّق العقاري:</strong> لتسويق المشاريع تحت الإنشاء</li>
+        </ul>
+
+        <h3>خطوات استخراج الفال</h3>
+        <ul>
+          <li>سجل في <a href="https://rega.gov.sa" target="_blank">rega.gov.sa</a> عبر النفاذ الوطني</li>
+          <li>اختر نوع النشاط (وساطة، إدارة أملاك، تسويق...)</li>
+          <li>سجل في الدورة التدريبية المعتمدة (تكلفتها ١٠٠٠-٢٠٠٠ ريال)</li>
+          <li>اجتز الاختبار الإلكتروني (يستغرق ساعتين)</li>
+          <li>ادفع رسوم الترخيص</li>
+          <li>استلم الفال إلكترونياً خلال ٥ أيام عمل</li>
+        </ul>
+
+        <h3>تجديد الفال</h3>
+        <ul>
+          <li>الفال يحتاج تجديداً سنوياً</li>
+          <li>التجديد يتطلب ساعات تطوير مهني (CPD): ١٠ ساعات سنوياً</li>
+          <li>عدم التجديد يؤدي إلى توقيف النشاط</li>
+        </ul>
+
+        <h3>المخالفات والغرامات</h3>
+        <ul>
+          <li>ممارسة بدون فال: ٢٥,٠٠٠ - ١٠٠,٠٠٠ ريال</li>
+          <li>عدم توثيق العقود في إيجار: ١٠,٠٠٠ - ٥٠,٠٠٠ ريال</li>
+          <li>الإعلان عن عقار بمعلومات مضللة: ٥,٠٠٠ - ٢٠,٠٠٠ ريال</li>
+          <li>أخذ عمولة بدون اتفاقية مكتوبة: قد تُسترد بالكامل</li>
+          <li>تكرار المخالفة: مضاعفة الغرامة + إيقاف الترخيص</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الخامس: الضرائب والرسوم العقارية</h2>
+        <p>الالتزام الضريبي جزء من العمل العقاري الاحترافي. الجهل بالضرائب لا يعفي منها — ويمكن أن يكلفك أضعاف ما توفّره.</p>
+
+        <h3>ضريبة القيمة المضافة (VAT) ١٥٪</h3>
+        <ul>
+          <li>تُطبق على <strong>العمولة</strong> التي يأخذها الوسيط (وليست قيمة العقار)</li>
+          <li>تُطبق على إيجار العقار <strong>التجاري</strong> فقط</li>
+          <li>إيجار العقار <strong>السكني معفي</strong> من VAT</li>
+          <li>بيع العقار خاضع <strong>لضريبة التصرفات</strong> (٥٪) وليس VAT</li>
+          <li>الوسيط الذي يتجاوز ٣٧٥,٠٠٠ ريال سنوياً يجب أن يسجل في VAT</li>
+        </ul>
+
+        <h3>ضريبة التصرفات العقارية (RETT) ٥٪</h3>
+        <ul>
+          <li>تُطبق على <strong>قيمة بيع العقار</strong></li>
+          <li>يدفعها <strong>البائع</strong> غالباً (إلا إذا اتفق على عكس)</li>
+          <li>تُسدد عبر منصة <strong>ضريبة التصرفات العقارية</strong></li>
+          <li>إعفاءات: الإرث، الهبة بين الأقارب، التحويلات داخل الشركات</li>
+          <li>دفع الضريبة إلزامي قبل نقل الملكية في كتابة العدل</li>
+        </ul>
+
+        <h3>مثال حساب VAT و RETT</h3>
+        <div class="calc-box">
+          <p style="color:var(--white);"><strong>بيع شقة بـ ٨٠٠,٠٠٠ ريال — عمولة ٢.٥٪</strong></p>
+          <p style="color:var(--white);">• قيمة العمولة: ٨٠٠,٠٠٠ × ٢.٥٪ = ٢٠,٠٠٠ ريال</p>
+          <p style="color:var(--white);">• VAT على العمولة (١٥٪): ٢٠,٠٠٠ × ١٥٪ = ٣,٠٠٠ ريال</p>
+          <p style="color:var(--white);">• إجمالي ما يدفعه العميل للوسيط: ٢٣,٠٠٠ ريال</p>
+          <p style="color:var(--white);">• RETT على العقار (٥٪ يدفعها البائع): ٨٠٠,٠٠٠ × ٥٪ = ٤٠,٠٠٠ ريال</p>
+          <p class="result">صافي عمولة الوسيط (قبل خصومات أخرى) = ٢٠,٠٠٠ ريال</p>
+        </div>
+
+        <h3>الزكاة على الوسيط</h3>
+        <ul>
+          <li>الوسيط مسلم تُحسب زكاته على دخله المتحقق</li>
+          <li>٢.٥٪ على ما يبقى في حسابه بعد سنة هجرية كاملة (الحول)</li>
+          <li>تُدفع لـ <strong>هيئة الزكاة والضريبة والجمارك (ZATCA)</strong> أو تُوزّع للمستحقين مباشرة</li>
+        </ul>
+
+        <h3>الالتزامات المحاسبية</h3>
+        <ul>
+          <li>الاحتفاظ بفواتير العمولات لمدة ٦ سنوات</li>
+          <li>إصدار <strong>فاتورة ضريبية إلكترونية</strong> (Zatca e-invoicing) لكل صفقة</li>
+          <li>التصريح الربع سنوي عن VAT (إذا كنت مسجلاً)</li>
+          <li>التصريح السنوي للزكاة</li>
+        </ul>
+
+        <h3>أدوات محاسبية للوسيط</h3>
+        <ul>
+          <li><strong>دفترة (Daftra):</strong> برنامج محاسبي عربي بأسعار معقولة</li>
+          <li><strong>Zoho Books:</strong> متكامل مع Zoho CRM</li>
+          <li><strong>QuickBooks:</strong> الأشهر عالمياً</li>
+          <li><strong>Wave:</strong> مجاني للأعمال الصغيرة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🎯 تمارين عملية</h2>
+        <div class="exercise-box">
+          <h4>التمرين الأول: حساب العمولات</h4>
+          <p>احسب العمولة (مع VAT) في الحالات التالية:</p>
+          <ul>
+            <li>بيع فيلا بـ ١.٢ مليون ريال، عمولة ٢.٥٪</li>
+            <li>إيجار سنوي بـ ٧٢,٠٠٠ ريال، عمولة شهر</li>
+            <li>بيع أرض بـ ٢ مليون ريال، عمولة ٢٪، مقسومة بين وسيطين ٥٠/٥٠، والمكتب يأخذ ٤٠٪ من كل وسيط</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثاني: نموذج عقد تسويق</h4>
+          <p>صمم نموذج "عقد تسويق عقاري" بين وسيط ومالك يحتوي:</p>
+          <ul>
+            <li>أطراف العقد</li>
+            <li>وصف العقار</li>
+            <li>السعر المعروض</li>
+            <li>نسبة العمولة + VAT</li>
+            <li>مدة التسويق (٦٠ أو ٩٠ يوم)</li>
+            <li>الحصرية أم غير حصرية</li>
+            <li>شروط الإنهاء</li>
+            <li>التوقيعات</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثالث: تسجيل في إيجار</h4>
+          <p>اذهب إلى ejar.sa وأنشئ حسابك (إن لم يكن موجوداً). تصفح المنصة وافهم خطوات إنشاء عقد. شاهد فيديو الشرح الرسمي. (لا تنشئ عقداً حقيقياً إلا إذا كان لديك صفقة فعلية).</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الرابع: التحقق من فال</h4>
+          <p>اذهب إلى rega.gov.sa واطّلع على متطلبات الحصول على الفال. ابحث عن الدورة التدريبية المعتمدة في منطقتك. سجّل في الدورة إذا كنت جاداً في مزاولة المهنة.</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الخامس: محاكاة فاتورة ضريبية</h4>
+          <p>أنشئ نموذجاً لفاتورة ضريبية إلكترونية تتضمن: معلومات الوسيط، معلومات العميل، وصف الخدمة (عمولة)، المبلغ، VAT ١٥٪، الإجمالي. استخدم Excel أو أداة فوترة.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📚 مصادر ومراجع موثوقة</h2>
+        <h3>الجهات التنظيمية الرسمية</h3>
+        <ul class="ref-list">
+          <li><a href="https://rega.gov.sa" target="_blank">الهيئة العامة للعقار (REGA)</a></li>
+          <li><a href="https://www.ejar.sa" target="_blank">منصة إيجار للإيجارات السكنية والتجارية</a></li>
+          <li><a href="https://zatca.gov.sa" target="_blank">هيئة الزكاة والضريبة والجمارك (ZATCA)</a></li>
+          <li><a href="https://www.moj.gov.sa" target="_blank">وزارة العدل السعودية</a></li>
+          <li><a href="https://www.boe.gov.sa" target="_blank">هيئة الخبراء بمجلس الوزراء — الأنظمة</a></li>
+          <li><a href="https://www.dld.gov.ae" target="_blank">دائرة الأراضي والأملاك (دبي)</a></li>
+        </ul>
+        <h3>منصات التوقيع الإلكتروني</h3>
+        <ul class="ref-list">
+          <li><a href="https://tawtheeq.sa" target="_blank">توثيق - منصة سعودية معتمدة</a></li>
+          <li><a href="https://www.docusign.com" target="_blank">DocuSign</a></li>
+          <li><a href="https://acrobat.adobe.com/sign" target="_blank">Adobe Sign</a></li>
+        </ul>
+        <h3>الأنظمة واللوائح</h3>
+        <ul class="ref-list">
+          <li>نظام الوساطة العقارية الصادر بموجب المرسوم الملكي م/١٢ (٢٠٢١)</li>
+          <li>نظام التعاملات الإلكترونية (٢٠٠٧)</li>
+          <li>نظام ضريبة التصرفات العقارية (٢٠٢٠)</li>
+          <li>اللائحة التنفيذية للوساطة العقارية الصادرة عن REGA</li>
+        </ul>
+        <h3>قنوات يوتيوب موصى بها</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.youtube.com/results?search_query=شرح+منصة+إيجار+توثيق+عقد" target="_blank">شرح منصة إيجار وتوثيق العقد</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=كيف+أستخرج+الفال+العقاري" target="_blank">كيف تستخرج الفال العقاري</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=ضريبة+التصرفات+العقارية+شرح" target="_blank">شرح ضريبة التصرفات العقارية</a></li>
+          <li><a href="https://www.youtube.com/@REGAofficial" target="_blank">قناة الهيئة العامة للعقار الرسمية</a></li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🧠 اختبار الوحدة السابعة</h2>
+        <p style="margin-bottom:1.2rem;">السؤال الأول: ما هي نسبة عمولة البيع العقاري المعتادة في السعودية؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">أ</span> ٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 1)"><span class="quiz-letter">ب</span> ٢ - ٢.٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">ج</span> ١٠٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">د</span> ١٪</div>
+        <div id="quizFeedback1" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثاني: ضريبة التصرفات العقارية (RETT) نسبتها؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">أ</span> ١٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 2)"><span class="quiz-letter">ب</span> ٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">ج</span> ٢.٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">د</span> ١٠٪</div>
+        <div id="quizFeedback2" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثالث: ما هو "الفال"؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">أ</span> برنامج محاسبي</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 3)"><span class="quiz-letter">ب</span> رخصة مزاولة الوساطة العقارية من REGA</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">ج</span> نوع من العقود</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">د</span> اسم منصة عقارية</div>
+        <div id="quizFeedback3" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الرابع: هل توثيق عقد الإيجار في منصة "إيجار" إلزامي؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 4)"><span class="quiz-letter">أ</span> نعم، إلزامي وعدم التوثيق يُعرّض لغرامات</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">ب</span> اختياري للعقارات السكنية</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">ج</span> فقط للأجانب</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">د</span> لا توجد منصة بهذا الاسم</div>
+        <div id="quizFeedback4" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الخامس: العمولة على إيجار العقار التجاري — هل تخضع لضريبة القيمة المضافة؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 5)"><span class="quiz-letter">أ</span> نعم، تخضع لـ VAT ١٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">ب</span> لا، معفية</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">ج</span> فقط إذا كانت العمولة أعلى من ٥٠ ألف</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">د</span> تخضع لـ ٢٠٪ خاصة</div>
+        <div id="quizFeedback5" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال السادس: ما الذي يجب فعله قبل البدء بتسويق عقار؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 6)"><span class="quiz-letter">أ</span> الاتفاق شفهياً مع المالك</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 6)"><span class="quiz-letter">ب</span> توقيع اتفاقية تسويق عقاري مكتوبة</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 6)"><span class="quiz-letter">ج</span> دفع عربون للمالك</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 6)"><span class="quiz-letter">د</span> الحصول على إذن من البلدية</div>
+        <div id="quizFeedback6" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+      </div>
+
+      <div class="next-unit">
+        <div>
+          <h3>الوحدة التالية 🚀</h3>
+          <p>قياس الأداء — مؤشرات KPI، تحليل البيانات، حساب ROI، والتحسين المستمر لأعمالك</p>
+        </div>
+        <a href="unit-8.html" class="btn-next">التالي ←</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <div class="lessons-sidebar">
+      <div class="sidebar-title">📚 دروس الوحدة</div>
+      <a class="lesson-item active" href="#"><div class="lesson-num">١</div><div class="lesson-info"><strong>نظام العمولات</strong><span>⏱ ١٥ دقيقة</span></div><span class="lesson-done">▶</span></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٢</div><div class="lesson-info"><strong>العقود الإلكترونية</strong><span>⏱ ١٢ دقيقة</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٣</div><div class="lesson-info"><strong>منصة إيجار</strong><span>⏱ ١٣ دقيقة</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٤</div><div class="lesson-info"><strong>الفال والترخيص</strong><span>⏱ ١٣ دقيقة</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٥</div><div class="lesson-info"><strong>الضرائب والرسوم</strong><span>⏱ ١٢ دقيقة</span></div></a>
+
+      <div class="sidebar-title" style="margin-top:1rem;">🗂 وحدات الدورة</div>
+      <a class="lesson-item" href="unit-1.html"><div class="lesson-num">١</div><div class="lesson-info"><strong>مدخل سوق العقارات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-2.html"><div class="lesson-num">٢</div><div class="lesson-info"><strong>المنصات العقارية</strong><span>⏱ ٥٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-3.html"><div class="lesson-num">٣</div><div class="lesson-info"><strong>التصوير المرئي</strong><span>⏱ ٦٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-4.html"><div class="lesson-num">٤</div><div class="lesson-info"><strong>كتابة الإعلانات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-5.html"><div class="lesson-num">٥</div><div class="lesson-info"><strong>الإعلانات المدفوعة</strong><span>⏱ ٧٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-6.html"><div class="lesson-num">٦</div><div class="lesson-info"><strong>إدارة العملاء</strong><span>⏱ ٥٥ دقيقة</span></div></a>
+      <a class="lesson-item active" href="unit-7.html"><div class="lesson-num" style="background:var(--gold);color:var(--navy);">٧</div><div class="lesson-info"><strong>العمولات والعقود</strong><span>الوحدة الحالية</span></div></a>
+      <a class="lesson-item" href="unit-8.html"><div class="lesson-num">٨</div><div class="lesson-info"><strong>قياس الأداء</strong><span>⏱ ٤٠ دقيقة</span></div></a>
+    </div>
+  </div>
+</div>
+
+<script>
+function loadVideo() {
+  const videoId = 'YOUR_VIDEO_ID';
+  const placeholder = document.getElementById('videoPlaceholder');
+  const wrapper = placeholder.parentElement;
+  placeholder.style.display = 'none';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  wrapper.appendChild(iframe);
+}
+function checkAnswer(el, isCorrect, qNum) {
+  let siblings = [];
+  let node = el;
+  while (node.previousElementSibling && node.previousElementSibling.classList.contains('quiz-option')) { node = node.previousElementSibling; }
+  while (node && node.classList && node.classList.contains('quiz-option')) { siblings.push(node); node = node.nextElementSibling; }
+  siblings.forEach(o => { o.classList.remove('correct','wrong'); o.onclick = null; });
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('quizFeedback' + qNum);
+  fb.style.display = 'block';
+  fb.style.color = isCorrect ? 'var(--accent)' : '#e74c3c';
+  fb.textContent = isCorrect ? '✓ إجابة صحيحة!' : '✗ الإجابة غير صحيحة، راجع الدرس مرة أخرى.';
+}
+</script>
+</body>
+</html>
