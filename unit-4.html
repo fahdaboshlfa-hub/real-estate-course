@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة ٤ — كتابة الإعلانات العقارية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+    --navy: #0A1628; --navy-mid: #112240; --navy-light: #1C3461;
+    --white: #F8F5EF; --gray: #A0A8B8; --accent: #2ECC9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:var(--navy); color:var(--white); }
+  nav { position:sticky; top:0; z-index:100; background:rgba(10,22,40,.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(201,168,76,.15); padding:.9rem 2rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .nav-back { display:flex; align-items:center; gap:.5rem; color:var(--gold-light); text-decoration:none; font-size:.9rem; transition:color .2s; }
+  .nav-back:hover { color:var(--gold); }
+  .nav-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; }
+  .nav-progress { display:flex; align-items:center; gap:.5rem; font-size:.8rem; color:var(--gray); }
+  .progress-bar { width:100px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:50%; }
+  .unit-hero { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%), linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); padding:3rem 2rem 2rem; text-align:center; }
+  .unit-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); border-radius:50px; padding:.3rem 1rem; font-size:.78rem; color:var(--gold-light); margin-bottom:1rem; }
+  .unit-hero h1 { font-family:'Tajawal',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; margin-bottom:.8rem; }
+  .unit-hero h1 span { color:var(--gold); }
+  .unit-meta { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-top:1.2rem; font-size:.85rem; color:var(--gray); }
+  .unit-meta span { display:flex; align-items:center; gap:.4rem; }
+  .course-layout { max-width:1200px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 320px; gap:2rem; }
+  @media(max-width:900px){ .course-layout { grid-template-columns:1fr; } }
+  .video-wrapper { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:14px; border:1px solid rgba(201,168,76,.2); background:var(--navy-mid); }
+  .video-wrapper iframe { position:absolute; top:0; right:0; width:100%; height:100%; border:none; border-radius:14px; }
+  .video-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; background:var(--navy-mid); border-radius:14px; cursor:pointer; }
+  .play-btn { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; box-shadow:0 4px 20px rgba(201,168,76,.4); transition:transform .2s, box-shadow .2s; }
+  .play-btn:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(201,168,76,.5); }
+  .video-placeholder p { color:var(--gray); font-size:.9rem; }
+  .lessons-sidebar { display:flex; flex-direction:column; gap:.6rem; }
+  .sidebar-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; color:var(--gold); margin-bottom:.4rem; padding-bottom:.6rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .lesson-item { display:flex; align-items:center; gap:.8rem; background:var(--navy-mid); border:1px solid rgba(201,168,76,.1); border-radius:10px; padding:.8rem 1rem; cursor:pointer; transition:border-color .2s, background .2s; text-decoration:none; color:var(--white); }
+  .lesson-item:hover, .lesson-item.active { border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.07); }
+  .lesson-item.active .lesson-num { background:var(--gold); color:var(--navy); }
+  .lesson-num { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; }
+  .lesson-info { flex:1; }
+  .lesson-info strong { display:block; font-size:.88rem; margin-bottom:.15rem; }
+  .lesson-info span { font-size:.75rem; color:var(--gray); }
+  .lesson-done { color:var(--accent); font-size:.9rem; }
+  .content-section { margin-top:2rem; }
+  .content-card { background:var(--navy-mid); border:1px solid rgba(201,168,76,.12); border-radius:14px; padding:2rem; margin-bottom:1.5rem; }
+  .content-card h2 { font-family:'Tajawal',sans-serif; font-size:1.3rem; font-weight:800; color:var(--gold); margin-bottom:1.2rem; padding-bottom:.8rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .content-card h3 { font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin:1.2rem 0 .6rem; }
+  .content-card p { color:var(--gray); line-height:1.9; font-size:.95rem; margin-bottom:.8rem; }
+  .content-card ul { padding-right:1.2rem; }
+  .content-card ul li { color:var(--gray); line-height:1.8; font-size:.95rem; margin-bottom:.4rem; list-style:none; display:flex; align-items:flex-start; gap:.6rem; }
+  .content-card ul li::before { content:'◆'; color:var(--gold); font-size:.55rem; margin-top:.45rem; flex-shrink:0; }
+  .content-card a { color:var(--gold-light); text-decoration:none; border-bottom:1px dashed rgba(201,168,76,.4); }
+  .content-card a:hover { color:var(--gold); }
+  .key-points { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
+  .key-point { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15); border-radius:10px; padding:1rem; }
+  .key-point .icon { font-size:1.5rem; margin-bottom:.5rem; }
+  .key-point h4 { font-family:'Tajawal',sans-serif; font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+  .key-point p { font-size:.82rem; color:var(--gray); line-height:1.6; }
+  .quiz-option { background:var(--navy); border:1px solid rgba(201,168,76,.15); border-radius:8px; padding:.9rem 1.2rem; margin-bottom:.6rem; cursor:pointer; font-size:.92rem; transition:border-color .2s, background .2s; display:flex; align-items:center; gap:.8rem; }
+  .quiz-option:hover { border-color:var(--gold); background:rgba(201,168,76,.07); }
+  .quiz-option.correct { border-color:var(--accent); background:rgba(46,204,154,.1); }
+  .quiz-option.wrong { border-color:#e74c3c; background:rgba(231,76,60,.1); }
+  .quiz-letter { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; }
+  .btn-check { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800; padding:.7rem 2rem; border-radius:8px; border:none; cursor:pointer; font-size:.95rem; margin-top:.8rem; transition:transform .2s; }
+  .next-unit { background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05)); border:1px solid rgba(201,168,76,.3); border-radius:14px; padding:1.8rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:1.5rem; }
+  .next-unit h3 { font-family:'Tajawal',sans-serif; font-size:1.1rem; font-weight:800; }
+  .next-unit p { color:var(--gray); font-size:.88rem; margin-top:.3rem; }
+  .btn-next { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800; padding:.8rem 1.8rem; border-radius:8px; border:none; cursor:pointer; font-size:.95rem; white-space:nowrap; text-decoration:none; transition:transform .2s, box-shadow .2s; display:inline-flex; align-items:center; gap:.5rem; }
+  .btn-next:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.35); }
+  .ref-list { list-style:none; padding:0; }
+  .ref-list li { padding:.6rem 0; border-bottom:1px solid rgba(201,168,76,.08); }
+  .ref-list li::before { content:'📎'; margin-left:.4rem; }
+  .exercise-box { background:rgba(46,204,154,.06); border-right:3px solid var(--accent); padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin-top:1rem; }
+  .exercise-box h4 { color:var(--accent); margin-bottom:.5rem; font-family:'Tajawal',sans-serif; }
+  .example-good { background:rgba(46,204,154,.07); border:1px solid rgba(46,204,154,.3); border-radius:8px; padding:1rem; margin:.6rem 0; }
+  .example-bad { background:rgba(231,76,60,.05); border:1px solid rgba(231,76,60,.25); border-radius:8px; padding:1rem; margin:.6rem 0; }
+  .label-good { color:var(--accent); font-weight:700; margin-bottom:.3rem; display:block; }
+  .label-bad { color:#e74c3c; font-weight:700; margin-bottom:.3rem; display:block; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="real-estate-course.html" class="nav-back">← العودة للدورة</a>
+  <div class="nav-title">الوحدة ٤ — كتابة الإعلانات</div>
+  <div class="nav-progress">
+    <span>٤/٨</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<div class="unit-hero">
+  <div class="unit-badge">✍️ الوحدة الرابعة</div>
+  <h1>كتابة الإعلانات <span>العقارية المُحوِّلة</span></h1>
+  <div class="unit-meta">
+    <span>⏱ ٤٥ دقيقة</span>
+    <span>📹 ٥ دروس</span>
+    <span>📝 اختبار + تمارين كتابة</span>
+    <span>🎯 مستوى متوسط</span>
+  </div>
+</div>
+
+<div class="course-layout">
+  <div>
+    <div class="video-wrapper">
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn">▶</div>
+        <p>الدرس الأول: كيف تكتب عنواناً عقارياً يجذب الضغط</p>
+        <p style="font-size:.78rem;color:rgba(160,168,184,.6)">اضغط للتشغيل</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+
+      <div class="content-card">
+        <h2>📌 ما ستتعلمه في هذه الوحدة</h2>
+        <div class="key-points">
+          <div class="key-point"><div class="icon">🎯</div><h4>العنوان الجذاب</h4><p>كتابة عناوين تجذب الضغط بنسبة ٣ أضعاف</p></div>
+          <div class="key-point"><div class="icon">📝</div><h4>هيكل الوصف</h4><p>الصيغة المثالية لوصف يبيع</p></div>
+          <div class="key-point"><div class="icon">🔍</div><h4>SEO العقاري</h4><p>الكلمات المفتاحية التي يبحث عنها العملاء</p></div>
+          <div class="key-point"><div class="icon">💬</div><h4>عبارات CTA</h4><p>عبارات الحث على التواصل والمعاينة</p></div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الأول: علم النفس وراء العنوان الجذاب</h2>
+        <p>العنوان هو ٨٠٪ من نجاح إعلانك. أمام العميل عشرات الإعلانات في صفحة البحث، وعليك أن تجعله يتوقف عند إعلانك في أقل من <strong style="color:var(--gold-light)">١.٧ ثانية</strong> — هذا هو متوسط زمن قرار الضغط حسب أبحاث Bayut.</p>
+
+        <h3>صيغة العنوان الذهبية</h3>
+        <p>اتبع هذه الصيغة في كل عنوان:</p>
+        <p style="background:rgba(201,168,76,.08);border-right:3px solid var(--gold);padding:.8rem 1rem;border-radius:0 8px 8px 0;font-weight:700;color:var(--white);">
+          [نوع العقار] + [الموقع المحدد] + [الميزة الأبرز] + [محفّز عاطفي/مادي]
+        </p>
+
+        <h3>أمثلة تطبيقية</h3>
+        <div class="example-bad">
+          <span class="label-bad">✗ ضعيف:</span>
+          <p style="margin:0;color:var(--white);">شقة للبيع في الرياض</p>
+          <p style="font-size:.85rem;margin-top:.4rem;">المشكلة: عام جداً، لا يميّز نفسه عن آلاف الإعلانات الأخرى</p>
+        </div>
+        <div class="example-good">
+          <span class="label-good">✓ قوي:</span>
+          <p style="margin:0;color:var(--white);">شقة ٤ غرف بحي الياسمين — تشطيب لوكس وإطلالة مفتوحة — جاهزة للسكن</p>
+          <p style="font-size:.85rem;margin-top:.4rem;">السبب: محدد، مفصّل، يحرّك الخيال، يؤكد الجاهزية</p>
+        </div>
+
+        <h3>المحفزات النفسية الفعّالة</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">الندرة:</strong> "آخر شقة في المشروع" — "فرصة لن تتكرر"</li>
+          <li><strong style="color:var(--gold-light)">الاستعجال:</strong> "تسليم فوري" — "متاحة هذا الأسبوع فقط"</li>
+          <li><strong style="color:var(--gold-light)">السعر:</strong> "أقل من سعر السوق ١٠٪" — "بسعر التكلفة"</li>
+          <li><strong style="color:var(--gold-light)">المكاسب:</strong> "عائد إيجاري ١١٪" — "موقع استثماري ذهبي"</li>
+          <li><strong style="color:var(--gold-light)">الأمان:</strong> "صك إلكتروني" — "موثقة في إيجار"</li>
+          <li><strong style="color:var(--gold-light)">العاطفة:</strong> "بيت أحلامك" — "إطلالة على البحر"</li>
+        </ul>
+
+        <h3>قواعد العنوان</h3>
+        <ul>
+          <li>طول مثالي: ٥٠-٧٠ حرفاً (يظهر كاملاً في نتائج البحث)</li>
+          <li>لا تستخدم الحروف الكبيرة بالكامل (يعتبر إزعاجاً)</li>
+          <li>تجنّب علامات التعجب المتعددة (!!!)</li>
+          <li>لا تستخدم رموزاً مزعجة (✨💎🔥) بكثرة — رمز واحد فقط</li>
+          <li>اذكر الأرقام بدلاً من الكلمات: "٤ غرف" أفضل من "أربع غرف"</li>
+          <li>تجنّب الكلمات الفارغة: "رائعة"، "مميزة"، "خاصة" — استبدلها بمواصفات محددة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثاني: هيكل وصف العقار المثالي</h2>
+        <p>الوصف ليس كتلة نصية واحدة. هو رحلة منظمة تأخذ القارئ من الفضول إلى التواصل. الصيغة المثبتة:</p>
+
+        <h3>هيكل AIDA العقاري</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">A — Attention (الانتباه):</strong> جملة افتتاحية صادمة أو ميزة فريدة</li>
+          <li><strong style="color:var(--gold-light)">I — Interest (الاهتمام):</strong> تفاصيل العقار التقنية</li>
+          <li><strong style="color:var(--gold-light)">D — Desire (الرغبة):</strong> تصوير نمط الحياة الذي سيعيشه المشتري</li>
+          <li><strong style="color:var(--gold-light)">A — Action (الفعل):</strong> دعوة واضحة للتواصل</li>
+        </ul>
+
+        <h3>مثال تطبيقي كامل</h3>
+        <div class="example-good">
+          <p style="margin:0;color:var(--white);"><strong>[Attention]</strong> هل تبحث عن منزل يجمع بين الراحة العائلية والإطلالة الأخّاذة؟ هذه الفيلا هي إجابتك.</p>
+          <p style="margin-top:.5rem;color:var(--white);"><strong>[Interest]</strong> فيلا مستقلة بمساحة ٤٥٠ م² على أرض ٦٠٠ م²، تتكون من دور أرضي + علوي + ملحق علوي، ٦ غرف نوم ماستر، ٧ حمامات، مجلس رجال ومجلس نساء، صالة طعام، مطبخ راكب، غرفة خادمة، مصعد، ٤ مواقف سيارات. تشطيب سوبر لوكس بالكامل، أرضيات بورسلان وزخارف جبسية، مكيفات سبليت في كل غرفة.</p>
+          <p style="margin-top:.5rem;color:var(--white);"><strong>[Desire]</strong> تخيّل صباحاتك مع قهوة على الشرفة وإطلالة على المنتزه الجنوبي، وأطفالك يلعبون في فناء آمن داخل الفيلا. مدارس عالمية على بُعد ٥ دقائق، ومستشفى الحبيب على بُعد ١٠ دقائق.</p>
+          <p style="margin-top:.5rem;color:var(--white);"><strong>[Action]</strong> اتصل بنا الآن لحجز موعد المعاينة قبل أن تُحجز. الواتساب: ٠٥XX-XXX-XXXX</p>
+        </div>
+
+        <h3>أقسام الوصف الإلزامية</h3>
+        <ul>
+          <li><strong>المساحات الدقيقة:</strong> مساحة الأرض، مساحة البناء، مساحة كل غرفة إن أمكن</li>
+          <li><strong>عدد الغرف:</strong> غرف النوم، الصالات، الحمامات، المطابخ</li>
+          <li><strong>التشطيب:</strong> نوع التشطيب (سوبر لوكس، لوكس، عادي)، الأرضيات، الأبواب، النوافذ</li>
+          <li><strong>الموقع:</strong> الحي، أقرب شارع رئيسي، المسافة لأهم الخدمات</li>
+          <li><strong>الخدمات المحيطة:</strong> مدارس، مساجد، مستشفيات، أسواق</li>
+          <li><strong>سنة البناء:</strong> ضرورية للسوق السعودي والخليجي</li>
+          <li><strong>التراخيص:</strong> صك إلكتروني، رخصة بناء، توصيل خدمات</li>
+          <li><strong>طريقة الدفع:</strong> نقد، تمويل بنكي مقبول، تسهيلات</li>
+          <li><strong>السعر:</strong> اذكره صراحةً (الإعلانات بدون سعر تحصل على نقرات أقل بـ ٦٠٪)</li>
+        </ul>
+
+        <h3>الطول المثالي للوصف</h3>
+        <ul>
+          <li>بيوت / عقار: ٢٥٠-٥٠٠ كلمة</li>
+          <li>OLX / Dubizzle: ١٠٠-٢٠٠ كلمة</li>
+          <li>إنستغرام: ٧٠-١٥٠ كلمة + هاشتاجات</li>
+          <li>فيسبوك ماركتبليس: ١٥٠-٢٥٠ كلمة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثالث: SEO والكلمات المفتاحية</h2>
+        <p>SEO (تحسين محركات البحث) ليس فقط لـ Google — كل منصة عقارية لديها محرك بحث داخلي. الكلمات التي تكتبها تحدد متى يظهر إعلانك ومتى يختفي.</p>
+
+        <h3>أنواع الكلمات المفتاحية العقارية</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">كلمات النوع:</strong> شقة، فيلا، دوبلكس، أرض، عمارة، استراحة، مكتب، محل</li>
+          <li><strong style="color:var(--gold-light)">كلمات الموقع:</strong> اسم المدينة + اسم الحي بدقة</li>
+          <li><strong style="color:var(--gold-light)">كلمات النية:</strong> للبيع، للإيجار، للاستثمار، بالتقسيط</li>
+          <li><strong style="color:var(--gold-light)">كلمات الميزات:</strong> مفروشة، مكيفة، إطلالة، تشطيب لوكس، جديدة، تحت الإنشاء</li>
+          <li><strong style="color:var(--gold-light)">كلمات السعر:</strong> رخيصة، اقتصادية، فاخرة، استثمارية</li>
+        </ul>
+
+        <h3>أبحاث Bayut لأكثر الكلمات بحثاً (٢٠٢٤-٢٠٢٥)</h3>
+        <ul>
+          <li>شقق للإيجار في الرياض</li>
+          <li>فلل للبيع في جدة</li>
+          <li>شقق مفروشة</li>
+          <li>أراضي للبيع</li>
+          <li>شقق بالتقسيط</li>
+          <li>عقار استثماري</li>
+          <li>تمويل عقاري</li>
+        </ul>
+
+        <h3>كيف تستخدم الكلمات المفتاحية بذكاء</h3>
+        <ul>
+          <li>اذكر الكلمة الأساسية ٣-٥ مرات في الوصف (دون تكلف)</li>
+          <li>أضف مرادفات: "شقة / وحدة سكنية / استوديو"</li>
+          <li>اذكر أسماء المعالم القريبة: "قرب مسجد الراجحي"، "بجوار مول الرياض بارك"</li>
+          <li>استخدم أسماء الأحياء الفرعية: "حي الياسمين الشمالي" بدلاً من "حي الياسمين"</li>
+          <li>أضف كلمات النية المختلفة: "للسكن العائلي"، "للاستثمار"، "للتأجير السنوي"</li>
+        </ul>
+
+        <h3>أدوات البحث عن الكلمات المفتاحية</h3>
+        <ul>
+          <li><a href="https://trends.google.com" target="_blank">Google Trends</a> — لمعرفة الكلمات الرائجة</li>
+          <li><a href="https://ads.google.com/home/tools/keyword-planner/" target="_blank">Google Keyword Planner</a> — أرقام البحث الشهرية</li>
+          <li>ميزة الإكمال التلقائي في Google نفسه</li>
+          <li>مراقبة عناوين كبار الوسطاء في بيوت وعقار (تعلّم منهم)</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الرابع: عبارات الحث على الفعل (CTA)</h2>
+        <p>كل إعلان يجب أن ينتهي بدعوة واضحة. الإعلان الذي لا ينتهي بـ CTA يخسر <strong style="color:var(--gold-light)">٤٠-٦٠٪ من فرص التواصل</strong>.</p>
+
+        <h3>مبادئ CTA الفعّال</h3>
+        <ul>
+          <li><strong>محدد:</strong> "اتصل" أفضل من "تواصل معنا"</li>
+          <li><strong>عاجل:</strong> "اتصل الآن" أفضل من "اتصل"</li>
+          <li><strong>متعدد القنوات:</strong> أعطِ خيار الاتصال والواتساب والبريد</li>
+          <li><strong>محفّز:</strong> "احجز معاينتك المجانية" أفضل من "اتصل للمعاينة"</li>
+        </ul>
+
+        <h3>أمثلة CTA قوية</h3>
+        <div class="example-good">
+          <span class="label-good">للبيع:</span>
+          <ul style="padding-right:0;margin-top:.4rem;">
+            <li>"اتصل الآن قبل أن تُباع — الواتساب ٠٥٠X-XXX-XXXX"</li>
+            <li>"احجز موعد معاينتك اليوم — رد فوري خلال ١٥ دقيقة"</li>
+            <li>"للاستفسار وحجز المعاينة، تواصل واتساب على [الرقم]"</li>
+          </ul>
+        </div>
+        <div class="example-good">
+          <span class="label-good">للإيجار:</span>
+          <ul style="padding-right:0;margin-top:.4rem;">
+            <li>"متاحة للمعاينة اليوم — اتصل خلال ساعات العمل ٩ص-١٠م"</li>
+            <li>"إذا أعجبتك الشقة، احتفظ بها اليوم بدفعة الجدية فقط"</li>
+            <li>"خصم ٥٪ عند توقيع العقد قبل نهاية الأسبوع"</li>
+          </ul>
+        </div>
+
+        <h3>أخطاء شائعة في CTA</h3>
+        <div class="example-bad">
+          <span class="label-bad">تجنّب هذه العبارات:</span>
+          <ul style="padding-right:0;margin-top:.4rem;">
+            <li>"للجادين فقط" (تبدو مستفزة وتطرد العملاء)</li>
+            <li>"يُمنع المساومة" (تبدو متشددة قبل أن تبدأ المحادثة)</li>
+            <li>"لا للوسطاء" (تظهر أنك تخاف من المنافسة)</li>
+            <li>"الرجاء عدم الاتصال" (إذن لماذا أنت تعلن؟!)</li>
+          </ul>
+        </div>
+
+        <h3>أوقات استجابة العملاء</h3>
+        <ul>
+          <li>الرد خلال ٥ دقائق: نسبة التحويل ٥٠٪</li>
+          <li>الرد بعد ٣٠ دقيقة: تنخفض إلى ٢١٪</li>
+          <li>الرد بعد ٢٤ ساعة: تنخفض إلى ٣٪</li>
+          <li><strong style="color:var(--gold-light)">الخلاصة:</strong> سرعة الرد أهم من جودته الكاملة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الخامس: تخصيص الإعلان لكل منصة</h2>
+        <p>نفس العقار يحتاج صيغ مختلفة حسب طبيعة كل منصة.</p>
+
+        <h3>صيغة بيوت (طويلة ورسمية)</h3>
+        <ul>
+          <li>الوصف ٣٠٠-٥٠٠ كلمة</li>
+          <li>هيكل واضح بنقاط ()</li>
+          <li>لغة احترافية، لا عامية</li>
+          <li>اذكر جميع المواصفات التقنية</li>
+          <li>أضف قسم "ميزات المنطقة"</li>
+        </ul>
+
+        <h3>صيغة عقار (متوسطة ومحلية)</h3>
+        <ul>
+          <li>الوصف ٢٠٠-٤٠٠ كلمة</li>
+          <li>تشمل لمسة محلية (أسماء أحياء فرعية، معالم محلية)</li>
+          <li>اذكر التوصيلات (كهرباء، ماء، إنترنت STC)</li>
+          <li>اذكر الموقع بإحداثيات أو رابط Google Maps</li>
+        </ul>
+
+        <h3>صيغة OLX/Dubizzle (قصيرة وعملية)</h3>
+        <ul>
+          <li>الوصف ١٠٠-٢٠٠ كلمة</li>
+          <li>اذكر السعر في أول سطر</li>
+          <li>أهم ٥ مواصفات في نقاط</li>
+          <li>رقم الواتساب بوضوح</li>
+          <li>كلمات بسيطة بدون مصطلحات فاخرة</li>
+        </ul>
+
+        <h3>صيغة إنستغرام (بصرية وعاطفية)</h3>
+        <ul>
+          <li>عنوان جذاب في أول سطر (يظهر قبل "...المزيد")</li>
+          <li>سرد قصصي للعقار</li>
+          <li>ايموجي معتدلة (٣-٥ في النص الكامل)</li>
+          <li>هاشتاجات: ١٠-٢٠ هاشتاج متعلق بالعقار والموقع والمدينة</li>
+          <li>"اضغط على رابط البايو" أو "أرسل DM"</li>
+        </ul>
+
+        <h3>صيغة Snapchat / TikTok (لحظية)</h3>
+        <ul>
+          <li>عنوان واحد سريع: "شقة ٤ غرف بـ ٤٥٠ ألف فقط 👀"</li>
+          <li>الفيديو يحكي القصة، النص للتأكيد فقط</li>
+          <li>دعوة مباشرة للسواب أب أو الاتصال</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🎯 تمارين عملية</h2>
+        <div class="exercise-box">
+          <h4>التمرين الأول: اعادة كتابة ٣ عناوين</h4>
+          <p>خذ ٣ إعلانات حقيقية من بيوت أو عقار، وأعد كتابة عناوينها بصيغة [النوع + الموقع + الميزة + المحفز]. قارن بين الأصل والمحسّن.</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثاني: كتابة إعلان كامل</h4>
+          <p>اختر عقاراً حقيقياً (شقتك أو شقة قريب)، واكتب له إعلاناً كاملاً يتبع هيكل AIDA. تأكد من تضمين جميع الأقسام الإلزامية (المساحة، الموقع، التشطيب، السعر، CTA).</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثالث: ٤ نسخ لـ ٤ منصات</h4>
+          <p>خذ إعلانك من التمرين الثاني، وأعد كتابته بـ ٤ صيغ مختلفة لتناسب: بيوت، عقار، OLX، إنستغرام. لاحظ الفرق في الطول واللغة.</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الرابع: تحليل المنافسين</h4>
+          <p>افتح أعلى ١٠ إعلانات لنفس نوع العقار في منطقتك. سجّل: ما الكلمات المشتركة؟ ما المحفزات المستخدمة؟ ما طول العنوان المتوسط؟ ابنِ ملفك المرجعي.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📚 مصادر ومراجع موثوقة</h2>
+        <h3>أدوات كتابة وتحسين النصوص</h3>
+        <ul class="ref-list">
+          <li><a href="https://trends.google.com" target="_blank">Google Trends — اتجاهات البحث</a></li>
+          <li><a href="https://ads.google.com/home/tools/keyword-planner/" target="_blank">Google Keyword Planner</a></li>
+          <li><a href="https://answerthepublic.com" target="_blank">Answer The Public — أسئلة العملاء</a></li>
+          <li><a href="https://chat.openai.com" target="_blank">ChatGPT — مساعد كتابة الإعلانات</a></li>
+        </ul>
+        <h3>المراجع الأكاديمية</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.copyblogger.com" target="_blank">Copyblogger — أساسيات الكوبي رايتنغ</a></li>
+          <li><a href="https://www.nar.realtor/research-and-statistics" target="_blank">أبحاث NAR في كتابة الإعلانات</a></li>
+          <li><a href="https://www.zillow.com/research/" target="_blank">Zillow Research — تحليلات الإعلانات</a></li>
+        </ul>
+        <h3>قنوات يوتيوب مفيدة</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.youtube.com/results?search_query=كتابة+إعلان+عقاري+ناجح" target="_blank">كتابة إعلان عقاري ناجح — يوتيوب</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=copywriting+real+estate+arabic" target="_blank">كوبي رايتنغ عقاري بالعربية</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=SEO+للإعلانات+العقارية" target="_blank">SEO للإعلانات العقارية</a></li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🧠 اختبار الوحدة الرابعة</h2>
+        <p style="margin-bottom:1.2rem;">السؤال الأول: ما هي الصيغة الذهبية لعنوان عقاري ناجح؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">أ</span> اسم الوسيط + رقم الهاتف</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 1)"><span class="quiz-letter">ب</span> نوع العقار + الموقع + الميزة + المحفز</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">ج</span> السعر فقط</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">د</span> صور مع رموز تعجب</div>
+        <div id="quizFeedback1" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثاني: ماذا تعني صيغة AIDA؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 2)"><span class="quiz-letter">أ</span> Attention - Interest - Desire - Action</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">ب</span> Address - Info - Date - Amount</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">ج</span> Agent - Image - Deal - Asset</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">د</span> صيغة عقد بيع</div>
+        <div id="quizFeedback2" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثالث: ما تأثير الرد على العميل خلال ٥ دقائق؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">أ</span> لا فرق</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">ب</span> ١٠٪ زيادة في التحويل</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 3)"><span class="quiz-letter">ج</span> ٥٠٪ تحويل تقريباً</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">د</span> ١٠٠٪ تحويل</div>
+        <div id="quizFeedback3" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الرابع: أي عبارة CTA يجب تجنبها؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">أ</span> اتصل الآن لحجز المعاينة</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 4)"><span class="quiz-letter">ب</span> للجادين فقط ولا للوسطاء</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">ج</span> راسلني واتساب الآن</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">د</span> احجز معاينتك اليوم</div>
+        <div id="quizFeedback4" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+      </div>
+
+      <div class="next-unit">
+        <div>
+          <h3>الوحدة التالية 🚀</h3>
+          <p>الإعلانات المدفوعة عبر Meta و Google — استهداف ذكي، ميزانيات فعّالة، وحملات تجلب عملاء حقيقيين</p>
+        </div>
+        <a href="unit-5.html" class="btn-next">التالي ←</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <div class="lessons-sidebar">
+      <div class="sidebar-title">📚 دروس الوحدة</div>
+      <a class="lesson-item active" href="#"><div class="lesson-num">١</div><div class="lesson-info"><strong>العنوان الجذاب</strong><span>⏱ ٨ دقائق</span></div><span class="lesson-done">▶</span></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٢</div><div class="lesson-info"><strong>هيكل وصف العقار</strong><span>⏱ ١٠ دقائق</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٣</div><div class="lesson-info"><strong>SEO والكلمات المفتاحية</strong><span>⏱ ٩ دقائق</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٤</div><div class="lesson-info"><strong>عبارات CTA</strong><span>⏱ ٨ دقائق</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٥</div><div class="lesson-info"><strong>تخصيص لكل منصة</strong><span>⏱ ١٠ دقائق</span></div></a>
+
+      <div class="sidebar-title" style="margin-top:1rem;">🗂 وحدات الدورة</div>
+      <a class="lesson-item" href="unit-1.html"><div class="lesson-num">١</div><div class="lesson-info"><strong>مدخل سوق العقارات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-2.html"><div class="lesson-num">٢</div><div class="lesson-info"><strong>المنصات العقارية</strong><span>⏱ ٥٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-3.html"><div class="lesson-num">٣</div><div class="lesson-info"><strong>التصوير المرئي</strong><span>⏱ ٦٠ دقيقة</span></div></a>
+      <a class="lesson-item active" href="unit-4.html"><div class="lesson-num" style="background:var(--gold);color:var(--navy);">٤</div><div class="lesson-info"><strong>كتابة الإعلانات</strong><span>الوحدة الحالية</span></div></a>
+      <a class="lesson-item" href="unit-5.html"><div class="lesson-num">٥</div><div class="lesson-info"><strong>الإعلانات المدفوعة</strong><span>⏱ ٧٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-6.html"><div class="lesson-num">٦</div><div class="lesson-info"><strong>إدارة العملاء</strong><span>⏱ ٥٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-7.html"><div class="lesson-num">٧</div><div class="lesson-info"><strong>العمولات والعقود</strong><span>⏱ ٦٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-8.html"><div class="lesson-num">٨</div><div class="lesson-info"><strong>قياس الأداء</strong><span>⏱ ٤٠ دقيقة</span></div></a>
+    </div>
+  </div>
+</div>
+
+<script>
+function loadVideo() {
+  const videoId = 'YOUR_VIDEO_ID';
+  const placeholder = document.getElementById('videoPlaceholder');
+  const wrapper = placeholder.parentElement;
+  placeholder.style.display = 'none';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  wrapper.appendChild(iframe);
+}
+function checkAnswer(el, isCorrect, qNum) {
+  let siblings = [];
+  let node = el;
+  while (node.previousElementSibling && node.previousElementSibling.classList.contains('quiz-option')) { node = node.previousElementSibling; }
+  while (node && node.classList && node.classList.contains('quiz-option')) { siblings.push(node); node = node.nextElementSibling; }
+  siblings.forEach(o => { o.classList.remove('correct','wrong'); o.onclick = null; });
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('quizFeedback' + qNum);
+  fb.style.display = 'block';
+  fb.style.color = isCorrect ? 'var(--accent)' : '#e74c3c';
+  fb.textContent = isCorrect ? '✓ إجابة صحيحة!' : '✗ الإجابة غير صحيحة، راجع الدرس مرة أخرى.';
+}
+</script>
+</body>
+</html>
