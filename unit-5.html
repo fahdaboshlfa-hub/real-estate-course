@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة ٥ — الإعلانات المدفوعة Meta & Google</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+    --navy: #0A1628; --navy-mid: #112240; --navy-light: #1C3461;
+    --white: #F8F5EF; --gray: #A0A8B8; --accent: #2ECC9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:var(--navy); color:var(--white); }
+  nav { position:sticky; top:0; z-index:100; background:rgba(10,22,40,.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(201,168,76,.15); padding:.9rem 2rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .nav-back { display:flex; align-items:center; gap:.5rem; color:var(--gold-light); text-decoration:none; font-size:.9rem; transition:color .2s; }
+  .nav-back:hover { color:var(--gold); }
+  .nav-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; }
+  .nav-progress { display:flex; align-items:center; gap:.5rem; font-size:.8rem; color:var(--gray); }
+  .progress-bar { width:100px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:62.5%; }
+  .unit-hero { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,.12) 0%, transparent 60%), linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); padding:3rem 2rem 2rem; text-align:center; }
+  .unit-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); border-radius:50px; padding:.3rem 1rem; font-size:.78rem; color:var(--gold-light); margin-bottom:1rem; }
+  .unit-hero h1 { font-family:'Tajawal',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; margin-bottom:.8rem; }
+  .unit-hero h1 span { color:var(--gold); }
+  .unit-meta { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-top:1.2rem; font-size:.85rem; color:var(--gray); }
+  .unit-meta span { display:flex; align-items:center; gap:.4rem; }
+  .course-layout { max-width:1200px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 320px; gap:2rem; }
+  @media(max-width:900px){ .course-layout { grid-template-columns:1fr; } }
+  .video-wrapper { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:14px; border:1px solid rgba(201,168,76,.2); background:var(--navy-mid); }
+  .video-wrapper iframe { position:absolute; top:0; right:0; width:100%; height:100%; border:none; border-radius:14px; }
+  .video-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; background:var(--navy-mid); border-radius:14px; cursor:pointer; }
+  .play-btn { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; box-shadow:0 4px 20px rgba(201,168,76,.4); transition:transform .2s, box-shadow .2s; }
+  .play-btn:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(201,168,76,.5); }
+  .video-placeholder p { color:var(--gray); font-size:.9rem; }
+  .lessons-sidebar { display:flex; flex-direction:column; gap:.6rem; }
+  .sidebar-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1rem; color:var(--gold); margin-bottom:.4rem; padding-bottom:.6rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .lesson-item { display:flex; align-items:center; gap:.8rem; background:var(--navy-mid); border:1px solid rgba(201,168,76,.1); border-radius:10px; padding:.8rem 1rem; cursor:pointer; transition:border-color .2s, background .2s; text-decoration:none; color:var(--white); }
+  .lesson-item:hover, .lesson-item.active { border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.07); }
+  .lesson-item.active .lesson-num { background:var(--gold); color:var(--navy); }
+  .lesson-num { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; }
+  .lesson-info { flex:1; }
+  .lesson-info strong { display:block; font-size:.88rem; margin-bottom:.15rem; }
+  .lesson-info span { font-size:.75rem; color:var(--gray); }
+  .lesson-done { color:var(--accent); font-size:.9rem; }
+  .content-section { margin-top:2rem; }
+  .content-card { background:var(--navy-mid); border:1px solid rgba(201,168,76,.12); border-radius:14px; padding:2rem; margin-bottom:1.5rem; }
+  .content-card h2 { font-family:'Tajawal',sans-serif; font-size:1.3rem; font-weight:800; color:var(--gold); margin-bottom:1.2rem; padding-bottom:.8rem; border-bottom:1px solid rgba(201,168,76,.15); }
+  .content-card h3 { font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin:1.2rem 0 .6rem; }
+  .content-card p { color:var(--gray); line-height:1.9; font-size:.95rem; margin-bottom:.8rem; }
+  .content-card ul { padding-right:1.2rem; }
+  .content-card ul li { color:var(--gray); line-height:1.8; font-size:.95rem; margin-bottom:.4rem; list-style:none; display:flex; align-items:flex-start; gap:.6rem; }
+  .content-card ul li::before { content:'◆'; color:var(--gold); font-size:.55rem; margin-top:.45rem; flex-shrink:0; }
+  .content-card a { color:var(--gold-light); text-decoration:none; border-bottom:1px dashed rgba(201,168,76,.4); }
+  .content-card a:hover { color:var(--gold); }
+  .key-points { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
+  .key-point { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15); border-radius:10px; padding:1rem; }
+  .key-point .icon { font-size:1.5rem; margin-bottom:.5rem; }
+  .key-point h4 { font-family:'Tajawal',sans-serif; font-weight:700; font-size:.9rem; margin-bottom:.3rem; }
+  .key-point p { font-size:.82rem; color:var(--gray); line-height:1.6; }
+  .quiz-option { background:var(--navy); border:1px solid rgba(201,168,76,.15); border-radius:8px; padding:.9rem 1.2rem; margin-bottom:.6rem; cursor:pointer; font-size:.92rem; transition:border-color .2s, background .2s; display:flex; align-items:center; gap:.8rem; }
+  .quiz-option:hover { border-color:var(--gold); background:rgba(201,168,76,.07); }
+  .quiz-option.correct { border-color:var(--accent); background:rgba(46,204,154,.1); }
+  .quiz-option.wrong { border-color:#e74c3c; background:rgba(231,76,60,.1); }
+  .quiz-letter { width:28px; height:28px; flex-shrink:0; border-radius:50%; background:rgba(201,168,76,.12); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; }
+  .next-unit { background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05)); border:1px solid rgba(201,168,76,.3); border-radius:14px; padding:1.8rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:1.5rem; }
+  .next-unit h3 { font-family:'Tajawal',sans-serif; font-size:1.1rem; font-weight:800; }
+  .next-unit p { color:var(--gray); font-size:.88rem; margin-top:.3rem; }
+  .btn-next { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--navy); font-family:'Tajawal',sans-serif; font-weight:800; padding:.8rem 1.8rem; border-radius:8px; border:none; cursor:pointer; font-size:.95rem; white-space:nowrap; text-decoration:none; transition:transform .2s, box-shadow .2s; display:inline-flex; align-items:center; gap:.5rem; }
+  .btn-next:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.35); }
+  .ref-list { list-style:none; padding:0; }
+  .ref-list li { padding:.6rem 0; border-bottom:1px solid rgba(201,168,76,.08); }
+  .ref-list li::before { content:'📎'; margin-left:.4rem; }
+  .exercise-box { background:rgba(46,204,154,.06); border-right:3px solid var(--accent); padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin-top:1rem; }
+  .exercise-box h4 { color:var(--accent); margin-bottom:.5rem; font-family:'Tajawal',sans-serif; }
+  .data-table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.88rem; }
+  .data-table th, .data-table td { padding:.7rem; border:1px solid rgba(201,168,76,.15); text-align:right; }
+  .data-table th { background:rgba(201,168,76,.1); color:var(--gold-light); font-family:'Tajawal',sans-serif; }
+  .data-table td { color:var(--gray); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="real-estate-course.html" class="nav-back">← العودة للدورة</a>
+  <div class="nav-title">الوحدة ٥ — الإعلانات المدفوعة</div>
+  <div class="nav-progress">
+    <span>٥/٨</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<div class="unit-hero">
+  <div class="unit-badge">📣 الوحدة الخامسة</div>
+  <h1>الإعلانات المدفوعة <span>Meta & Google</span></h1>
+  <div class="unit-meta">
+    <span>⏱ ٧٠ دقيقة</span>
+    <span>📹 ٥ دروس</span>
+    <span>📝 اختبار + تمارين حملات</span>
+    <span>🎯 مستوى متوسط-متقدم</span>
+  </div>
+</div>
+
+<div class="course-layout">
+  <div>
+
+    <div class="video-wrapper">
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn">▶</div>
+        <p>الدرس الأول: مدخل إلى Meta Ads — Facebook و Instagram</p>
+        <p style="font-size:.78rem;color:rgba(160,168,184,.6)">اضغط للتشغيل</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+
+      <div class="content-card">
+        <h2>📌 ما ستتعلمه في هذه الوحدة</h2>
+        <div class="key-points">
+          <div class="key-point"><div class="icon">📱</div><h4>Meta Ads</h4><p>إعلانات فيسبوك وإنستغرام للعقار</p></div>
+          <div class="key-point"><div class="icon">🔎</div><h4>Google Ads</h4><p>حملات البحث والشبكة الإعلانية</p></div>
+          <div class="key-point"><div class="icon">🎯</div><h4>الاستهداف الذكي</h4><p>الوصول للعميل المثالي بأقل تكلفة</p></div>
+          <div class="key-point"><div class="icon">💰</div><h4>الميزانية و ROI</h4><p>كيف توزع ميزانيتك وتحسب العائد</p></div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الأول: مدخل إلى Meta Ads (فيسبوك وإنستغرام)</h2>
+        <p>تمتلك شركة Meta (فيسبوك سابقاً) أكثر من <strong style="color:var(--gold-light)">٣.٧ مليار مستخدم نشط</strong> شهرياً عبر منصاتها (Facebook، Instagram، Messenger، WhatsApp). في السوق الخليجي والعربي، هذه المنصات هي قنوات التسويق العقاري رقم واحد للوسيط الفرد.</p>
+
+        <h3>لماذا Meta هي الأفضل للعقار؟</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">استهداف دقيق:</strong> العمر، الموقع الجغرافي، الاهتمامات، الدخل التقديري</li>
+          <li><strong style="color:var(--gold-light)">تنوع الصيغ:</strong> صور، فيديو، Carousel، Reels، Stories، Lead Forms</li>
+          <li><strong style="color:var(--gold-light)">تكلفة منخفضة:</strong> الوصول لـ ١٠٠٠ شخص يكلف ١٠-٣٠ ريال فقط</li>
+          <li><strong style="color:var(--gold-light)">تحويل مباشر:</strong> العميل يتواصل عبر Messenger أو WhatsApp بضغطة</li>
+          <li><strong style="color:var(--gold-light)">تحليلات قوية:</strong> تعرف بالضبط من شاهد، من تفاعل، ومن تواصل</li>
+        </ul>
+
+        <h3>إنشاء حساب Meta Business Manager</h3>
+        <ul>
+          <li>اذهب إلى <a href="https://business.facebook.com" target="_blank">business.facebook.com</a></li>
+          <li>أنشئ حساب الأعمال باستخدام إيميل احترافي (وليس شخصي)</li>
+          <li>أضف صفحة فيسبوك لمكتبك العقاري (إذا لم تكن موجودة، أنشئها)</li>
+          <li>اربط حساب إنستغرام التجاري بنفس الصفحة</li>
+          <li>أضف بطاقة دفع (Visa/MasterCard) أو مدى</li>
+          <li>أكد هوية الحساب (التحقق ضروري للحملات السياسية والمالية)</li>
+        </ul>
+
+        <h3>أنواع حملات Meta للعقار</h3>
+        <ul>
+          <li><strong>Awareness (الوعي):</strong> لزيادة الشهرة — مناسبة لمكتب جديد</li>
+          <li><strong>Traffic (الزيارات):</strong> توجيه العميل لموقعك أو إعلانك في بيوت/عقار</li>
+          <li><strong>Engagement (التفاعل):</strong> زيادة التفاعل مع منشوراتك</li>
+          <li><strong>Leads (العملاء المحتملين):</strong> ⭐ الأهم — جمع أرقام واتساب ومعلومات العميل مباشرة</li>
+          <li><strong>Messages (الرسائل):</strong> دفع العميل لمراسلتك في Messenger أو WhatsApp</li>
+          <li><strong>Sales (المبيعات):</strong> للمشاريع العقارية الكبيرة بنظام تتبع التحويلات</li>
+        </ul>
+
+        <h3>صيغ الإعلان (Ad Formats) للعقار</h3>
+        <ul>
+          <li><strong>Single Image:</strong> صورة واحدة احترافية + نص — الأبسط والأرخص</li>
+          <li><strong>Single Video:</strong> فيديو ١٥-٦٠ ثانية — يحقق ضعف التفاعل</li>
+          <li><strong>Carousel:</strong> ٣-١٠ صور قابلة للسحب — مثالي لعرض غرف العقار</li>
+          <li><strong>Collection:</strong> صورة رئيسية + ٤ صور صغيرة — للعقارات الفاخرة</li>
+          <li><strong>Reels Ads:</strong> فيديوهات قصيرة عمودية — الأعلى وصولاً حالياً</li>
+          <li><strong>Stories Ads:</strong> إعلانات ٢٤ ساعة عمودية — للعروض المحدودة</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثاني: الاستهداف الذكي للجمهور العقاري</h2>
+        <p>الاستهداف هو ٧٠٪ من نجاح حملتك. حتى أفضل إعلان لن يبيع إذا وصل لغير الجمهور المناسب.</p>
+
+        <h3>المعايير الديموغرافية للعقار</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">العمر:</strong>
+            <ul style="margin-top:.4rem;">
+              <li>للإيجار: ٢٢-٣٥ سنة</li>
+              <li>للبيع (شقق): ٢٨-٤٥ سنة</li>
+              <li>للبيع (فلل): ٣٥-٥٥ سنة</li>
+              <li>للاستثمار: ٤٠-٦٠ سنة</li>
+            </ul>
+          </li>
+          <li><strong style="color:var(--gold-light)">الجنس:</strong> غالباً الذكور لاتخاذ قرار الشراء، ولكن للإيجار العائلي استهدف الإناث أيضاً</li>
+          <li><strong style="color:var(--gold-light)">الحالة الاجتماعية:</strong> متزوج + لديه أطفال للسكن العائلي، أعزب للاستوديو</li>
+          <li><strong style="color:var(--gold-light)">اللغة:</strong> العربية + الإنجليزية (للمقيمين الأجانب)</li>
+        </ul>
+
+        <h3>الاستهداف الجغرافي</h3>
+        <ul>
+          <li>المدينة كاملة: للعقارات المعتادة</li>
+          <li>محيط ١-٥ كم حول العقار: للوصول للأجوار (يفكرون في الانتقال)</li>
+          <li>أحياء محددة: لاستهداف من يبحث عن نفس المنطقة</li>
+          <li><strong>تكتيك قوي:</strong> استهدف الأشخاص الموجودين الآن في فنادق المدينة (مسافرين أو زوار)</li>
+        </ul>
+
+        <h3>الاهتمامات (Interests) المفيدة للعقار</h3>
+        <ul>
+          <li>Real estate / عقارات</li>
+          <li>Property investment / استثمار عقاري</li>
+          <li>Home improvement / تحسين المنازل</li>
+          <li>Mortgage / تمويل عقاري</li>
+          <li>أسماء البنوك العقارية (الراجحي، الأهلي، SAB)</li>
+          <li>منصات عقارية (Bayut، Aqar، Property Finder)</li>
+          <li>Furniture / أثاث (يدل على شراء جديد)</li>
+          <li>IKEA، Home Centre (مؤشر على انتقال جديد)</li>
+        </ul>
+
+        <h3>السلوكيات (Behaviors)</h3>
+        <ul>
+          <li>Recently moved (انتقلوا حديثاً) — للإيجار الجديد</li>
+          <li>Newlyweds (متزوجون حديثاً)</li>
+          <li>Frequent travelers (مسافرون كثر) — للاستثمار العقاري</li>
+          <li>Small business owners — لديهم سيولة للاستثمار</li>
+        </ul>
+
+        <h3>الجمهور المخصص (Custom Audience)</h3>
+        <ul>
+          <li><strong>قائمة العملاء:</strong> ارفع قائمة أرقام عملائك السابقين</li>
+          <li><strong>زوار موقعك:</strong> أعد استهدافهم عبر Meta Pixel</li>
+          <li><strong>المتفاعلون:</strong> من شاهد فيديوهاتك ٥٠٪+</li>
+          <li><strong>متابعو إنستغرام:</strong> استهدفهم بإعلانات حصرية</li>
+        </ul>
+
+        <h3>الجمهور المشابه (Lookalike Audience)</h3>
+        <p>هذه ميزة قوية: تعطي Meta قائمة عملاء سابقين، وهي تجد لك "أشخاصاً مشابهين" لهم في خصائصهم وسلوكهم. أفضل تحويلات أحياناً تأتي من Lookalike 1٪.</p>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الثالث: حملات Google Ads للعقار</h2>
+        <p>إذا كان فيسبوك يصل للعميل وهو "متصفّح ومسلٍّ"، فإن Google يصل إليه وهو <strong style="color:var(--gold-light)">يبحث فعلاً عن عقار</strong>. هذه نية شراء عالية جداً، لكن التكلفة لكل نقرة أعلى أيضاً.</p>
+
+        <h3>أنواع حملات Google للعقار</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">Search Ads (الإعلانات النصية):</strong> تظهر فوق نتائج بحث Google عندما يكتب شخص "شقة للبيع في الرياض"</li>
+          <li><strong style="color:var(--gold-light)">Display Ads (الشبكة الإعلانية):</strong> صور بانر تظهر في المواقع والتطبيقات</li>
+          <li><strong style="color:var(--gold-light)">YouTube Ads:</strong> فيديوهات قبل/بعد/أثناء المحتوى</li>
+          <li><strong style="color:var(--gold-light)">Performance Max:</strong> حملة ذكية تستخدم AI لتوزيع الإعلان على كل قنوات Google</li>
+          <li><strong style="color:var(--gold-light)">Discovery Ads:</strong> في تطبيق Google والتابات الجديدة في Chrome</li>
+        </ul>
+
+        <h3>إنشاء حملة Google Ads — خطوة بخطوة</h3>
+        <ul>
+          <li>اذهب إلى <a href="https://ads.google.com" target="_blank">ads.google.com</a> وأنشئ حساباً</li>
+          <li>اربط حسابك بـ Google Analytics و Google Tag Manager (للتتبع)</li>
+          <li>اختر نوع الحملة: Search للمبتدئين</li>
+          <li>اختر الهدف: Leads (عملاء محتملين) أو Website Traffic</li>
+          <li>اختر شبكة العرض: Google Search Network (للمبتدئين كافٍ)</li>
+          <li>اضبط الميزانية اليومية (ابدأ بـ ٥٠ ريال يومياً)</li>
+          <li>اختر نوع الدفع: CPC (تكلفة النقرة) للمبتدئ</li>
+        </ul>
+
+        <h3>الكلمات المفتاحية للعقار في Google</h3>
+        <p>هذه قائمة بأهم الكلمات وتكلفتها التقريبية في السوق السعودي:</p>
+        <table class="data-table">
+          <tr><th>الكلمة المفتاحية</th><th>الحجم الشهري</th><th>CPC المتوقع</th></tr>
+          <tr><td>شقق للإيجار الرياض</td><td>٢٢,٠٠٠</td><td>٤-٧ ريال</td></tr>
+          <tr><td>فلل للبيع جدة</td><td>١٨,٠٠٠</td><td>٦-١٠ ريال</td></tr>
+          <tr><td>عقارات للبيع</td><td>٤٠,٠٠٠</td><td>٣-٦ ريال</td></tr>
+          <tr><td>شقق مفروشة</td><td>٢٧,٠٠٠</td><td>٣-٥ ريال</td></tr>
+          <tr><td>أراضي للبيع</td><td>١٥,٠٠٠</td><td>٥-٩ ريال</td></tr>
+          <tr><td>تمويل عقاري</td><td>١٢,٠٠٠</td><td>١٥-٢٥ ريال</td></tr>
+        </table>
+
+        <h3>أنواع المطابقة (Keyword Match Types)</h3>
+        <ul>
+          <li><strong>Broad Match (تطابق واسع):</strong> "شقة" يظهر إعلانك لـ "بيت"، "منزل"، "وحدة سكنية" — أوسع لكن أقل دقة</li>
+          <li><strong>Phrase Match (عبارة):</strong> "شقة للإيجار" يظهر فقط عند البحث بهذا التركيب</li>
+          <li><strong>Exact Match [دقيق]:</strong> [شقة للإيجار في الرياض] يظهر بالضبط — أعلى دقة</li>
+          <li><strong>Negative Keywords (الكلمات السلبية):</strong> ⭐ أضف "وظائف"، "مجاناً"، "تخريط"، "خواطر" لاستبعاد الباحثين غير المهتمين</li>
+        </ul>
+
+        <h3>كتابة إعلان Google جذاب</h3>
+        <ul>
+          <li>٣ عناوين (٣٠ حرف لكل واحد): متنوعة لتدور تلقائياً</li>
+          <li>وصف (٩٠ حرف): يحتوي ميزة + CTA</li>
+          <li>أضف ملحقات (Extensions):
+            <ul style="margin-top:.4rem;">
+              <li>Call Extension: رقم اتصال مباشر</li>
+              <li>Location Extension: عنوان المكتب</li>
+              <li>Sitelinks: روابط لصفحات أخرى (للبيع، للإيجار، عن الشركة)</li>
+              <li>Callouts: ميزات تظهر تحت الإعلان</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الرابع: الميزانية وحساب العائد ROI</h2>
+        <p>الإعلانات المدفوعة استثمار — وكل استثمار يحتاج حساباً دقيقاً.</p>
+
+        <h3>توزيع الميزانية المقترح (لوسيط فرد)</h3>
+        <table class="data-table">
+          <tr><th>القناة</th><th>النسبة</th><th>المبلغ (إذا كان ٣٠٠٠ ريال شهرياً)</th></tr>
+          <tr><td>Meta Ads (Facebook+Instagram)</td><td>٥٠٪</td><td>١٥٠٠ ريال</td></tr>
+          <tr><td>Google Search Ads</td><td>٣٠٪</td><td>٩٠٠ ريال</td></tr>
+          <tr><td>Bayut / Aqar إعلانات مميزة</td><td>١٥٪</td><td>٤٥٠ ريال</td></tr>
+          <tr><td>اختبارات وتجارب</td><td>٥٪</td><td>١٥٠ ريال</td></tr>
+        </table>
+
+        <h3>المؤشرات الأساسية (KPIs)</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">CPM (تكلفة الألف ظهور):</strong> كم تدفع لرؤية ١٠٠٠ شخص لإعلانك — الطبيعي ١٠-٣٠ ريال للعقار</li>
+          <li><strong style="color:var(--gold-light)">CPC (تكلفة النقرة):</strong> كم تدفع لكل ضغطة — الطبيعي ١-٧ ريال</li>
+          <li><strong style="color:var(--gold-light)">CTR (نسبة النقر):</strong> كم نسبة من شاهد ضغط — جيد ١-٣٪، ممتاز ٣-٥٪</li>
+          <li><strong style="color:var(--gold-light)">CPL (تكلفة العميل المحتمل):</strong> كم تدفع لكل رقم/استفسار — الجيد ٢٠-٥٠ ريال</li>
+          <li><strong style="color:var(--gold-light)">CAC (تكلفة الاستحواذ):</strong> إجمالي الإنفاق ÷ الصفقات المكتملة</li>
+          <li><strong style="color:var(--gold-light)">ROAS (العائد على الإنفاق):</strong> الإيرادات ÷ الإنفاق × ١٠٠٪</li>
+        </ul>
+
+        <h3>مثال حساب ROI</h3>
+        <p style="background:rgba(46,204,154,.06);border-right:3px solid var(--accent);padding:1rem;border-radius:0 8px 8px 0;">
+          أنفقت <strong style="color:var(--white);">٣,٠٠٠ ريال</strong> على Meta Ads هذا الشهر.<br>
+          حصلت على <strong style="color:var(--white);">٦٠ رقم واتساب</strong> (CPL = ٥٠ ريال).<br>
+          من بينهم <strong style="color:var(--white);">١٥ عميل جاد</strong> (٢٥٪).<br>
+          أغلقت <strong style="color:var(--white);">٢ صفقة بيع</strong> بقيمة ٦٠٠,٠٠٠ ريال إجمالي.<br>
+          عمولتك <strong style="color:var(--white);">١٢,٠٠٠ ريال</strong> (٢٪).<br>
+          <strong style="color:var(--accent);">ROAS = ١٢,٠٠٠ ÷ ٣,٠٠٠ = ٤٠٠٪</strong> ✨
+        </p>
+
+        <h3>متى توقف الحملة ومتى تكبّرها؟</h3>
+        <ul>
+          <li><strong>كبّر الميزانية ٢٠٪</strong> إذا كان CPL أقل من ٥٠ ريال و CTR أعلى من ٢٪</li>
+          <li><strong>أوقف الحملة</strong> إذا CPL أعلى من ١٥٠ ريال بعد ٧ أيام</li>
+          <li><strong>بدّل الإعلان</strong> إذا CTR أقل من ٠.٨٪</li>
+          <li><strong>وسّع الاستهداف</strong> إذا Reach منخفض (أقل من ١٠٠٠٠/يوم)</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>📖 الدرس الخامس: إعادة الاستهداف (Retargeting) والقمع التسويقي</h2>
+        <p>أبحاث Meta تؤكد أن <strong style="color:var(--gold-light)">٩٧٪ من زوار إعلانك لا يتواصلون من المرة الأولى</strong>. الـ Retargeting يستهدف هؤلاء بإعلانات متابعة ذكية.</p>
+
+        <h3>قمع التسويق العقاري (Funnel)</h3>
+        <ul>
+          <li><strong style="color:var(--gold-light)">TOFU (أعلى القمع):</strong> الوعي — فيديوهات تعليمية، إنفوغرافيك "كيف تختار حياً"</li>
+          <li><strong style="color:var(--gold-light)">MOFU (وسط القمع):</strong> الاهتمام — كتالوج العقارات، جولات افتراضية</li>
+          <li><strong style="color:var(--gold-light)">BOFU (أسفل القمع):</strong> القرار — عروض خاصة، خصم محدود، استشارة مجانية</li>
+        </ul>
+
+        <h3>تثبيت Meta Pixel و Google Tag</h3>
+        <ul>
+          <li>Meta Pixel: كود يُثبّت على موقعك ليتتبع الزوار</li>
+          <li>Google Tag Manager: يدير جميع الأكواد التتبعية بسهولة</li>
+          <li>تتبع الأحداث: زيارة، عرض عقار، ملء نموذج، اتصال</li>
+        </ul>
+
+        <h3>جماهير Retargeting الذكية</h3>
+        <ul>
+          <li>زوار موقعك في آخر ٧ أيام لكن لم يتواصلوا</li>
+          <li>من شاهد فيديو ٧٥٪+ لكن لم يضغط CTA</li>
+          <li>من فتح Lead Form ولم يكمله</li>
+          <li>من تواصل سابقاً ولم يكمل الصفقة (متابعة بعد ٣٠ يوم)</li>
+        </ul>
+
+        <h3>أمثلة إعلانات Retargeting قوية</h3>
+        <ul>
+          <li>"لاحظنا اهتمامك بشقق حي الياسمين — لدينا ٣ خيارات جديدة هذا الأسبوع"</li>
+          <li>"ما زالت الشقة التي شاهدتها متاحة — احجزها قبل ٧ أيام"</li>
+          <li>"حصرياً لمن زار صفحتنا: خصم ٥٪ على عمولة البيع"</li>
+        </ul>
+
+        <h3>تردد الإعلان (Frequency)</h3>
+        <ul>
+          <li>اجعل التكرار بين ٢-٥ في الأسبوع (للوسط القمع)</li>
+          <li>أكثر من ٧ يعتبر "إرهاق إعلاني" ويسبب نتائج سلبية</li>
+          <li>أقل من ٢ في الأسبوع لا يكفي للتذكير</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🎯 تمارين عملية</h2>
+        <div class="exercise-box">
+          <h4>التمرين الأول: إنشاء حساب Meta Business</h4>
+          <p>اذهب إلى business.facebook.com وأنشئ حساب Business Manager. اربط صفحة فيسبوك مكتبك (أو أنشئها)، اربط الإنستغرام التجاري، وأضف وسيلة دفع. لا تنشر حملة بعد — فقط أعدّ البنية التحتية.</p>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثاني: حملة Lead Ads بـ ١٥٠ ريال</h4>
+          <p>أنشئ حملة Lead Ads على عقار حقيقي:</p>
+          <ul>
+            <li>الميزانية: ٥٠ ريال/يوم لمدة ٣ أيام</li>
+            <li>الجمهور: مدينتك + عمر ٢٨-٤٥ + اهتمامات (عقار، تمويل)</li>
+            <li>الصورة: أفضل صورة للعقار (من تمرين الوحدة ٣)</li>
+            <li>النص: استخدم صيغة الوحدة ٤</li>
+            <li>سجّل النتائج: CPM، CPC، CTR، CPL، عدد الـ Leads</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الثالث: حملة Google Search Ads</h4>
+          <p>أنشئ حساب Google Ads، ثم حملة بسيطة:</p>
+          <ul>
+            <li>الميزانية: ٣٠ ريال/يوم</li>
+            <li>كلمات مفتاحية: ٥-١٠ كلمات (تطابق عبارة)</li>
+            <li>كلمات سلبية: أضف ١٠-١٥ كلمة سلبية</li>
+            <li>إعلان نصي: ٣ عناوين + ٢ وصف</li>
+            <li>قارن CPC و CPL مع حملة Meta</li>
+          </ul>
+        </div>
+        <div class="exercise-box">
+          <h4>التمرين الرابع: حساب ROI</h4>
+          <p>بعد ١٤ يوماً من الحملات، احسب: كم أنفقت؟ كم Lead حصلت؟ كم منهم تحوّل لعميل؟ كم صفقة أغلقت؟ ما الـ ROAS؟ سجّل كل شيء في Excel.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>📚 مصادر ومراجع موثوقة</h2>
+        <h3>المنصات الرسمية</h3>
+        <ul class="ref-list">
+          <li><a href="https://business.facebook.com" target="_blank">Meta Business Manager</a></li>
+          <li><a href="https://www.facebook.com/business/learn" target="_blank">Meta Blueprint — التعلم الرسمي المجاني</a></li>
+          <li><a href="https://ads.google.com" target="_blank">Google Ads</a></li>
+          <li><a href="https://skillshop.exceedlms.com" target="_blank">Google Skillshop — شهادات Google Ads المجانية</a></li>
+          <li><a href="https://analytics.google.com" target="_blank">Google Analytics</a></li>
+          <li><a href="https://tagmanager.google.com" target="_blank">Google Tag Manager</a></li>
+        </ul>
+        <h3>الشهادات المهنية</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.facebook.com/business/learn/certification" target="_blank">Meta Certified Digital Marketing Associate (مجاني)</a></li>
+          <li><a href="https://skillshop.exceedlms.com/student/path/18128" target="_blank">Google Ads Search Certification (مجاني)</a></li>
+          <li><a href="https://skillshop.exceedlms.com/student/path/2938" target="_blank">Google Analytics Certification (مجاني)</a></li>
+        </ul>
+        <h3>قنوات يوتيوب موصى بها</h3>
+        <ul class="ref-list">
+          <li><a href="https://www.youtube.com/results?search_query=Meta+Ads+شرح+عربي+عقار" target="_blank">شرح Meta Ads بالعربية للعقار</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=Google+Ads+تسويق+عقاري" target="_blank">Google Ads للتسويق العقاري</a></li>
+          <li><a href="https://www.youtube.com/results?search_query=Lead+Ads+Facebook+عقاري" target="_blank">Lead Ads فيسبوك للعقار</a></li>
+          <li><a href="https://www.youtube.com/@MetaforBusiness" target="_blank">قناة Meta for Business الرسمية</a></li>
+          <li><a href="https://www.youtube.com/@GoogleAds" target="_blank">قناة Google Ads الرسمية</a></li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>🧠 اختبار الوحدة الخامسة</h2>
+        <p style="margin-bottom:1.2rem;">السؤال الأول: ما هو أفضل نوع حملة Meta للوسيط العقاري الذي يريد جمع أرقام تواصل؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">أ</span> Awareness</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">ب</span> Engagement</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 1)"><span class="quiz-letter">ج</span> Leads</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 1)"><span class="quiz-letter">د</span> Reach</div>
+        <div id="quizFeedback1" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثاني: ماذا يعني CPL؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">أ</span> تكلفة الإعلان الإجمالية</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 2)"><span class="quiz-letter">ب</span> Cost Per Lead — تكلفة العميل المحتمل</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">ج</span> Click Per Like</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 2)"><span class="quiz-letter">د</span> Customer Phone List</div>
+        <div id="quizFeedback2" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الثالث: ما الفائدة الرئيسية للكلمات السلبية (Negative Keywords) في Google Ads؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">أ</span> ترفع ترتيب الإعلان</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 3)"><span class="quiz-letter">ب</span> تستبعد بحث الأشخاص غير المهتمين</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">ج</span> تقلل الإعلان لجمهور أصغر</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 3)"><span class="quiz-letter">د</span> تزيد التكلفة لكل نقرة</div>
+        <div id="quizFeedback3" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الرابع: متى ينبغي تكبير ميزانية الحملة؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">أ</span> بعد ١٢ ساعة من النشر</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 4)"><span class="quiz-letter">ب</span> عندما يكون CPL منخفضاً و CTR أعلى من ٢٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">ج</span> عندما تكون CTR أقل من ٠.٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 4)"><span class="quiz-letter">د</span> لا تكبّر أبداً</div>
+        <div id="quizFeedback4" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+
+        <p style="margin-top:1.5rem;margin-bottom:1.2rem;">السؤال الخامس: ما نسبة الزوار الذين لا يتواصلون من المرة الأولى تقريباً؟</p>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">أ</span> ١٠٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">ب</span> ٥٠٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, false, 5)"><span class="quiz-letter">ج</span> ٧٥٪</div>
+        <div class="quiz-option" onclick="checkAnswer(this, true, 5)"><span class="quiz-letter">د</span> ٩٧٪</div>
+        <div id="quizFeedback5" style="margin-top:.8rem;font-size:.9rem;display:none;"></div>
+      </div>
+
+      <div class="next-unit">
+        <div>
+          <h3>الوحدة التالية 🚀</h3>
+          <p>إدارة العملاء وإتمام الصفقة — من المكالمة الأولى إلى توقيع العقد</p>
+        </div>
+        <a href="unit-6.html" class="btn-next">التالي ←</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <div class="lessons-sidebar">
+      <div class="sidebar-title">📚 دروس الوحدة</div>
+      <a class="lesson-item active" href="#"><div class="lesson-num">١</div><div class="lesson-info"><strong>مدخل Meta Ads</strong><span>⏱ ١٥ دقيقة</span></div><span class="lesson-done">▶</span></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٢</div><div class="lesson-info"><strong>الاستهداف الذكي</strong><span>⏱ ١٤ دقيقة</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٣</div><div class="lesson-info"><strong>حملات Google Ads</strong><span>⏱ ١٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٤</div><div class="lesson-info"><strong>الميزانية و ROI</strong><span>⏱ ١٣ دقيقة</span></div></a>
+      <a class="lesson-item" href="#"><div class="lesson-num">٥</div><div class="lesson-info"><strong>إعادة الاستهداف</strong><span>⏱ ١٣ دقيقة</span></div></a>
+
+      <div class="sidebar-title" style="margin-top:1rem;">🗂 وحدات الدورة</div>
+      <a class="lesson-item" href="unit-1.html"><div class="lesson-num">١</div><div class="lesson-info"><strong>مدخل سوق العقارات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-2.html"><div class="lesson-num">٢</div><div class="lesson-info"><strong>المنصات العقارية</strong><span>⏱ ٥٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-3.html"><div class="lesson-num">٣</div><div class="lesson-info"><strong>التصوير المرئي</strong><span>⏱ ٦٠ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-4.html"><div class="lesson-num">٤</div><div class="lesson-info"><strong>كتابة الإعلانات</strong><span>⏱ ٤٥ دقيقة</span></div></a>
+      <a class="lesson-item active" href="unit-5.html"><div class="lesson-num" style="background:var(--gold);color:var(--navy);">٥</div><div class="lesson-info"><strong>الإعلانات المدفوعة</strong><span>الوحدة الحالية</span></div></a>
+      <a class="lesson-item" href="unit-6.html"><div class="lesson-num">٦</div><div class="lesson-info"><strong>إدارة العملاء</strong><span>⏱ ٥٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-7.html"><div class="lesson-num">٧</div><div class="lesson-info"><strong>العمولات والعقود</strong><span>⏱ ٦٥ دقيقة</span></div></a>
+      <a class="lesson-item" href="unit-8.html"><div class="lesson-num">٨</div><div class="lesson-info"><strong>قياس الأداء</strong><span>⏱ ٤٠ دقيقة</span></div></a>
+    </div>
+  </div>
+</div>
+
+<script>
+function loadVideo() {
+  const videoId = 'YOUR_VIDEO_ID';
+  const placeholder = document.getElementById('videoPlaceholder');
+  const wrapper = placeholder.parentElement;
+  placeholder.style.display = 'none';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  wrapper.appendChild(iframe);
+}
+function checkAnswer(el, isCorrect, qNum) {
+  let siblings = [];
+  let node = el;
+  while (node.previousElementSibling && node.previousElementSibling.classList.contains('quiz-option')) { node = node.previousElementSibling; }
+  while (node && node.classList && node.classList.contains('quiz-option')) { siblings.push(node); node = node.nextElementSibling; }
+  siblings.forEach(o => { o.classList.remove('correct','wrong'); o.onclick = null; });
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('quizFeedback' + qNum);
+  fb.style.display = 'block';
+  fb.style.color = isCorrect ? 'var(--accent)' : '#e74c3c';
+  fb.textContent = isCorrect ? '✓ إجابة صحيحة!' : '✗ الإجابة غير صحيحة، راجع الدرس مرة أخرى.';
+}
+</script>
+</body>
+</html>
